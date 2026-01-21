@@ -1,222 +1,263 @@
+from typing import List, Optional, Tuple
 import requests
-import openai
-import re
-import json
 
-def persona_tone_instructions(persona: str):
-    persona = persona.lower()
+from backend.models.query_models import VerseItem, QueryRequest, QueryResponse
+from backend.config.feature_flags import FEATURE_FLAGS
 
-    tones = {
-        "pastor": "Write with the compassionate, Scripture-centered tone of a caring pastor.",
-        "teacher": "Explain concepts clearly and logically, like a Bible teacher guiding a class.",
-        "counselor": "Respond with empathy, emotional warmth, and supportive Christian counseling.",
-        "plain": "Write simply and clearly in everyday language, without church jargon.",
-        "friend": "Speak like a supportive Christian friend offering encouragement.",
-        "devotional": "Write in a reflective, devotional style that encourages meditation and application.",
-        "layperson": "Explain everything in simple everyday terms as if speaking to someone new to Bible study."
-    }
-
-    return tones.get(persona, "")
-
-# Bible API base
 BIBLE_API_BASE = "https://bible-api.com"
 
+# --------------------------------------------------------------
+# Canonical Bible book order (OT → NT)
+# --------------------------------------------------------------
+BIBLE_BOOK_ORDER = {
+    # Old Testament
+    "Genesis": (1, "OT"),
+    "Exodus": (2, "OT"),
+    "Leviticus": (3, "OT"),
+    "Numbers": (4, "OT"),
+    "Deuteronomy": (5, "OT"),
+    "Joshua": (6, "OT"),
+    "Judges": (7, "OT"),
+    "Ruth": (8, "OT"),
+    "1 Samuel": (9, "OT"),
+    "2 Samuel": (10, "OT"),
+    "1 Kings": (11, "OT"),
+    "2 Kings": (12, "OT"),
+    "1 Chronicles": (13, "OT"),
+    "2 Chronicles": (14, "OT"),
+    "Ezra": (15, "OT"),
+    "Nehemiah": (16, "OT"),
+    "Esther": (17, "OT"),
+    "Job": (18, "OT"),
+    "Psalms": (19, "OT"),
+    "Proverbs": (20, "OT"),
+    "Ecclesiastes": (21, "OT"),
+    "Song of Solomon": (22, "OT"),
+    "Isaiah": (23, "OT"),
+    "Jeremiah": (24, "OT"),
+    "Lamentations": (25, "OT"),
+    "Ezekiel": (26, "OT"),
+    "Daniel": (27, "OT"),
+    "Hosea": (28, "OT"),
+    "Joel": (29, "OT"),
+    "Amos": (30, "OT"),
+    "Obadiah": (31, "OT"),
+    "Jonah": (32, "OT"),
+    "Micah": (33, "OT"),
+    "Nahum": (34, "OT"),
+    "Habakkuk": (35, "OT"),
+    "Zephaniah": (36, "OT"),
+    "Haggai": (37, "OT"),
+    "Zechariah": (38, "OT"),
+    "Malachi": (39, "OT"),
 
-# ============================================================
-# 1) CLEAN, ROBUST REFERENCE PARSER
-# ============================================================
+    # New Testament
+    "Matthew": (40, "NT"),
+    "Mark": (41, "NT"),
+    "Luke": (42, "NT"),
+    "John": (43, "NT"),
+    "Acts": (44, "NT"),
+    "Romans": (45, "NT"),
+    "1 Corinthians": (46, "NT"),
+    "2 Corinthians": (47, "NT"),
+    "Galatians": (48, "NT"),
+    "Ephesians": (49, "NT"),
+    "Philippians": (50, "NT"),
+    "Colossians": (51, "NT"),
+    "1 Thessalonians": (52, "NT"),
+    "2 Thessalonians": (53, "NT"),
+    "1 Timothy": (54, "NT"),
+    "2 Timothy": (55, "NT"),
+    "Titus": (56, "NT"),
+    "Philemon": (57, "NT"),
+    "Hebrews": (58, "NT"),
+    "James": (59, "NT"),
+    "1 Peter": (60, "NT"),
+    "2 Peter": (61, "NT"),
+    "1 John": (62, "NT"),
+    "2 John": (63, "NT"),
+    "3 John": (64, "NT"),
+    "Jude": (65, "NT"),
+    "Revelation": (66, "NT"),
+}
 
-def parse_reference(ref: str):
+
+class QueryService:
     """
-    Extract book, chapter, and verse from references like:
-    'John 3:16', '1 Corinthians 10:13', 'Psalm 34:18-19'
-    Defaults to verse 1 if missing.
-    Returns ("Unknown", 0, 0) only if completely unparsable.
-    """
-    ref = ref.strip().replace(".", "").replace(",", "")
+    Phase 7.x Query Service
 
-    # Full match -> Book + Chapter:Verse
-    match = re.match(r"([\dA-Za-z\s]+)\s(\d+):(\d+)", ref)
-    if match:
-        book, chapter, verse = match.groups()
-        return book.strip(), int(chapter), int(verse)
-
-    # Case: only Book + Chapter (Psalm 34)
-    match = re.match(r"([\dA-Za-z\s]+)\s(\d+)$", ref)
-    if match:
-        book, chapter = match.groups()
-        return book.strip(), int(chapter), 1
-
-    # Unrecognized format
-    return ("Unknown", 0, 0)
-
-
-# ============================================================
-# 2) FETCH VERSES (OpenAI → references → Bible API)
-# ============================================================
-
-def fetch_verses_for_topic(topic: str, translation: str = "kjv", max_results=6):
-    """
-    Uses OpenAI to generate relevant verse references,
-    then fetches actual verses from the Bible API.
+    Responsibilities:
+    - Accept explicit verse input OR natural-language questions
+    - Resolve scripture deterministically
+    - Apply canonical OT → NT ordering
+    - Return Scripture + Context + Reflection
     """
 
-    # --- Step 1: Ask OpenAI for references ---
-    prompt = (
-        "You are a biblical reference assistant. "
-        f"Given a topic, list up to {max_results} Bible verse references "
-        "(e.g., 'John 3:16', 'Ephesians 4:32'). "
-        "Return ONLY the references separated by commas.\n\n"
-        f"Topic: {topic}\nReferences:"
-    )
+    # ------------------------------------------------------------------
+    # Parse canonical metadata
+    # ------------------------------------------------------------------
+    def _parse_reference_metadata(self, reference: str):
+        for book, (order, testament) in BIBLE_BOOK_ORDER.items():
+            if reference.startswith(book):
+                return order, testament
+        return None, None
 
-    resp = openai.ChatCompletion.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=200,
-        temperature=0.0,
-    )
+    # ------------------------------------------------------------------
+    # Detect explicit verse reference
+    # ------------------------------------------------------------------
+    def _is_explicit_verse(self, question: str) -> bool:
+        q = question.strip()
 
-    text = resp["choices"][0]["message"]["content"].strip()
-    refs = [chunk.strip() for chunk in text.replace("\n", ",").split(",") if chunk.strip()]
-    refs = refs[:max_results]
+        if ":" in q:
+            return True
 
-    # --- Step 2: Fetch verses from the Bible API ---
-    verses = []
+        for book in BIBLE_BOOK_ORDER.keys():
+            if q.startswith(book):
+                return True
 
-    for r in refs:
+        return False
+
+    # ------------------------------------------------------------------
+    # Split multi-topic questions conservatively
+    # ------------------------------------------------------------------
+    def _extract_topics(self, question: str) -> List[str]:
+        normalized = question.lower().strip()
+
+        if " and " in normalized:
+            parts = normalized.split(" and ")
+        elif " or " in normalized:
+            parts = normalized.split(" or ")
+        elif "," in normalized:
+            parts = normalized.split(",")
+        else:
+            return [question.strip()]
+
+        topics = []
+        for p in parts:
+            t = p.strip()
+            if t and t not in topics:
+                topics.append(t)
+
+        return topics if topics else [question.strip()]
+
+    # ------------------------------------------------------------------
+    # Resolve NQL to anchor scriptures (deterministic)
+    # ------------------------------------------------------------------
+    def _resolve_nql_to_scripture(self, question: str) -> List[str]:
+        q = question.lower()
+
+        if "suffering" in q or "pain" in q:
+            return ["Romans 8:18", "Psalm 34:19"]
+
+        if "fear" in q or "anxiety" in q:
+            return ["Isaiah 41:10", "Philippians 4:6-7"]
+
+        if "forgive" in q or "forgiveness" in q:
+            return ["Matthew 18:21-22", "Ephesians 4:32"]
+
+        if "purpose" in q:
+            return ["Jeremiah 29:11", "Ephesians 2:10"]
+
+        # Safe fallback
+        return ["Psalm 119:105", "John 1:5"]
+
+    # ------------------------------------------------------------------
+    # Fetch scripture from API
+    # ------------------------------------------------------------------
+    def fetch_single_verse(
+        self,
+        reference: str,
+        translation: str = "kjv"
+    ) -> Optional[VerseItem]:
+
         try:
-            url = f"{BIBLE_API_BASE}/{requests.utils.quote(r)}"
-            q = {"translation": translation} if translation else {}
+            url = f"{BIBLE_API_BASE}/{requests.utils.quote(reference)}"
+            params = {"translation": translation}
 
-            r_resp = requests.get(url, params=q, timeout=10)
-            r_resp.raise_for_status()
+            response = requests.get(url, params=params, timeout=10)
+            response.raise_for_status()
 
-            data = r_resp.json()
+            data = response.json()
 
+            text = ""
             if "text" in data:
-                text_body = data["text"].strip()
+                text = data["text"].strip()
             elif "verses" in data:
-                text_body = " ".join(v.get("text", "") for v in data["verses"]).strip()
-            else:
-                text_body = ""
+                text = " ".join(v.get("text", "") for v in data["verses"]).strip()
 
-            book, chapter, verse = parse_reference(r)
+            if not text:
+                return None
 
-            verses.append({
-                "book": book,
-                "chapter": chapter,
-                "verse": verse,
-                "text": text_body
-            })
+            reference_label = data.get("reference", "").strip() or reference
+            book_order, testament = self._parse_reference_metadata(reference_label)
 
-        except Exception as e:
-            book, chapter, verse = parse_reference(r)
-            verses.append({
-                "book": book,
-                "chapter": chapter,
-                "verse": verse,
-                "text": f"[Error fetching verse: {str(e)}]"
-            })
+            return VerseItem(
+                reference=reference_label,
+                text=text,
+                book_order=book_order,
+                testament=testament
+            )
 
-    # --- Step 3: Cleanup (remove bad entries) ---
-    verses = [
-        v for v in verses
-        if v["book"] != "Unknown" and v["text"].strip() != ""
-    ]
+        except Exception:
+            return None
 
-    return verses
+    # ------------------------------------------------------------------
+    # Main query entry point (Phase 7.6+)
+    # ------------------------------------------------------------------
+    def process_query(self, req: QueryRequest) -> QueryResponse:
 
+        if FEATURE_FLAGS.get("FORCE_SAFE_MODE", False):
+            return QueryResponse(
+                verses=[],
+                summary="The system is currently operating in safe mode.",
+                commentary=""
+            )
 
-# ============================================================
-# 3) SUMMARY + COMMENTARY GENERATION
-# ============================================================
+        verse_items: List[VerseItem] = []
+        question = req.question.strip()
 
-def summarize_and_contextualize(question: str, verses: list, persona: str, want_commentary: bool):
-    """
-    Creates a structured summary with optional commentary using OpenAI.
-    Applies persona tone instructions for tailored writing style.
-    """
+        # Explicit verse vs NQL routing
+        if self._is_explicit_verse(question):
+            topics = self._extract_topics(question)
+            for topic in topics:
+                verse = self.fetch_single_verse(
+                    reference=topic,
+                    translation=req.translation or "kjv"
+                )
+                if verse:
+                    verse_items.append(verse)
+        else:
+            anchors = self._resolve_nql_to_scripture(question)
+            for ref in anchors:
+                verse = self.fetch_single_verse(
+                    reference=ref,
+                    translation=req.translation or "kjv"
+                )
+                if verse:
+                    verse_items.append(verse)
 
-    # Merge verse texts
-    verse_text_bundle = "\n\n".join(
-        f"{v['book']} {v['chapter']}:{v['verse']} - {v['text']}"
-        for v in verses
-    )
+        # Canonical ordering
+        verse_items.sort(
+            key=lambda v: (
+                v.testament != "OT",
+                v.book_order or 999
+            )
+        )
 
-    # Tone instructions from helper
-    tone = persona_tone_instructions(persona)
+        # Deterministic Context + Reflection
+        context_text = (
+            "These passages are connected by a shared theme found across Scripture, "
+            "showing continuity in how the Bible addresses this question."
+        )
 
-    # Optional commentary block
-    commentary_instruction = (
-        "Include a short commentary (2–4 sentences) from classical commentators such as Matthew Henry."
-        if want_commentary
-        else ""
-    )
+        reflection_text = (
+            "This reflection is offered as an invitation for inward consideration. "
+            "You are not expected to respond, but to quietly consider how these passages "
+            "shape your understanding."
+        )
 
-    # ============================
-    #        MAIN PROMPT
-    # ============================
-    prompt = f"""
-You are a careful Bible-study assistant.
-
-USER QUESTION:
-{question}
-
-HERE ARE RELATED VERSES:
-{verse_text_bundle}
-
-TASKS:
-1. Provide a concise summary (3–6 sentences) explaining how these verses address the question.
-2. {commentary_instruction}
-
-Tone instructions:
-{tone}
-
-Return ONLY valid JSON in this format:
-{{
-  "summary": "...",
-  "commentary": "..."
-}}
-    """
-
-    # OpenAI call
-    resp = openai.ChatCompletion.create(
-        model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=350,
-        temperature=0.2,
-    )
-
-    ai_text = resp["choices"][0]["message"]["content"].strip()
-
-    # ============================
-    #   CLEAN UP MODEL OUTPUT
-    # ============================
-
-    # Remove Markdown code fences
-    if ai_text.startswith("```"):
-        ai_text = ai_text.strip("`")
-        ai_text = ai_text.replace("json", "").replace("JSON", "").strip()
-
-    # Try direct JSON parse
-    try:
-        data = json.loads(ai_text)
-        return data.get("summary", ""), data.get("commentary", "")
-    except:
-        pass
-
-    # ============================
-    #   FALLBACK MANUAL PARSING
-    # ============================
-    summary = ""
-    commentary = ""
-
-    if "commentary" in ai_text.lower():
-        parts = re.split(r"(?i)commentary", ai_text, 1)
-        summary = parts[0].replace("summary", "").strip()
-        commentary = parts[1].strip()
-    else:
-        summary = ai_text.strip()
-
-    return summary, commentary
+        return QueryResponse(
+            verses=verse_items,
+            summary=context_text,
+            commentary=reflection_text
+        )

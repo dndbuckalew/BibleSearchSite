@@ -5,3 +5,23 @@ venv/
 *.pyc
 /node_modules
 /build
+# --- Release V1 Guardrails ---
+
+# Archives
+*.zip
+
+# Docs / validation artifacts
+*.docx
+*.pdf
+*.txt
+
+# Legacy / scratch
+archive_*/
+frontend_vite_legacy/
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
