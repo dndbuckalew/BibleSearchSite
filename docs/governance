@@ -1,0 +1,162 @@
+# BTA Phase 9.1B — Commentary Data Model & Scholarly Excerpt Governance  
+## Constitutional Audit Log
+
+---
+
+## 🔒 Constitutional Authority
+
+This phase operates under:
+
+- Phase 9.0 Commentary Governance Charter
+- Phase 9.1A Controlled Orchestration Integration
+- Phase 9.8 Governance Charter
+- Soul → Heart → Hands Architecture Lock
+- Persona Expression Ceiling
+- Reflection Depth Bound
+- Non-Cross-Pollination Doctrine
+- Drift Intervention Mandate
+- Context Controls Doctrine
+- WHY-First Scripture Model (Phases 1–9 Vision Lock)
+
+All constitutional controls remain active and binding.
+
+No orchestration logic redesign permitted.  
+No escalation logic modification permitted.  
+No QueryResponse schema mutation beyond approved structure.
+
+---
+
+## 🎯 Purpose of This Audit Log
+
+This document records all governance actions taken during Phase 9.1B, including:
+
+- Code neutralizations (commented-out logic)
+- Permanent deletions
+- Structural refactors (if constitutionally required)
+- Dataset migrations
+- Registry enforcement corrections
+- Validation confirmations
+- Regression verification
+
+This file exists to preserve:
+
+- Architectural transparency
+- Drift identification history
+- Constitutional compliance record
+- Controlled migration rationale
+
+This log is part of the permanent BTA governance structure.
+
+---
+
+## 📘 Entry Classification Types
+
+Each audit entry must be classified as one of the following:
+
+- **Neutralization** — Code commented out pending structured migration.
+- **Deletion** — Code permanently removed.
+- **Refactor** — Structural adjustment without behavioral change.
+- **Validation Confirmation** — Explicit confirmation of constitutional compliance.
+- **No Action Required** — File reviewed and confirmed compliant.
+
+---
+
+## 🧾 Audit Entry Template
+
+Each governance action must follow this structure:
+
+---
+
+### Entry ID:
+### Date:
+### File:
+### Lines Affected:
+### Classification:
+(Neutralization / Deletion / Refactor / Validation Confirmation / No Action Required)
+
+### Code Type:
+(Inline commentary injection / Registry logic / Formatting logic / Dataset structure / Other)
+
+### Introduced In Phase:
+(If known — e.g., Phase 8 Prototype, Phase 9.1 Initial Build)
+
+### Description of Code:
+(Concise explanation of what the code did)
+
+### Governance Determination:
+(Why action was or was not required)
+
+### Constitutional References:
+(List specific constitutional controls triggered)
+
+### Action Taken:
+(What was done — commented out, deleted, confirmed compliant, etc.)
+
+### Replacement Path (if applicable):
+(backend/core/commentary_data/ or other structured destination)
+
+### Regression Validation Status:
+- Swagger Test: Pass / Fail
+- Escalation Logic: Unaffected / Affected
+- Scripture Ordering: Preserved / Affected
+- Schema Integrity: Preserved / Affected
+- Frontend Render: Verified / Not Applicable
+
+### Notes:
+(Any additional observations or follow-up tasks)
+
+---
+
+## 📌 Phase Completion Record
+
+Phase 9.1B may only be marked complete when:
+
+- All commentary-related files inspected
+- All drift identified and resolved
+- Registry enforcement verified
+- No synthetic commentary present
+- Swagger tests pass with non-null attributed commentary
+- Frontend renders correctly
+- No regression in escalation logic
+- No regression in scripture ordering
+- No schema mutation beyond approved excerpt model
+
+Final Constitutional Compliance Review:
+
+Status: Pending / Approved  
+Approved By:  
+Date:
+
+---
+
+End of Document.
+
+### Entry ID: 9.1B-QS-001
+### Date: [today]
+### File: backend/services/query_service.py
+### Lines Affected: N/A
+### Classification: Validation Confirmation
+### Code Type: Commentary Orchestration
+
+### Introduced In Phase:
+Phase 9.1A Controlled Orchestration Integration
+
+### Description of Code:
+Handles optional commentary execution via build_commentary() and formats output.
+
+### Governance Determination:
+File adheres to constitutional separation of concerns.
+No inline commentary injection detected.
+No schema mutation detected.
+Escalation isolation preserved.
+
+### Constitutional References:
+- Phase 9.0 Commentary Governance Charter
+- Phase 9.8 Governance Charter
+- Non-Cross-Pollination Doctrine
+
+### Action Taken:
+No action required.
+
+### Regression Validation Status:
+Not applicable (inspection phase)

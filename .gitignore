@@ -25,3 +25,17 @@ node_modules/
 # OS
 .DS_Store
 Thumbs.db
+
+# Next.js build output
+.next/
+out/
+
+# local env variants
+.env.local
+.env.*.local
+
+# logs
+*.log
+
+# VS Code
+.vscode/
