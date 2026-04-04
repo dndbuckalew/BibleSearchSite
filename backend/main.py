@@ -24,6 +24,20 @@ from backend.routes.flipped_routes import router as flipped_router
 from dotenv import load_dotenv
 load_dotenv()
 
+import os
+
+print("===================================")
+print("OPENAI KEY LOADED:", os.getenv("OPENAI_API_KEY") is not None)
+
+key = os.getenv("OPENAI_API_KEY")
+
+if key:
+    print("OPENAI KEY PREFIX:", key[:10])
+else:
+    print("OPENAI KEY PREFIX: None")
+
+print("===================================")
+
 # ------------------------------------------------------------------
 # App initialization
 # ------------------------------------------------------------------

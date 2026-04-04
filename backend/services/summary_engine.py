@@ -311,19 +311,23 @@ def generate_summary(verses, structural_scope: str, theme_analysis=None) -> str:
         # NEW: AI-guided summary attempt
         # -------------------------------------------------
 
+        from backend.services.ai_client import get_ai_client
+
+        llm_client = get_ai_client()
+
         ai_summary = generate_ai_summary(
             verses=verses,
             structural_scope=structural_scope,
             signals=signals,
-            llm_client=None
-        )
+            llm_client=llm_client
+        )    
 
         # -------------------------------------------------
         # Phase 9.1D.2.6 — Semantic Pipeline Priority
         # -------------------------------------------------
 
         if ai_summary:
-            return _limit_sentences(ai_summary, 5)
+            return ai_summary 
 
         return DEFAULT_FALLBACK
 
