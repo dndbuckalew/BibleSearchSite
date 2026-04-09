@@ -748,7 +748,9 @@ class QueryService:
         # --------------------------------------------------------------
         reflection = ""
         if 'theme_result' in locals() and theme_result:
-            reflection = reflection_service.build_reflection(theme_result)
+
+            from backend.services.ai_reflection_service import generate_ai_reflection
+            reflection = generate_ai_reflection(theme_result)
 
         return QueryResponse(
             verses=verse_items,
