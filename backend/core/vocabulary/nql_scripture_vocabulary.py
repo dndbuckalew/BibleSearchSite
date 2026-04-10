@@ -264,7 +264,28 @@ CONCEPT_REGISTRY: Dict[str, Dict[str, object]] = {
             "Matthew 6:34",
         ],
     },
-
+    "sadness": {
+        "description": "Concept associated with sadness or sorrow.",
+        "match_any": ["sad", "sadness", "sorrow"],
+        "match_phrases": [],
+        "match_all_tokens": [],
+        "scriptures": [
+            "Psalm 34:18",
+            "Matthew 5:4",
+            "Revelation 21:4"
+        ],
+    },
+    "anger": {
+        "description": "Concept associated with anger, wrath, or frustration.",
+        "match_any": ["anger", "angry", "wrath", "frustrated"],
+        "match_phrases": [],
+        "match_all_tokens": [],
+        "scriptures": [
+            "Ephesians 4:26",
+            "James 1:19-20",
+            "Proverbs 14:29"
+        ],
+    },
     # ---- Joy / Rejoicing ----
     "joy": {
         "description": "Concept associated with joy.",

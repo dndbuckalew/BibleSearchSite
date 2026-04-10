@@ -606,8 +606,18 @@ class QueryService:
                 fetched = self.fetch_scripture_items(topic, req.translation or "kjv")
                 if fetched:
                     verse_items.extend(fetched)
+        
         else:
-            refs = resolve_nql_topics(question)
+            normalized_question = question.strip().lower()
+
+            if len(normalized_question.split()) == 1:
+                query_for_resolution = f"verses about {normalized_question}"
+            else:
+                query_for_resolution = question
+
+            print("DEBUG QUERY:", query_for_resolution)
+
+            refs = resolve_nql_topics(query_for_resolution)
 
             # --- Phase 9.1D.V2: LLM Concept Mapping Fallback (Controlled) ---
             if not refs:
