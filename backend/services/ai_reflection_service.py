@@ -208,8 +208,13 @@ OUTPUT
 Write one cohesive paragraph that unfolds naturally and ends with a single gentle reflective question.
 """
 
+    print("CALLING OPENAI REFLECTION")
+
     try:
         response = call_ai_model(prompt)
+        print("OPENAI RESPONSE:", response)
         return response.strip() if response else None
-    except Exception:
+    except Exception as e:
+        print("OPENAI ERROR:", str(e))
         return None
+        
