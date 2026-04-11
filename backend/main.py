@@ -91,3 +91,8 @@ app.include_router(
 @app.get("/health", tags=["default"])
 def health_check():
     return {"status": "ok"}
+
+@app.get("/")
+def root():
+    return {"message": "BibleSearchSite API is running"}
+    
