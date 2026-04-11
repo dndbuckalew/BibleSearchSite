@@ -27,5 +27,4 @@ EXPOSE 80
 
 # Run the application (App Runner-compatible)
 # Uses PORT if provided, defaults to 80
-CMD ["sh", "-c", "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-80}"]
-
+CMD ["sh", "-c", "uvicorn backend.main:app --host 0.0.0.0 --port $PORT"]
