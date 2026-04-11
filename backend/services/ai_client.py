@@ -11,11 +11,17 @@ Provide a single entry point for calling OpenAI to generate meaning.
 # backend/services/ai_client.py
 
 import os
+import httpx
 from openai import OpenAI
 
-# Initialize client
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Create stable HTTP client
+http_client = httpx.Client(timeout=30.0)
 
+# Initialize OpenAI client with explicit transport
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    http_client=http_client
+)
 
 def call_ai_model(prompt: str) -> str:
     """
@@ -64,4 +70,3 @@ def call_ai_model(prompt: str) -> str:
     except Exception as e:
         print("AI CLIENT ERROR:", str(e))
         return None
-                
