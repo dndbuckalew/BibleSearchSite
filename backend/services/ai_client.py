@@ -8,20 +8,12 @@ Purpose:
 Provide a single entry point for calling OpenAI to generate meaning.
 """
 
-# backend/services/ai_client.py
-
 import os
-import httpx
 from openai import OpenAI
 
-# Create stable HTTP client
-http_client = httpx.Client(timeout=30.0)
+# Initialize OpenAI client (clean, no custom transport)
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Initialize OpenAI client with explicit transport
-client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY"),
-    http_client=http_client
-)
 
 def call_ai_model(prompt: str) -> str:
     """
@@ -63,10 +55,13 @@ def call_ai_model(prompt: str) -> str:
         )
 
         content = response.choices[0].message.content.strip()
+
         print("OPENAI RESPONSE:", content)
 
         return content
 
     except Exception as e:
-        print("AI CLIENT ERROR:", str(e))
+        print("AI CLIENT ERROR TYPE:", type(e).__name__)
+        print("AI CLIENT ERROR DETAIL:", str(e))
         return None
+        
