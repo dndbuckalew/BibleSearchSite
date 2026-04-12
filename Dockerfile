@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # 👇 COPY ENTIRE BACKEND FIRST
-COPY backend ./backend
+COPY . .
 
 # 👇 THEN install from copied file
 RUN pip install --no-cache-dir -r backend/requirements.txt
