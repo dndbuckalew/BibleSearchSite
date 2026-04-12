@@ -1,0 +1,1 @@
+Set-Content build_version.txt "v2-force-rebuild-query-service"
