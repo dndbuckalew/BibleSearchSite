@@ -562,6 +562,8 @@ class QueryService:
         if isinstance(req, dict):
             req = QueryRequest(**req)
 
+        print("🔥 NEW QUERY SERVICE VERSION ACTIVE 🔥")
+
         want_commentary: bool = bool(getattr(req, "want_commentary", False))
 
         question = (req.question or "").strip()
