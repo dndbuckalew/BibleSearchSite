@@ -610,32 +610,18 @@ class QueryService:
                     verse_items.extend(fetched)
         
         else:
-            normalized_question = question.strip().lower()
-
-            if len(normalized_question.split()) == 1:
-                query_for_resolution = f"verses about {normalized_question}"
-            else:
-                query_for_resolution = question
+            query_for_resolution = question
 
             print("DEBUG QUERY:", query_for_resolution)
 
-            refs = resolve_nql_topics(query_for_resolution)
+            from backend.core.vocabulary.nql_scripture_vocabulary import resolve_scripture_with_llm
 
-            # --- Phase 9.1D.V2: LLM Concept Mapping Fallback (Controlled) ---
+            # Phase 10B — LLM direct scripture resolution
+            refs = resolve_scripture_with_llm(query_for_resolution)
+
+            # Fallback to existing system
             if not refs:
-                from backend.services.concept_mapping_service import map_concepts_with_llm
-                from backend.core.vocabulary.nql_scripture_vocabulary import CONCEPT_REGISTRY
-
-                available_concepts = list(CONCEPT_REGISTRY.keys())
-
-                mapped_concepts = map_concepts_with_llm(
-                    question=question,
-                    available_concepts=available_concepts,
-                )
-
-                if mapped_concepts:
-                    refs = resolve_nql_topics(" ".join(mapped_concepts))
-            # --- END Phase 9.1D.V2 ---
+                refs = resolve_nql_topics(query_for_resolution)   
 
             for ref in refs:
                 fetched = self.fetch_scripture_items(ref, req.translation or "kjv")

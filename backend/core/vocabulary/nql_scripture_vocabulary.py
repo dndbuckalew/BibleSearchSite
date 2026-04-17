@@ -1,5 +1,3 @@
-# Insert into: backend/core/vocabulary/nql_scripture_vocabulary.py
-
 """
 Phase 9.1D.V — NQL Vocabulary Expansion & Semantic Mapping
 
@@ -525,6 +523,209 @@ def match_concept(q: str, concept_data: Dict[str, object]) -> bool:
     return False
 
 
+# ============================================================
+# Phase 10 — Dynamic Concept Resolution (Step 3A Placeholder)
+# ============================================================
+
+def resolve_concepts_dynamic(query: str) -> List[str]:
+    """
+    Phase 10 — Dynamic Concept Resolution (Step 3C - Safe Hook)
+
+    Behavior:
+    1. Try deterministic registry match (current behavior)
+    2. If no match → attempt LLM mapping
+    3. Apply normalization + fuzzy matching
+    4. Always return safe, validated concepts
+    """
+    print("DYNAMIC RESOLVER CALLED:", query)
+
+    if not query:
+        return []
+
+    q = normalize_question(query)
+
+    # ------------------------------------------------------------
+    # Step 1 — Existing deterministic logic (PRIMARY)
+    # ------------------------------------------------------------
+    matched_concepts: List[str] = []
+
+    for concept, data in CONCEPT_REGISTRY.items():
+        if match_concept(q, data):
+            matched_concepts.append(concept)
+
+    if matched_concepts:
+        return matched_concepts
+
+    # ------------------------------------------------------------
+    # Step 2 — LLM fallback
+    # ------------------------------------------------------------
+    llm_concepts = map_query_to_concepts_llm(q)
+
+    if llm_concepts:
+        # Direct match first
+        valid_concepts = [c for c in llm_concepts if c in CONCEPT_REGISTRY]
+        if valid_concepts:
+            return valid_concepts
+
+        # ------------------------------------------------------------
+        # Fuzzy concept fallback (normalized semantic match)
+        # ------------------------------------------------------------
+        from difflib import get_close_matches
+
+        for llm_term in llm_concepts:
+            llm_term_clean = llm_term.lower().replace(" ", "").replace("_", "")
+
+            normalized_concepts = {
+                key: key.lower().replace("_", "").replace(" ", "")
+                for key in CONCEPT_REGISTRY.keys()
+            }
+
+            matches = get_close_matches(
+                llm_term_clean,
+                list(normalized_concepts.values()),
+                n=1,
+                cutoff=0.6
+            )
+
+            if matches:
+                for original, normalized in normalized_concepts.items():
+                    if normalized == matches[0]:
+                        return [original]
+
+    # ------------------------------------------------------------
+    # Step 3 — No match fallback
+    # ------------------------------------------------------------
+    return []
+
+def resolve_scripture_with_llm(query: str) -> List[str]:
+    """
+    Phase 10B — LLM-driven scripture resolution
+    """
+    print("LLM SCRIPTURE FUNCTION CALLED:", query)
+
+    try:
+        from backend.services.ai_client import call_ai_model
+
+        prompt = f"""
+You are selecting Bible verses that directly address a user's situation.
+
+User input:
+"{query}"
+
+Return 3–5 Bible verse references.
+
+STRICT RULES:
+- ONLY return verse references
+- NO explanation
+- NO bullet points
+- NO extra text
+- MUST be in this exact format: Book Chapter:Verse
+
+VALID EXAMPLES:
+Proverbs 14:29
+Ephesians 5:18
+Galatians 5:22
+
+Return format:
+Proverbs 14:29, Ephesians 5:18, Galatians 5:22
+"""
+
+        response = call_ai_model(prompt)
+        print("LLM SCRIPTURE RAW RESPONSE:", response)
+
+        if not response:
+            return []
+
+        import json
+
+        try:
+            parsed = json.loads(response)
+            if isinstance(parsed, list):
+                return [str(x).strip() for x in parsed]
+        except:
+            pass
+
+        # Fallback parsing
+        cleaned = response.replace("[", "").replace("]", "").replace('"', "")
+        parts = [p.strip() for p in cleaned.split(",") if p.strip()]
+        return parts
+
+    except Exception as e:
+        print("LLM SCRIPTURE ERROR:", str(e))
+        return []
+
+def map_query_to_concepts_llm(query: str) -> List[str]:
+    """
+    Phase 10 — LLM Concept Mapping (Step 3C Step 2)
+
+    Converts user input into canonical concept keys.
+
+    Rules:
+    - MUST return ONLY concept keys
+    - MUST NOT return scripture
+    - MUST NOT return explanations
+    - MUST be validated against CONCEPT_REGISTRY
+    """
+    print("LLM FUNCTION CALLED:", query)
+
+    try:
+        # ------------------------------------------------------------
+        # LLM Prompt (STRICT)
+        # ------------------------------------------------------------
+        prompt = f"""
+        You are analyzing a user’s question about the Bible.
+
+        User input:
+        "{query}"
+
+        Your task:
+        - Describe the core human issue or struggle in 2–5 words
+        - Do NOT reference Bible verses
+        - Do NOT explain
+        - Return ONLY a JSON array of short phrases
+
+        Examples:
+        ["lack of self control"]
+        ["fear and uncertainty"]
+        ["anger and resentment"]
+        """
+
+        # ------------------------------------------------------------
+        # CALL YOUR EXISTING LLM SERVICE
+        # ------------------------------------------------------------
+        from backend.services.ai_summary_service import call_openai_model
+
+        response = call_openai_model(prompt)
+        print("LLM SCRIPTURE RAW RESPONSE:", response)
+
+        # ------------------------------------------------------------
+        # SAFE PARSE (robust)
+        # ------------------------------------------------------------
+        import json
+
+        parsed = None
+
+        try:
+            parsed = json.loads(response)
+        except:
+            pass
+
+        # Case 1: Proper JSON list
+        if isinstance(parsed, list):
+            return [str(x).strip().lower() for x in parsed]
+
+        # Case 2: Fallback extraction (ALWAYS available)
+        cleaned = response.replace("[", "").replace("]", "").replace('"', "")
+        parts = [p.strip().lower() for p in cleaned.split(",") if p.strip()]
+
+        if parts:
+            return parts
+
+    except Exception:
+        pass
+
+    return []
+
 def resolve_nql_topics(question: str) -> List[str]:
     """
     Deterministically resolves NQL concepts to scripture references.
@@ -550,12 +751,8 @@ def resolve_nql_topics(question: str) -> List[str]:
     if signal_concepts:
         matched_concepts = signal_concepts
     else:
-        matched_concepts: List[str] = []
+        matched_concepts = resolve_concepts_dynamic(q)
 
-        # Preserve registry order for deterministic output stability
-        for concept, data in CONCEPT_REGISTRY.items():
-            if match_concept(q, data):
-                matched_concepts.append(concept)
     results: List[str] = []
     seen: Set[str] = set()
 
@@ -567,4 +764,3 @@ def resolve_nql_topics(question: str) -> List[str]:
                 seen.add(scripture)
 
     return results
-     
