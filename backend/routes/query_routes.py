@@ -5,15 +5,12 @@ from backend.services.query_service import QueryService
 router = APIRouter()
 query_service = QueryService()
 
-
 @router.post("/", response_model=QueryResponse)
 async def query_scripture(req: QueryRequest):
     """
     Phase 7.x — Primary scripture + reflection query endpoint
     """
-    print("ROUTE LOG — incoming QueryRequest:", req)
-    print("ROUTE LOG — req.query:", getattr(req, "query", None))
-
+   
     try:
         return query_service.process_query(req)
     except Exception as e:
