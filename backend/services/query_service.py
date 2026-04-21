@@ -25,6 +25,9 @@ from backend.core.bible_chapter_metadata import BIBLE_CHAPTER_VERSE_COUNT
 from backend.services.commentary_service import build_commentary
 from backend.core.commentary_registry import get_commentator
 
+# Context Layer (Phase 1 — Free Context)
+from backend.services.context_service import generate_free_context
+
 # Phase 9.1D.2 Reflection Engine
 from backend.services.reflection_engine import generate_reflection
 
@@ -750,11 +753,18 @@ class QueryService:
             from backend.services.ai_reflection_service import generate_ai_reflection
             reflection = generate_ai_reflection(theme_result)
 
+        # --------------------------------------------------------------
+        # Phase 1 — Free Context Build (Safe Additive Layer)
+        # --------------------------------------------------------------
+        context = generate_free_context(verse_items)
+
         return QueryResponse(
             verses=verse_items,
             summary=final_summary,
+            context=context,
             reflection=reflection,
             commentary=commentary_text,
             want_commentary=want_commentary,
             escalation_level=escalation_level,
-        ) 
+        )
+        
