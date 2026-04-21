@@ -31,6 +31,13 @@ const API_BASE = API_BASE_RAW.replace(/\/$/, "");
  * Run a reflection query against the backend
  */
 export async function runReflection(request: ReflectionRequest) {
+    // ✅ Query Counter (Phase 11 - Usage Tracking)
+    const currentCount = Number(localStorage.getItem("bta_query_count") || "0");
+    const newCount = currentCount + 1;
+    localStorage.setItem("bta_query_count", String(newCount));
+
+    console.log("BTA Query Count:", newCount);
+
   const res = await fetch(`${API_BASE}/api/query`, {
     method: "POST",
     headers: {
@@ -50,4 +57,9 @@ export async function runReflection(request: ReflectionRequest) {
   }
 
   return res.json();
+}
+
+// ✅ Get current query count (used for gating later)
+export function getQueryCount(): number {
+  return Number(localStorage.getItem("bta_query_count") || "0");
 }
