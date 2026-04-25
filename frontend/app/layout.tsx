@@ -42,15 +42,15 @@ export default function RootLayout({
         {/* Footer / Guardrails */}
         <footer className="border-t bg-white mt-12">
           <div className="max-w-4xl mx-auto px-4 py-6 text-sm text-neutral-600 space-y-2">
-            <p>
+            <div>
               This application provides Scripture (KJV) and contextual reflection
               for educational and spiritual exploration.
-            </p>
+            </div>
 
-            <p>
+            <div>
               It is <strong>not</strong> medical advice, counseling, crisis
               support, or authoritative theological instruction.
-            </p>
+            </div>
 
             <div className="text-xs text-neutral-500 pt-2 space-y-1">
               <div>Powered by OpenAI</div>

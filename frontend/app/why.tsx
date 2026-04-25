@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { runReflection } from './lib/btaApi';
 import { getQueryCount } from "./lib/btaApi";
+
 
 type DecisionResponse = {
   decision: 'PROCEED' | 'REDIRECT' | 'STOP';
@@ -12,7 +13,13 @@ type DecisionResponse = {
 };
 
 export default function WhyPage() {
-  const queryCount = Number(localStorage.getItem("bta_query_count") || "0");
+  const [queryCount, setQueryCount] = useState(0);
+  useEffect(() => {
+  if (typeof window !== "undefined") {
+    const count = Number(localStorage.getItem("bta_query_count") || "0");
+    setQueryCount(count);
+  }
+}, []);
   const router = useRouter();
 
   const [question, setQuestion] = useState('');
@@ -151,14 +158,15 @@ export default function WhyPage() {
 
         {queryCount >= 4 && (
           <div className="mt-4 p-3 border border-neutral-300 rounded">
-            <p className="text-sm font-semibold">
+
+            <div className="text-sm font-semibold">
               You’ve explored several reflections.
-            </p>
-            <p className="text-xs text-neutral-600">
-              <p className="text-xs text-neutral-600">
+            </div>  
+
+            <div className="text-xs text-neutral-600">
               This space will always remain open to you. If you find BTA meaningful in your reflection, consider joining for updates and helping extend this experience of Scripture to others.
-</p>
-            </p>
+            </div> 
+            
           </div>
         )}
 

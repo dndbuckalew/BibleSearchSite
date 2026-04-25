@@ -25,9 +25,9 @@ export default function LoginPage() {
     <section className="max-w-md mx-auto mt-16 space-y-6">
       <h2 className="text-2xl font-semibold">Version 2 Access</h2>
 
-      <p className="text-sm text-neutral-600">
+      <div className="text-sm text-neutral-600">
         This system is in limited Version 2. Please enter your invitation credentials.
-      </p>
+      </div>
 
       <div className="space-y-4">
         <input
