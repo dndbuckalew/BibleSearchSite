@@ -612,7 +612,7 @@ You are selecting Bible verses that directly address a user's situation.
 User input:
 "{query}"
 
-Return 3–5 Bible verse references.
+Return 8-10 Bible verse references.
 
 STRICT RULES:
 - ONLY return verse references

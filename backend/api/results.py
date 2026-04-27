@@ -6,10 +6,13 @@ from backend.services.query_service import QueryService
 router = APIRouter()
 
 # Instantiate service once (stateless usage per request)
+print("RESULTS ROUTER: building QueryService")
 query_service = QueryService()
 
 
 @router.post("/api/results", response_model=QueryResponse)
+
+
 def get_results(req: ResultsRequest):
     """
     Results execution endpoint (WHAT).
@@ -28,4 +31,5 @@ def get_results(req: ResultsRequest):
     This endpoint assumes the WHY gate (/api/query)
     has already approved execution.
     """
+    print("RESULTS ROUTE HIT")
     return query_service.process_query(req.execution_payload)

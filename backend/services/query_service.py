@@ -86,8 +86,19 @@ class QueryService:
     # Explicit Scripture Detection
     # --------------------------------------------------------------
     def _is_explicit_verse(self, question: str) -> bool:
-        if ":" in question:
+        print("CHECK EXPLICIT:", question)
+        q = question.strip()
+
+        # Standard verse / range: John 3:16 / John 3:16-18
+        if ":" in q:
             return True
+
+        # Chapter-only: John 3 / Psalm 1 / 1 John 4
+        parts = q.split()
+
+        if len(parts) >= 2 and parts[-1].isdigit():
+            return True
+
         return False
 
     # --------------------------------------------------------------
@@ -96,12 +107,19 @@ class QueryService:
     def _extract_topics(self, question: str) -> List[str]:
         normalized = question.strip()
 
-        pattern = r"(?:[1-3]\s)?[A-Za-z]+\s\d+:\d+(?:-\d+)?"
+        # Match verse / range: John 3:16 / John 3:16-18
+        verse_pattern = r"(?:[1-3]\s)?[A-Za-z]+\s\d+:\d+(?:-\d+)?"
+        verse_matches = re.findall(verse_pattern, normalized)
 
-        matches = re.findall(pattern, normalized)
+        if verse_matches:
+            return verse_matches
 
-        if matches:
-            return matches
+        # Match chapter-only: John 3 / Psalm 1 / 1 John 4
+        chapter_pattern = r"(?:[1-3]\s)?[A-Za-z]+\s\d+"
+        chapter_matches = re.findall(chapter_pattern, normalized)
+
+        if chapter_matches:
+            return chapter_matches
 
         return [normalized]
 
@@ -201,6 +219,7 @@ class QueryService:
     # --------------------------------------------------------------
     def fetch_scripture_items(self, reference: str, translation: str = "kjv") -> List[VerseItem]:
         try:
+            print("FETCH SCRIPTURE REF:", reference)
             url = f"{BIBLE_API_BASE}/{requests.utils.quote(reference)}"
 
             response = requests.get(
@@ -603,8 +622,10 @@ class QueryService:
 
         verse_items: List[VerseItem] = []
         explicit_scripture = self._is_explicit_verse(question)
+        print("EXPLICIT VALUE:", explicit_scripture, "| QUESTION:", question)
 
         if explicit_scripture:
+            print("EXPLICIT SCRIPTURE PATH:", question)
             topics = self._extract_topics(question)
 
             for topic in topics:
