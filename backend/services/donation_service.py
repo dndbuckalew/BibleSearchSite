@@ -10,10 +10,12 @@ from backend.models.donation_models import (
     QRPayload,
 )
 from backend.repositories.donation_repository import DonationRepository
+from backend.services.donation_receipt_service import DonationReceiptService
 
 class DonationService:
     def __init__(self) -> None:
         self.repository = DonationRepository()
+        self.receipt_service = DonationReceiptService()
 
     def create_donation(self, request: DonationRequest) -> DonationResponse:
         transaction_id = f"don_{uuid4().hex[:12]}"
@@ -30,8 +32,10 @@ class DonationService:
             transaction_id=transaction_id,
             status=DonationStatus.QR_READY,
             qr_payload=qr_payload,
-            receipt_eligible=bool(request.wants_receipt and request.donor_email),
+            receipt_eligible=self.receipt_service.evaluate(
+                transaction_id=transaction_id,
+                donor_email=request.donor_email if request.wants_receipt else None,
+            ).receipt_eligible,
         )
 
         return self.repository.save(donation)
-        
