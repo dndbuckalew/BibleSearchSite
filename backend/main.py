@@ -16,6 +16,7 @@ from backend.api.results import router as results_router
 # Other feature routers
 from backend.routes.persona_routes import router as persona_router
 from backend.routes.flipped_routes import router as flipped_router
+from backend.routes.donation_routes import router as donation_router
 
 # ------------------------------------------------------------------
 # API OPENAI
@@ -83,6 +84,8 @@ app.include_router(
     prefix="/api/flipped",
     tags=["Flipped Interaction"],
 )
+
+app.include_router(donation_router)
 
 # ------------------------------------------------------------------
 # Health check
