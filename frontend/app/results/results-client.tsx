@@ -4,6 +4,7 @@
 
 import { useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import DonationPrompt from "../components/donation/DonationPrompt";
 
 /**
  * Phase 9.7 — Results is render-only:
@@ -264,7 +265,8 @@ export default function ResultsClient() {
   </Section>
 )}
 */}
-      <button
+
+          <button
         onClick={() => router.push("/")}
         className="mt-6 rounded border px-4 py-2"
       >
@@ -274,6 +276,8 @@ export default function ResultsClient() {
       {/* ## DEV_LOG_START */}
       {/* console.log("Results payload (render-only):", data); */}
       {/* ## DEV_LOG_END */}
+
+      <DonationPrompt />
     </section>
   );
-}
+} 
