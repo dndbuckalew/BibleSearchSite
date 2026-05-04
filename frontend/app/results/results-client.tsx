@@ -58,9 +58,11 @@ export default function ResultsClient() {
     return safeParsePayload(rawPayload);
   }, [rawPayload]);
 
+  const [donationDismissed, setDonationDismissed] = useState(false);
+
   // Optional: allow local UI dismiss of an error banner (no side effects)
   const [dismissed, setDismissed] = useState(false);
-
+ 
   if (!parsed.ok) {
     return (
       <section className="space-y-6">
@@ -277,7 +279,9 @@ export default function ResultsClient() {
       {/* console.log("Results payload (render-only):", data); */}
       {/* ## DEV_LOG_END */}
 
-      <DonationPrompt />
+    {!donationDismissed && (
+      <DonationPrompt onDismiss={() => setDonationDismissed(true)} />
+    )}  
     </section>
   );
 } 

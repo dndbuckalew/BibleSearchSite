@@ -156,8 +156,6 @@ export default function WhyPage() {
           </div>
         )}
 
-        {queryCount >= 4 && <DonationPrompt queryCount={queryCount} />}
-
         <div className="flex justify-end pt-2">
           <button
             type="submit"
