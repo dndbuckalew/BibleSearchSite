@@ -30,6 +30,16 @@ class DonationService:
     def create_donation(self, request: DonationRequest) -> DonationResponse:
         transaction_id = f"don_{uuid4().hex[:12]}"
         expires_at = datetime.now(UTC) + timedelta(minutes=30)
+        stripe_key = os.getenv("STRIPE_SECRET_KEY", "")
+
+        is_local = "localhost" in os.getenv("STRIPE_SUCCESS_URL", "")
+
+        if is_local and not stripe_key.startswith("sk_test_"):
+            raise ValueError("Local environment must use Stripe test key.")
+
+        if not is_local and not stripe_key.startswith("sk_live_"):
+            raise ValueError("Production environment must use Stripe live key.")
+            
         session = stripe.checkout.Session.create(
             payment_method_types=["card"],
             mode="payment",
