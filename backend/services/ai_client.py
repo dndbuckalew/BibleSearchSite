@@ -14,7 +14,6 @@ from openai import OpenAI
 # Initialize OpenAI client (clean, no custom transport)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-
 def call_ai_model(prompt: str) -> str:
     """
     Calls OpenAI to generate meaning from Scripture.

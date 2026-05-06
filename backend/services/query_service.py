@@ -607,7 +607,8 @@ class QueryService:
             high_conf_threshold=FEATURE_FLAGS.get("CRISIS_HIGH_CONF_THRESHOLD", 0.33),
         )
 
-        if escalation_level in ("hard_stop", "redirect_support"):
+        # 🔒 Guard: Only escalate if no valid scripture was resolved
+        if escalation_level in ("hard_stop", "redirect_support") and not verse_items:
             escalation_payload = get_escalation_message(escalation_level)
 
             return QueryResponse(
