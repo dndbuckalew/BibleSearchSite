@@ -55,8 +55,6 @@ def call_ai_model(prompt: str) -> str:
 
         content = response.choices[0].message.content.strip()
 
-        print("OPENAI RESPONSE:", content)
-
         return content
 
     except Exception as e:

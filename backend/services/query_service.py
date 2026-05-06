@@ -65,6 +65,8 @@ from backend.services.reflection_service import ReflectionService
 
 summary_builder = SummaryExpressionBuilder()
 
+from backend.core.vocabulary.nql_scripture_vocabulary import resolve_scripture_with_llm
+
 # --------------------------------------------------------------
 # Phase 9.1F — Reflection Service Initialization
 # --------------------------------------------------------------
@@ -86,7 +88,6 @@ class QueryService:
     # Explicit Scripture Detection
     # --------------------------------------------------------------
     def _is_explicit_verse(self, question: str) -> bool:
-        print("CHECK EXPLICIT:", question)
         q = question.strip()
 
         # Standard verse / range: John 3:16 / John 3:16-18
@@ -219,7 +220,6 @@ class QueryService:
     # --------------------------------------------------------------
     def fetch_scripture_items(self, reference: str, translation: str = "kjv") -> List[VerseItem]:
         try:
-            print("FETCH SCRIPTURE REF:", reference)
             url = f"{BIBLE_API_BASE}/{requests.utils.quote(reference)}"
 
             response = requests.get(
@@ -584,12 +584,13 @@ class QueryService:
         if isinstance(req, dict):
             req = QueryRequest(**req)
 
-        print("🔥 NEW QUERY SERVICE VERSION ACTIVE 🔥")
-
         want_commentary: bool = bool(getattr(req, "want_commentary", False))
 
         question = (req.question or "").strip()
+        
+        verse_items: List[VerseItem] = []
 
+        explicit_scripture = self._is_explicit_verse(question)
         if len(question) < 3:
             raise HTTPException(
                 status_code=400,
@@ -607,7 +608,7 @@ class QueryService:
             high_conf_threshold=FEATURE_FLAGS.get("CRISIS_HIGH_CONF_THRESHOLD", 0.33),
         )
 
-        # 🔒 Guard: Only escalate if no valid scripture was resolved
+        # 🔒 Crisis guard — do not block valid scripture queries
         if escalation_level in ("hard_stop", "redirect_support") and not verse_items:
             escalation_payload = get_escalation_message(escalation_level)
 
@@ -621,12 +622,7 @@ class QueryService:
                 escalation_level=escalation_level,
             )
 
-        verse_items: List[VerseItem] = []
-        explicit_scripture = self._is_explicit_verse(question)
-        print("EXPLICIT VALUE:", explicit_scripture, "| QUESTION:", question)
-
         if explicit_scripture:
-            print("EXPLICIT SCRIPTURE PATH:", question)
             topics = self._extract_topics(question)
 
             for topic in topics:
@@ -636,10 +632,6 @@ class QueryService:
         
         else:
             query_for_resolution = question
-
-            print("DEBUG QUERY:", query_for_resolution)
-
-            from backend.core.vocabulary.nql_scripture_vocabulary import resolve_scripture_with_llm
 
             # Phase 10B — LLM direct scripture resolution
             refs = resolve_scripture_with_llm(query_for_resolution)
@@ -653,7 +645,11 @@ class QueryService:
                 if fetched:
                     verse_items.extend(fetched)
 
+        # 🔄 Override explicit detection based on actual resolution
+        explicit_scripture = len(verse_items) > 0
+        
         if not verse_items:
+            
             raise HTTPException(
                 status_code=422,
                 detail="I want to make sure I reflect what you’re really seeking. Could you share a little more about what’s behind this question?"
@@ -739,9 +735,6 @@ class QueryService:
             # ----------------------------------------------------------
             # SUMMARY MODEL V1 — BUILD FINAL SUMMARY STRING
             # ----------------------------------------------------------
-
-            print("DEBUG THEME RESULT:")
-            print("  meaning =", theme_result)
 
             core = getattr(theme_result, "central_conclusion", "") or ""
             expansion = getattr(theme_result, "supporting_movements", []) or []

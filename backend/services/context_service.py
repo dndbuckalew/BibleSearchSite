@@ -11,10 +11,7 @@ from backend.services.ai_client import call_ai_model # adjust if needed
 BIBLE_CHAPTER_METADATA = {}
 
 def generate_free_context(verses: List[VerseItem]) -> Optional[str]:
-    """
-    Public Context entry point (Context 3.2.1)
-    Routes to Local or Dynamic Context based on scope.
-    """
+    
     if not verses:
         return None
 
@@ -22,7 +19,6 @@ def generate_free_context(verses: List[VerseItem]) -> Optional[str]:
         return generate_dynamic_context(verses)
 
     return generate_local_context(verses)
-
 
 def is_broad_scope(verses: List[VerseItem]) -> bool:
     """
@@ -54,18 +50,10 @@ def generate_local_context(verses: List[VerseItem]) -> Optional[str]:
         except Exception:
             chapter = None
 
-    print("CTX DEBUG: reference =", first_verse.reference)
-    print("CTX DEBUG: book =", book, "| chapter =", chapter)
-
     scene_key = f"{book}_{chapter}" if chapter else None
     scene_context = BIBLE_CONTEXT_SCENES.get(scene_key) if scene_key else None
     chapter_context = get_chapter_context(book, chapter)
     book_context = get_book_context(book)
-
-    print("CTX DEBUG: scene_key =", scene_key)
-    print("CTX DEBUG: scene_context =", bool(scene_context))
-    print("CTX DEBUG: chapter_context =", bool(chapter_context))
-    print("CTX DEBUG: book_context =", book_context)
 
     # Layer 1 — nearest local scene
     if scene_context:
@@ -114,20 +102,29 @@ def extract_book_name(reference: str) -> str:
 
 def get_book_context(book: str) -> Optional[str]:
     """
-    Retrieve book-level orientation (Layer 3)
+    Retrieve book-level context (Layer 3)
+
+    Must ALWAYS return a minimal deterministic frame if book exists.
     """
-    data = BIBLE_BOOK_ORDER.get(book)
-    if not data:
+
+    if not book:
         return None
+
+    data = BIBLE_BOOK_ORDER.get(book)
+
+    # 🔒 Guaranteed fallback — even if metadata lookup fails
+    if not data:
+        return f"This passage comes from the book of {book}."
 
     _, testament = data
 
     if testament == "OT":
-        return f"This passage comes from {book}, within the earlier scriptural record of God’s dealings with His people."
+        return f"This passage comes from the Old Testament book of {book}, part of the earlier scriptural record of God’s dealings with His people."
     elif testament == "NT":
-        return f"This passage comes from {book}, within the New Testament witness centered on Christ and the life of the early church."
+        return f"This passage comes from the New Testament book of {book}, written to guide and address believers in their understanding and life."
 
-    return None
+    # Final safety fallback
+    return f"This passage comes from the book of {book}."
 
 def get_chapter_context(book: str, chapter: Optional[int]) -> Optional[str]:
     """
@@ -151,10 +148,8 @@ def render_context_frame(context_frame: Optional[str]) -> Optional[str]:
     Deterministic Context selects the approved contextual frame.
     LLM enriches expression WITHOUT adding meaning or interpretation.
     """
-    print("CTX DEBUG: entering render_context_frame")
-    print("CTX DEBUG: incoming frame =", context_frame)
-
-    if context_frame in None:
+    
+    if context_frame is None:
         return None
 
     prompt = f"""
