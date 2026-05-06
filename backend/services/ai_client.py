@@ -23,8 +23,6 @@ def call_ai_model(prompt: str) -> str:
     """
 
     try:
-        print("CALLING OPENAI MODEL")
-
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[

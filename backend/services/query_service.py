@@ -718,8 +718,6 @@ class QueryService:
         # ----------------------------------------------------------
 
         try:
-            print("QUERY SERVICE: BUILDING SUMMARY")
-
             theme_result = self._build_theme_interaction_result(
                 req=req,
                 question=question,
@@ -752,8 +750,6 @@ class QueryService:
                 summary_parts.append(resolution)
 
             final_summary = "\n\n".join(summary_parts).strip()
-
-            print("QUERY SERVICE: FINAL SUMMARY (V1) =", final_summary)
 
         except Exception as e:
             print("QUERY SERVICE: SUMMARY BUILD FAILED =", str(e))

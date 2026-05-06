@@ -68,8 +68,6 @@ def build_meaning(passage_text, motifs, relationships, user_question: str = ""):
     try:
         ai_response = call_ai_model(prompt)
 
-        print("MEANING ENGINE RAW RESPONSE:", ai_response)
-
         parsed = _parse_ai_response(ai_response)
 
         if _is_valid_meaning(parsed):

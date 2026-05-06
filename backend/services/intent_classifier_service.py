@@ -35,7 +35,6 @@ def classify_intent(question: str) -> str:
 
     try:
         response = call_ai_model(prompt)
-        print("INTENT CLASSIFIER RESPONSE:", response)
 
         # Simple safe parsing (temporary)
         for intent in ALLOWED_INTENTS:

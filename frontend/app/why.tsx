@@ -21,10 +21,11 @@ export default function WhyPage() {
   }
 }, []);
   const router = useRouter();
-
   const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [loadingMessage, setLoadingMessage] = useState('');
+  const [isFinalStage, setIsFinalStage] = useState(false);
 
   // 🔒 Canonical source of truth for submitted input
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -36,6 +37,24 @@ export default function WhyPage() {
     if (!trimmed) return;
 
     setLoading(true);
+    setLoadingMessage(
+      'Searching Scripture and preparing your response...'
+    );
+
+    setTimeout(() => {
+      setLoadingMessage(
+        'Looking at surrounding passages and deeper context...'
+      );
+    }, 5000);
+
+    setTimeout(() => {
+      setLoadingMessage(
+        'Building reflection and preparing insight from the passages found'
+      );
+
+      setIsFinalStage(true);
+    }, 12500);
+
     setMessage(null);
 
     try {
@@ -106,11 +125,19 @@ export default function WhyPage() {
       // --------------------------------------------------
       // Normal Success Path
       // --------------------------------------------------
-      router.push(
-        `/results?payload=${encodeURIComponent(
-          JSON.stringify(responseBody)
-        )}`
+      
+      setLoadingMessage(
+        'Preparing your response for display...'
       );
+
+      setTimeout(() => {
+        router.push(
+          `/results?payload=${encodeURIComponent(
+            JSON.stringify(responseBody)
+          )}`
+        );
+      }, 250);
+
     } catch (err: any) {
       // Network-level failure only
       setMessage(
@@ -152,6 +179,17 @@ export default function WhyPage() {
               You can clarify your question by adding more detail to your initial
               question, then clicking{' '}
               <span className="font-medium">Reflect →</span> again.
+            </p>
+          </div>
+        )}
+
+        {loading && loadingMessage && (
+          <div className="rounded-md border border-neutral-200 bg-neutral-50 px-3 py-2">
+            <p className="text-sm text-neutral-700 italic">
+              {loadingMessage}
+              {isFinalStage && (
+                <span className="inline-block animate-pulse">...</span>
+              )}
             </p>
           </div>
         )}

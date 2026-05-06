@@ -54,8 +54,6 @@ class SummaryExpressionBuilder:
         Public entry point for generating the summary.
         """
 
-        print("SUMMARY BUILDER HIT")  # DEBUG LINE
-
         anchor = self._clean_fragment(result.central_conclusion)
 
         primary = self._detect_primary_movement(result)
