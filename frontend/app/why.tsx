@@ -149,17 +149,35 @@ export default function WhyPage() {
   };
 
   return (
-    <section className="space-y-10 max-w-2xl">
-      <h2 className="text-2xl font-semibold">Scripture & Reflection</h2>
+    <section className="space-y-10 max-w-2xl pl-4">
+      <h2 className="text-2xl font-semibold">
+        Explore Scripture & Understanding
+      </h2>
 
-      <p className="italic text-neutral-600">
-        This space is designed to explore the deeper “why” behind Scripture —
-        reflection, meaning, and personal understanding.
-      </p>
+      <div className="space-y-5 text-neutral-700">
+        <p>
+          BTA allows Christians, missionaries, and spiritually searching individuals
+          to explore Scripture in multiple ways — whether entering a Bible verse,
+          exploring an entire chapter, asking questions naturally, searching by topic
+          or emotion, or seeking deeper understanding behind God’s Word.
+        </p>
+
+        <p className="text-sm text-neutral-500 py-2">
+          Examples: John 3:16, Psalm 23, Romans 8:28–39,
+          “What does God say about fear?”, “I feel anxious and need peace.”
+        </p>
+
+        <p className="text-neutral-700">
+          Unlike traditional Bible search apps or concordances, BTA helps people
+          move beyond isolated verse searching into thoughtful understanding,
+          connected meaning, reflection, and the deeper “why” behind Scripture
+          while keeping God’s Word central to the experience.
+        </p>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <label className="block text-sm text-neutral-700">
-          What are you reflecting on?
+          What would you like to explore in Scripture?
         </label>
 
         <input
@@ -168,7 +186,7 @@ export default function WhyPage() {
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="e.g., Genesis 1:1, hope in suffering, why faith matters"
-          className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400"
+          className="w-full rounded-md border border-neutral-400 px-4 py-3 text-base text-neutral-900 bg-white shadow-sm placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-300"
           disabled={loading}
         />
 
@@ -194,16 +212,27 @@ export default function WhyPage() {
           </div>
         )}
 
-        <div className="flex justify-end pt-2">
+        <div className="flex justify-center pt-4">
           <button
             type="submit"
             disabled={loading}
-            className="rounded-md border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-800 bg-neutral-50 hover:bg-neutral-100 disabled:opacity-50"
+            style={{
+              border: "1px solid #a3a3a3",
+              borderRadius: "8px",
+              padding: "12px 24px",
+              backgroundColor: "#ffffff",
+              color: "#262626",
+              fontSize: "14px",
+              fontWeight: 500,
+              cursor: "pointer",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.08)",
+            }}
           >
-            {loading ? 'Reflecting…' : 'Reflect →'}
+            {loading ? "Exploring Scripture..." : "Explore Scripture"}
           </button>
         </div>
       </form>
     </section>
   );
 }
+

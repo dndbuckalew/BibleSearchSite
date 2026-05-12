@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Bible Therapy Assistant (BTA) — Version 2",
+  title: "Bible Therapy Assistant (BTA) — Version 3.1.2",
   description:
-    "A reflective Bible study assistant designed to support understanding, context, and personal reflection in Scripture.",
+    "A Scripture-centered, AI-assisted experience designed to help Christians, missionaries, and seekers engage God’s Word through deeper understanding, reflection, connected meaning, and the 'why' behind Scripture while keeping God’s Word central to the journey of spiritual understanding.",
 };
 
 export default function RootLayout({
@@ -28,9 +28,21 @@ export default function RootLayout({
             <h1 className="text-2xl font-semibold">
               Bible Therapy Assistant
             </h1>
-            <p className="text-sm text-neutral-600 mt-1">
-              Exploring Scripture through context, understanding, and reflection
-            </p>
+
+            <div className="mt-2 space-y-2">
+              <p className="text-sm text-neutral-700">
+                Helping Christians, missionaries, and spiritually searching individuals
+                engage Scripture through deeper understanding, reflection, and the
+                meaningful “why” behind God’s Word.
+              </p>
+
+              <p className="text-sm text-neutral-600">
+                Unlike traditional Bible search apps or concordances, BTA uses carefully
+                guided AI assistance to help people explore Scripture through connected
+                meaning, continuity, and thoughtful reflection while keeping God’s Word
+                at the center of the experience.
+              </p>
+            </div>
           </div>
         </header>
 

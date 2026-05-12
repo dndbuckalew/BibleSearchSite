@@ -26,7 +26,7 @@ export default function LoginPage() {
       <h2 className="text-2xl font-semibold">Version 2 Access</h2>
 
       <div className="text-sm text-neutral-600">
-        This system is in limited Version 2. Please enter your invitation credentials.
+        This system is in limited Version 2.1.2. Please enter your invitation credentials.
       </div>
 
       <div className="space-y-4">
@@ -52,7 +52,7 @@ export default function LoginPage() {
 
         <button
           onClick={handleLogin}
-          className="w-full rounded-md border border-neutral-300 bg-neutral-50 px-4 py-2 text-sm font-medium hover:bg-neutral-100"
+          className="w-full rounded-md border border-neutral-400 bg-neutral-50 px-4 py-3 text-sm font-medium hover:bg-neutral-100"
         >
           Enter
         </button>
