@@ -10,8 +10,46 @@ from backend.services.ai_client import call_ai_model # adjust if needed
 # Reserved for progressive widening (Part 1, Layer 2).
 BIBLE_CHAPTER_METADATA = {}
 
+def is_broad_scope(verses: List[VerseItem]) -> bool:
+    """
+    Scope router for Context.
+
+    Broad scope is detected when the resolved passage set contains
+    multiple distinct books or multiple distinct chapters.
+
+    This prevents NQL / multi-passage results from anchoring
+    only to the first resolved verse.
+    """
+
+    if not verses or len(verses) <= 1:
+        return False
+
+    books = set()
+    chapters = set()
+
+    for verse in verses:
+        reference = verse.reference or ""
+        book = extract_book_name(reference)
+
+        chapter = verse.chapter
+
+        if not chapter and reference:
+            try:
+                left_side = reference.split(":")[0]
+                chapter = int(left_side.split()[-1])
+            except Exception:
+                chapter = None
+
+        if book:
+            books.add(book)
+
+        if chapter:
+            chapters.add((book, chapter))
+
+    return len(books) > 1 or len(chapters) > 1
+
 def generate_free_context(verses: List[VerseItem]) -> Optional[str]:
-    
+
     if not verses:
         return None
 
@@ -22,11 +60,41 @@ def generate_free_context(verses: List[VerseItem]) -> Optional[str]:
 
 def is_broad_scope(verses: List[VerseItem]) -> bool:
     """
-    Scope router (Part 1 scaffold)
-    Part 1 remains Local-only in this phase.
-    """
-    return False
+    Scope router for Context.
 
+    Broad scope is detected when the resolved passage set contains
+    multiple distinct books or multiple distinct chapters.
+
+    This prevents NQL / multi-passage results from anchoring
+    only to the first resolved verse.
+    """
+
+    if not verses or len(verses) <= 1:
+        return False
+
+    books = set()
+    chapters = set()
+
+    for verse in verses:
+        reference = verse.reference or ""
+        book = extract_book_name(reference)
+
+        chapter = verse.chapter
+
+        if not chapter and reference:
+            try:
+                left_side = reference.split(":")[0]
+                chapter = int(left_side.split()[-1])
+            except Exception:
+                chapter = None
+
+        if book:
+            books.add(book)
+
+        if chapter:
+            chapters.add((book, chapter))
+
+    return len(books) > 1 or len(chapters) > 1
 
 def generate_local_context(verses: List[VerseItem]) -> Optional[str]:
     """
@@ -72,10 +140,52 @@ def generate_local_context(verses: List[VerseItem]) -> Optional[str]:
 
 def generate_dynamic_context(verses: List[VerseItem]) -> Optional[str]:
     """
-    Dynamic Context (Part 2 scaffold)
-    Broad-scope logic is introduced in Part 2.
+    Broad-scope Context fallback.
+
+    Used when multiple books or contextual environments
+    participate within the resolved passage set.
+
+    This remains deterministic, bounded, and non-interpretive.
     """
-    return None
+
+    if not verses:
+        return None
+
+    books = []
+    seen = set()
+
+    for verse in verses:
+        book = extract_book_name(verse.reference or "")
+
+        if book and book not in seen:
+            books.append(book)
+            seen.add(book)
+
+    if not books:
+        return None
+
+    if len(books) == 1:
+        context_frame = (
+            f"This passage draws from multiple portions of the book of "
+            f"{books[0]}, reflecting related Scriptural continuity "
+            f"within that surrounding context."
+        )
+    elif len(books) == 2:
+        context_frame = (
+            f"These passages draw from both {books[0]} and {books[1]}, "
+            f"bringing together related Scriptural moments that "
+            f"participate within a broader continuity of Scripture."
+        )
+    else:
+        joined = ", ".join(books[:-1]) + f", and {books[-1]}"
+
+        context_frame = (
+            f"These passages draw from multiple areas of Scripture "
+            f"including {joined}, bringing together related Scriptural "
+            f"contexts surrounding the subject being explored."
+        )
+
+    return render_context_frame(context_frame)
 
 
 # ------------------------------------------------------------
