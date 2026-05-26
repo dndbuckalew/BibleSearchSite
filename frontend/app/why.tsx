@@ -168,7 +168,7 @@ export default function WhyPage() {
         </p>
 
         <p className="text-neutral-700">
-          Unlike traditional Bible search apps or concordances, BTA helps people
+          In contrast to traditional Bible search apps or concordances, BTA helps people
           move beyond isolated verse searching into thoughtful understanding,
           connected meaning, reflection, and the deeper “why” behind Scripture
           while keeping God’s Word central to the experience.
