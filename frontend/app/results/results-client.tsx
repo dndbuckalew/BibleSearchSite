@@ -192,30 +192,6 @@ export default function ResultsClient() {
         )}
       </Section>
 
-      {/* --------------------------------------------------------------
-   Phase 9.1F — Context Hidden (Deferred)
--------------------------------------------------------------- */}
-{/*
-<Section
-  title="Context"
-  blurb="Context is a short, set-level explanation to help you understand the verses without turning this into a concordance."
->
-  {context ? (
-  <div className="whitespace-pre-line">{context}</div>
-
-  ) : (
-    <EmptyText text="Context is not available for this result." />
-  )}
-
-  <button
-    type="button"
-    disabled
-    className="mt-3 rounded-md border border-neutral-200 px-4 py-2 text-sm text-neutral-500 bg-neutral-50 cursor-not-allowed"
-  >
-    Expanded context available in future releases
-  </button>
-</Section>
-*/}
 
       {/* 3) Summary */}
       <Section
@@ -227,12 +203,24 @@ export default function ResultsClient() {
         ) : (
           <EmptyText text="Summary is not available for this result." />
         )}
+      
+      </Section>
+      
+      {/* --------------------------------------------------------------
+   Phase 2.0 — Context Independent Render Domain
+   Context restored as an independent presentation domain.
+   QueryService orchestration unchanged.
+   Context generation unchanged.
+-------------------------------------------------------------- */}
 
-        {context && (
-          <>
-            <h4 className="mt-6 font-semibold">Context</h4>
-            <div className="whitespace-pre-line mt-2">{context}</div>
-          </>
+      <Section
+        title="Context"
+        blurb="Context is a short, set-level explanation to help you understand the verses without turning this into a concordance."
+      >
+        {context ? (
+          <div className="whitespace-pre-line">{context}</div>
+        ) : (
+          <EmptyText text="Context is not available for this result." />
         )}
 
       </Section>
