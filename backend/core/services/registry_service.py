@@ -2,7 +2,7 @@
 # Purpose:
 # Centralized governance registry access layer for BTA Version 4.
 #
-# Responsibilities (future):
+# Responsibilities:
 # - translation registry resolution
 # - license registry validation
 # - source registry validation
@@ -15,10 +15,15 @@
 # - NOT retrieval orchestration
 # - NOT presentation coordination
 
+
+from backend.core.config.mongo_config import MongoConfig
+
+
 class RegistryService:
     """
-    Placeholder governance registry service for Version 4 expansion.
+    Governance-only registry infrastructure service.
     """
-    
-    pass
-    
+
+    def __init__(self):
+        self.db = MongoConfig.get_database()
+        self.translation_registry = self.db["translation_registry"]
