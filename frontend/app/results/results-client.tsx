@@ -200,11 +200,20 @@ export default function ResultsClient() {
         blurb="A brief summary of the theme or idea these verses are pointing to."
       >
         {summary ? (
-          <div className="whitespace-pre-line">{summary}</div>
-        ) : (
-          <EmptyText text="Summary is not available for this result." />
-        )}
-      
+          <ExpandableSection
+            preview={
+            <div className="whitespace-pre-line">
+              {summary}
+            </div>
+          }
+          expanded={
+            <div />
+          }
+        />
+      ) : (
+        <EmptyText text="Summary is not available for this result." />
+      )}
+     
       </Section>
       
       {/* --------------------------------------------------------------
@@ -239,12 +248,22 @@ export default function ResultsClient() {
       <Section
         title="Reflection"
         blurb="A gentle prompt to help you reflect on what this means personally."
-      >
+      >        
         {reflection ? (
-          <div className="whitespace-pre-line">{reflection}</div>
-        ) : (
-          <EmptyText text="Reflection is not available for this result." />
-        )}
+          <ExpandableSection
+            preview={
+          <div className="whitespace-pre-line">
+            {reflection}
+          </div>
+        }
+        expanded={
+          <div />
+        }
+      />
+    ) : (
+      <EmptyText text="Reflection is not available for this result." />
+    )}
+
       </Section>
 
 {/* --------------------------------------------------------------
