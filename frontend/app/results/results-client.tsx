@@ -5,6 +5,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import DonationPrompt from "../components/donation/DonationPrompt";
+import ExpandableSection from "../components/ExpandableSection";
 
 /**
  * Phase 9.7 — Results is render-only:
@@ -217,11 +218,20 @@ export default function ResultsClient() {
         title="Context"
         blurb="Context is a short, set-level explanation to help you understand the verses without turning this into a concordance."
       >
-        {context ? (
-          <div className="whitespace-pre-line">{context}</div>
-        ) : (
-          <EmptyText text="Context is not available for this result." />
-        )}
+       {context ? (
+        <ExpandableSection
+          preview={
+            <div className="whitespace-pre-line">
+              {context}
+            </div>
+          }
+          expanded={
+            <div />
+          }
+        />
+      ) : (
+        <EmptyText text="Context is not available for this result." />
+      )}
 
       </Section>
 
