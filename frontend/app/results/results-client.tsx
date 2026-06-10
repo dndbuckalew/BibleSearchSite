@@ -28,6 +28,7 @@ interface VerseItem {
 type QueryResponse = {
   verses?: VerseItem[];
   context?: string | null;
+  context_exploration?: string | null;
   summary?: string | null;
   reflection?: string | null;
   commentary?: string | null;
@@ -110,6 +111,7 @@ export default function ResultsClient() {
   const verses: VerseItem[] = Array.isArray(data.verses) ? data.verses : [];
   const summary = data.summary ?? null;
   const context = data.context ?? null;
+  const contextExploration = data.context_exploration ?? null;
   const reflection = data.reflection ?? null;
   const commentary = data.commentary ?? null;
   const wantCommentary = Boolean(data.want_commentary);

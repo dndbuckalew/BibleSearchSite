@@ -34,6 +34,7 @@ class QueryResponse(BaseModel):
 
     commentary: Optional[str] = None
     context: Optional[str] = None
+    context_exploration: Optional[str] = None
     reflection: Optional[str] = None
 
     # Phase 9.1A — Intent Echo (Render Gating Support)
@@ -42,7 +43,6 @@ class QueryResponse(BaseModel):
 
     # Phase 9.8B.5 — Escalation Flag (Structural Only)
     escalation_level: Optional[str] = None
-
 
 # ------------------------------------------------------------
 # Results Request Wrapper (WHAT execution endpoint)

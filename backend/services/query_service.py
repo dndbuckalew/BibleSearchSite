@@ -768,11 +768,13 @@ class QueryService:
         # Phase 1 — Free Context Build (Safe Additive Layer)
         # --------------------------------------------------------------
         context = generate_free_context(verse_items)
+        context_exploration = None
 
         return QueryResponse(
             verses=verse_items,
             summary=final_summary,
             context=context,
+            context_exploration=context_exploration,
             reflection=reflection,
             commentary=commentary_text,
             want_commentary=want_commentary,
