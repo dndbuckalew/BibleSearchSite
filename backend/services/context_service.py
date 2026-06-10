@@ -5,48 +5,17 @@ from backend.core.bible_metadata import BIBLE_BOOK_ORDER
 from backend.core.bible_context_scenes import BIBLE_CONTEXT_SCENES
 from backend.services.ai_client import call_ai_model # adjust if needed
 
+from backend.services.dynamic_context_service import (
+    is_broad_scope,
+    generate_dynamic_context,
+)
+from backend.core.context_theme_registry import CONTEXT_THEME_REGISTRY
+
 # Phase 3.2.1:
 # Chapter-level orientation layer not yet populated.
 # Reserved for progressive widening (Part 1, Layer 2).
 BIBLE_CHAPTER_METADATA = {}
 
-def is_broad_scope(verses: List[VerseItem]) -> bool:
-    """
-    Scope router for Context.
-
-    Broad scope is detected when the resolved passage set contains
-    multiple distinct books or multiple distinct chapters.
-
-    This prevents NQL / multi-passage results from anchoring
-    only to the first resolved verse.
-    """
-
-    if not verses or len(verses) <= 1:
-        return False
-
-    books = set()
-    chapters = set()
-
-    for verse in verses:
-        reference = verse.reference or ""
-        book = extract_book_name(reference)
-
-        chapter = verse.chapter
-
-        if not chapter and reference:
-            try:
-                left_side = reference.split(":")[0]
-                chapter = int(left_side.split()[-1])
-            except Exception:
-                chapter = None
-
-        if book:
-            books.add(book)
-
-        if chapter:
-            chapters.add((book, chapter))
-
-    return len(books) > 1 or len(chapters) > 1
 
 def generate_free_context(verses: List[VerseItem]) -> Optional[str]:
 
@@ -58,43 +27,6 @@ def generate_free_context(verses: List[VerseItem]) -> Optional[str]:
 
     return generate_local_context(verses)
 
-def is_broad_scope(verses: List[VerseItem]) -> bool:
-    """
-    Scope router for Context.
-
-    Broad scope is detected when the resolved passage set contains
-    multiple distinct books or multiple distinct chapters.
-
-    This prevents NQL / multi-passage results from anchoring
-    only to the first resolved verse.
-    """
-
-    if not verses or len(verses) <= 1:
-        return False
-
-    books = set()
-    chapters = set()
-
-    for verse in verses:
-        reference = verse.reference or ""
-        book = extract_book_name(reference)
-
-        chapter = verse.chapter
-
-        if not chapter and reference:
-            try:
-                left_side = reference.split(":")[0]
-                chapter = int(left_side.split()[-1])
-            except Exception:
-                chapter = None
-
-        if book:
-            books.add(book)
-
-        if chapter:
-            chapters.add((book, chapter))
-
-    return len(books) > 1 or len(chapters) > 1
 
 def generate_local_context(verses: List[VerseItem]) -> Optional[str]:
     """
@@ -181,13 +113,18 @@ def generate_dynamic_context(verses: List[VerseItem]) -> Optional[str]:
 
         context_frame = (
             f"These passages draw from multiple areas of Scripture "
-            f"including {joined}, bringing together related Scriptural "
-            f"contexts surrounding the subject being explored."
+            f"including {joined}. Together they provide a broader "
+            f"context for understanding why this subject appears "
+            f"throughout Scripture."
         )
 
-    return render_context_frame(context_frame)
+    rendered_context = render_context_frame(context_frame)
 
+    if not rendered_context:
+        return None
 
+    return rendered_context
+    
 # ------------------------------------------------------------
 # Helpers
 # ------------------------------------------------------------
@@ -250,6 +187,31 @@ def get_chapter_context(book: str, chapter: Optional[int]) -> Optional[str]:
         return None
 
     return data.get("context")
+
+def get_participating_context_themes() -> str:
+    """
+    Phase 2.2
+
+    Temporary registry-driven participating
+    context theme list.
+
+    Future:
+    PostgreSQL Context Theme Registry
+    """
+
+    themes = [
+        theme["theme_name"]
+        for theme in CONTEXT_THEME_REGISTRY
+        if theme.get("enabled")
+    ]
+
+    if not themes:
+        return ""
+
+    return (
+        "\n\nParticipating Context Themes:\n"
+        + "\n".join(f"• {theme}" for theme in themes)
+    )
 
 def render_context_frame(context_frame: Optional[str]) -> Optional[str]:
     """
