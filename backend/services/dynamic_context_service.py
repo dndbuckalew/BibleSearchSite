@@ -2,6 +2,9 @@ from typing import List, Optional
 
 from backend.models.query_models import VerseItem
 from backend.core.context_theme_registry import CONTEXT_THEME_REGISTRY
+from backend.services.context_rendering_service import (
+    render_context_frame,
+)
 
 
 def is_broad_scope(verses: List[VerseItem]) -> bool:
@@ -42,7 +45,6 @@ def is_broad_scope(verses: List[VerseItem]) -> bool:
 
     return len(books) > 1 or len(chapters) > 1
 
-
 def generate_dynamic_context(
     verses: List[VerseItem]
 ) -> Optional[str]:
@@ -57,8 +59,50 @@ def generate_dynamic_context(
     - Explore Further
     """
 
-    return None
+    if not verses:
+        return None
 
+    books = []
+    seen = set()
+
+    for verse in verses:
+        book = extract_book_name(verse.reference or "")
+
+        if book and book not in seen:
+            books.append(book)
+            seen.add(book)
+
+    if not books:
+        return None
+
+    if len(books) == 1:
+        context_frame = (
+            f"This passage draws from multiple portions of the book of "
+            f"{books[0]}, reflecting related Scriptural continuity "
+            f"within that surrounding context."
+        )
+    elif len(books) == 2:
+        context_frame = (
+            f"These passages draw from both {books[0]} and {books[1]}, "
+            f"bringing together related Scriptural moments that "
+            f"participate within a broader continuity of Scripture."
+        )
+    else:
+        joined = ", ".join(books[:-1]) + f", and {books[-1]}"
+
+        context_frame = (
+            f"These passages draw from multiple areas of Scripture "
+            f"including {joined}. Together they provide a broader "
+            f"context for understanding why this subject appears "
+            f"throughout Scripture."
+        )
+
+    rendered_context = render_context_frame(context_frame)
+
+    if not rendered_context:
+        return None
+
+    return rendered_context
 
 def get_participating_context_themes() -> str:
     """
