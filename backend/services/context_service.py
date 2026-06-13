@@ -3,8 +3,9 @@ from backend.models.query_models import VerseItem
 
 from backend.core.bible_metadata import BIBLE_BOOK_ORDER
 from backend.core.bible_context_scenes import BIBLE_CONTEXT_SCENES
-from backend.services.ai_client import call_ai_model # adjust if needed
-
+from backend.services.context_rendering_service import (
+    render_context_frame,
+)
 from backend.services.dynamic_context_service import (
     is_broad_scope,
     generate_dynamic_context,
@@ -212,50 +213,6 @@ def get_participating_context_themes() -> str:
         "\n\nParticipating Context Themes:\n"
         + "\n".join(f"• {theme}" for theme in themes)
     )
-
-def render_context_frame(context_frame: Optional[str]) -> Optional[str]:
-    """
-    Hybrid rendering boundary (Part 1)
-
-    Deterministic Context selects the approved contextual frame.
-    LLM enriches expression WITHOUT adding meaning or interpretation.
-    """
-    
-    if context_frame is None:
-        return None
-
-    prompt = f"""
-You are rendering CONTEXT for a Bible passage.
-
-Your role is ONLY to improve how the context is expressed so the reader can better understand what is happening in the surrounding moment.
-
-STRICT RULES:
-- Do NOT explain meaning
-- Do NOT interpret doctrine
-- Do NOT teach or instruct
-- Do NOT analyze the passage
-- Do NOT expand beyond what is already described
-- Do NOT introduce historical reconstruction or external facts
-
-You may:
-- Clarify what is happening
-- Improve readability
-- Make the scene more natural and understandable
-- Slightly rephrase for better flow
-
-Focus only on:
-"What is happening here and what surrounding situation helps explain it?"
-
-Context Frame:
-{context_frame}
-
-Return ONLY the improved contextual description.
-"""
-    try:
-        result = call_ai_model(prompt)
-        return result.strip() if result else context_frame
-    except Exception:
-        return context_frame
 
 def get_generic_fallback(book: str) -> Optional[str]:
     """
