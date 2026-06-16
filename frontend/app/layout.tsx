@@ -65,7 +65,7 @@ export default function RootLayout({
               suggestions? Contact us at{" "}
               <a
                 href="mailto:info@bibleta.com"
-                className="text-lg font-semibold underline text-blue-600 underline hover:text-blue-800"
+                className="text-lg font-semibold underline text-blue-600 hover:text-blue-800"
               >
                 info@bibleta.com
               </a>

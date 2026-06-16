@@ -28,6 +28,10 @@ from backend.core.commentary_registry import get_commentator
 # Context Layer (Phase 1 — Free Context)
 from backend.services.context_service import generate_free_context
 
+from backend.services.context_exploration_service import (
+    generate_context_exploration,
+)
+
 # Phase 9.1D.2 Reflection Engine
 from backend.services.reflection_engine import generate_reflection
 
@@ -768,7 +772,12 @@ class QueryService:
         # Phase 1 — Free Context Build (Safe Additive Layer)
         # --------------------------------------------------------------
         context = generate_free_context(verse_items)
-        context_exploration = None
+
+        context_exploration = generate_context_exploration(
+            verses=verse_items,
+            resolved_meaning=core,
+            supporting_movements=expansion,
+        )
 
         return QueryResponse(
             verses=verse_items,

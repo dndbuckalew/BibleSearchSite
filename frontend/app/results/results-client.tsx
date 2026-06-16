@@ -193,31 +193,22 @@ export default function ResultsClient() {
             )}
           </div>
         )}
+
       </Section>
-
-
-      {/* 3) Summary */}
+      
       <Section
         title="Summary"
         blurb="A brief summary of the theme or idea these verses are pointing to."
       >
         {summary ? (
-          <ExpandableSection
-            preview={
-            <div className="whitespace-pre-line">
-              {summary}
-            </div>
-          }
-          expanded={
-            <div />
-          }
-        />
-      ) : (
-        <EmptyText text="Summary is not available for this result." />
-      )}
-     
+          <div className="whitespace-pre-line">
+            {summary}
+          </div>
+        ) : (
+          <EmptyText text="Summary is not available for this result." />
+        )}
       </Section>
-      
+
       {/* --------------------------------------------------------------
    Phase 2.0 — Context Independent Render Domain
    Context restored as an independent presentation domain.
@@ -227,19 +218,25 @@ export default function ResultsClient() {
 
       <Section
         title="Context"
-        blurb="Context is a short, set-level explanation to help you understand the verses without turning this into a concordance."
+        blurb="Understanding the surrounding circumstances helps explain why these verses are being expressed in this moment."
       >
        {context ? (
-        <ExpandableSection
-          preview={
-            <div className="whitespace-pre-line">
-              {context}
+      <ExpandableSection
+        preview={
+          <div className="whitespace-pre-line">
+            {context}
+          </div>
+        }
+        expanded={
+          contextExploration ? (
+            <div className="mt-8 whitespace-pre-line">
+              {contextExploration}
             </div>
-          }
-          expanded={
+          ) : (
             <div />
-          }
-        />
+          )
+        }
+      />  
       ) : (
         <EmptyText text="Context is not available for this result." />
       )}
@@ -252,19 +249,12 @@ export default function ResultsClient() {
         blurb="A gentle prompt to help you reflect on what this means personally."
       >        
         {reflection ? (
-          <ExpandableSection
-            preview={
           <div className="whitespace-pre-line">
             {reflection}
           </div>
-        }
-        expanded={
-          <div />
-        }
-      />
-    ) : (
-      <EmptyText text="Reflection is not available for this result." />
-    )}
+        ) : (
+          <EmptyText text="Reflection is not available for this result." />
+        )}
 
       </Section>
 
