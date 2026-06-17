@@ -201,9 +201,26 @@ export default function ResultsClient() {
         blurb="A brief summary of the theme or idea these verses are pointing to."
       >
         {summary ? (
-          <div className="whitespace-pre-line">
-            {summary}
-          </div>
+          <ExpandableSection
+            preview={
+              <div className="whitespace-pre-line">
+                {summary.split("\n\n")[0]}
+              </div>
+            }
+            expanded={
+              summary.split("\n\n").length > 1 ? (
+                <div className="space-y-4">
+                  <div className="h-4" />
+
+                  <div className="whitespace-pre-line">
+                    {summary.split("\n\n").slice(1).join("\n\n")}
+                  </div>
+                </div>
+              ) : (
+                <div />
+              )
+            }
+          />
         ) : (
           <EmptyText text="Summary is not available for this result." />
         )}

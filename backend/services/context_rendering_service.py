@@ -34,6 +34,8 @@ You may:
 - Improve readability
 - Make the scene more natural and understandable
 - Slightly rephrase for better flow
+- Avoid repetitive openings such as "This passage", "These passages", "These verses", or "These texts" when a more natural introduction is possible
+- Avoid repetitive openings such as "This passage", "These passages", "These verses", "These texts", or "In these passages" when a more natural introduction is possible.
 
 Focus only on:
 "What is happening here and what surrounding situation helps explain it?"

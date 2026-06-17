@@ -79,6 +79,7 @@ Render:
 - Helper persona tone
 - Circumstances with enough detail to understand what is happening
 - People, setting, situation, tension, and relationships when supported
+- When multiple passages participate, help ground abstract experiences in the people, audiences, groups, or situations present within the Scripture set when supported by the text
 - A closing paragraph that gently brings the contextual picture together
 
 Keep it bounded:

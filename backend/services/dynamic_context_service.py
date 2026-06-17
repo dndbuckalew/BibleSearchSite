@@ -77,16 +77,18 @@ def generate_dynamic_context(
 
     if len(books) == 1:
         context_frame = (
-            f"This passage draws from multiple portions of the book of "
-            f"{books[0]}, reflecting related Scriptural continuity "
-            f"within that surrounding context."
+        f"Looking at the surrounding context within {books[0]}, "
+        f"these verses connect to related events, people, and "
+        f"circumstances found within the same book."
         )
+        
     elif len(books) == 2:
         context_frame = (
-            f"These passages draw from both {books[0]} and {books[1]}, "
-            f"bringing together related Scriptural moments that "
-            f"participate within a broader continuity of Scripture."
-        )
+        f"Taken together, the verses from {books[0]} and {books[1]} "
+        f"highlight a shared subject that appears across different "
+        f"situations within Scripture."
+    )
+    
     else:
         joined = ", ".join(books[:-1]) + f", and {books[-1]}"
 
