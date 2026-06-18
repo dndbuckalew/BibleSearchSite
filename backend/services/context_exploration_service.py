@@ -6,7 +6,6 @@ from backend.services.ai_client import call_ai_model
 
 def generate_context_exploration(
     verses: List[VerseItem],
-    resolved_meaning: str = "",
     supporting_movements: List[str] | None = None,
 ) -> str | None:
     """
@@ -26,7 +25,6 @@ def generate_context_exploration(
 
     circumstance_prompt = _build_circumstance_prompt(
         verses=verses,
-        resolved_meaning=resolved_meaning,
         supporting_movements=supporting_movements,
     )
 
@@ -45,7 +43,6 @@ def generate_context_exploration(
 
 def _build_circumstance_prompt(
     verses: List[VerseItem],
-    resolved_meaning: str,
     supporting_movements: List[str],
 ) -> str:
     verse_lines = _format_verses_for_prompt(verses)
@@ -59,7 +56,44 @@ You are rendering Dynamic Context for a Bible reader.
 
 Your role is to help the reader understand the circumstances surrounding the resolved Scripture set.
 
-Use the already-resolved meaning as an anchor.
+CONTEXT EXPLORATION AUTHORITY
+
+Context Exploration exists to deepen understanding of circumstances, not meaning.
+
+You may describe:
+- Participants
+- Audiences
+- Relationships
+- Settings
+- Circumstances
+- Situations
+- Events
+
+You must NOT:
+- Explain meaning
+- Explain significance
+- Explain doctrine
+- Explain theology
+- Explain symbolism
+- Explain transformation
+- Explain application
+- Explain lessons
+- Provide conclusions
+- Summarize the message
+
+Avoid language such as:
+- "This reveals..."
+- "This demonstrates..."
+- "This teaches..."
+- "This shows that..."
+- "This signifies..."
+- "This highlights..."
+- "This invites..."
+- "This reminds readers..."
+
+Use the resolved Scripture set only to maintain subject continuity.
+
+Do NOT use resolved meaning to explain significance, interpretation, doctrine, application, or conclusions.
 
 Do NOT create new meaning.
 Do NOT preach.
@@ -72,7 +106,7 @@ Do NOT mention architecture, themes, discovery, facts, or rendering.
 Do NOT say "these passages present" or "these passages participate."
 
 Goal:
-Help the reader picture the circumstances surrounding the Scripture.
+Help the reader picture the people, settings, relationships, and circumstances surrounding the Scripture without explaining what the passages mean.
 
 Render:
 - Natural paragraphs
@@ -80,7 +114,6 @@ Render:
 - Circumstances with enough detail to understand what is happening
 - People, setting, situation, tension, and relationships when supported
 - When multiple passages participate, help ground abstract experiences in the people, audiences, groups, or situations present within the Scripture set when supported by the text
-- A closing paragraph that gently brings the contextual picture together
 
 Keep it bounded:
 - One exploration response only
@@ -92,15 +125,17 @@ Keep it bounded:
 SCRIPTURE SET:
 {verse_lines}
 
-RESOLVED MEANING ANCHOR:
-{resolved_meaning}
-
 SUPPORTING MOVEMENTS:
 {movements}
 
-Write the Dynamic Context response now.
-"""
+Write only contextual circumstances.
 
+Do not explain meaning.
+
+Do not provide conclusions.
+
+Do not summarize themes.
+"""
 
 def _format_verses_for_prompt(
     verses: List[VerseItem],

@@ -17,34 +17,85 @@ def render_context_frame(
         return None
 
     prompt = f"""
-You are rendering CONTEXT for a Bible passage.
+    You are rendering CONTEXT for approved contextual information.
 
-Your role is ONLY to improve how the context is expressed so the reader can better understand what is happening in the surrounding moment.
+    Your role is ONLY to improve readability and clarity while preserving the contextual grounding already present in the Context Frame.
 
-STRICT RULES:
-- Do NOT explain meaning
-- Do NOT interpret doctrine
-- Do NOT teach or instruct
-- Do NOT analyze the passage
-- Do NOT expand beyond what is already described
-- Do NOT introduce historical reconstruction or external facts
+    CONTEXT AUTHORITY
 
-You may:
-- Clarify what is happening
-- Improve readability
-- Make the scene more natural and understandable
-- Slightly rephrase for better flow
-- Avoid repetitive openings such as "This passage", "These passages", "These verses", or "These texts" when a more natural introduction is possible
-- Avoid repetitive openings such as "This passage", "These passages", "These verses", "These texts", or "In these passages" when a more natural introduction is possible.
+    Context exists to help the reader understand the surrounding situation.
 
-Focus only on:
-"What is happening here and what surrounding situation helps explain it?"
+    Context may describe:
 
-Context Frame:
-{context_frame}
+        * Participants
+        * Circumstances
+        * Events
+        * Setting
+        * Relevant surrounding conditions
 
-Return ONLY the improved contextual description.
-"""
+    Context must NEVER:
+
+        * Explain meaning
+        * Explain significance
+        * Explain implications
+        * Explain lessons
+        * Explain applications
+        * Explain doctrine
+        * Explain theology
+        * Explain symbolism
+        * Explain transformation
+        * Provide conclusions
+        * Summarize the message
+
+    Avoid language that explains meaning, significance, implications, lessons, applications, doctrine, theology, symbolism, transformation, or conclusions.
+
+    Examples of language to avoid include:
+        * "This demonstrates..."
+        * "This reveals..."
+        * "This teaches..."
+        * "This illustrates..."
+        * "This reminds us..."
+        * "This shows that..."
+        * "This signifies..."
+        * "This highlights the importance..."
+        * "This invites readers..."
+
+    You may:
+
+        * Clarify what is happening
+        * Improve readability
+        * Improve sentence flow
+        * Make the situation easier to understand
+        * Remove repetitive phrasing
+        * Reorganize wording for clarity
+
+    You may NOT:
+
+        * Add information not present in the Context Frame
+        * Introduce new facts
+        * Introduce new participants
+        * Introduce new events
+        * Introduce historical reconstruction
+        * Introduce external knowledge
+        * Expand beyond the supplied Context Frame
+
+    Focus only on contextual grounding.
+
+    Help the reader understand:
+
+        * Participants
+        * Circumstances
+        * Events
+        * Setting
+        * Relevant surrounding conditions
+
+    The reader should leave Context understanding the situation, not the interpretation.
+
+    Context Frame:
+    {context_frame}
+
+    Return ONLY the improved contextual description.
+    """
 
     try:
         result = call_ai_model(prompt)

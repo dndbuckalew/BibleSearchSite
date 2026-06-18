@@ -775,7 +775,6 @@ class QueryService:
 
         context_exploration = generate_context_exploration(
             verses=verse_items,
-            resolved_meaning=core,
             supporting_movements=expansion,
         )
 
