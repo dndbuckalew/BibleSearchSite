@@ -1,0 +1,254 @@
+# ADR-002 — Exploration Capability Architecture
+
+## Status
+
+Approved
+
+---
+
+## Decision Date
+
+2026-06-15
+
+---
+
+## Context
+
+BTA Version 4 Dynamic Context implementation introduced the requirement for reader-directed exploration beyond the initial Context Overview.
+
+Initial implementation discussions considered creation of a BTA-specific Context Exploration capability.
+
+During architecture review, the proposed implementation was evaluated against future domain expansion objectives, including:
+
+* OSHA
+* NEC
+* Healthcare
+* Legal
+* Future Human-Centered Orchestration domains
+
+Application of the Enterprise Architecture Classification Test:
+
+```text
+Would another domain reuse this capability?
+```
+
+revealed that exploration behavior is not unique to Biblical Context.
+
+The mechanism by which a reader chooses to further investigate a topic is reusable across multiple domains.
+
+This discovery occurred during WP-01 (Explore Further Entry Point) architecture review.
+
+---
+
+## Decision
+
+Exploration is classified as a Platform Capability Candidate.
+
+Exploration shall not be owned by the BTA Context domain.
+
+Domain-specific themes shall participate in Exploration.
+
+Exploration shall govern participation eligibility and presentation of exploration opportunities.
+
+QueryService remains the sole orchestration authority and kernel authority.
+
+Exploration shall not assume orchestration responsibilities.
+
+---
+
+## Rationale
+
+Analysis determined that multiple domains require a common exploration pattern.
+
+Examples:
+
+### BTA
+
+```text
+Explore Further
+    ↓
+Historical Context
+
+Relationship Context
+
+Scene Context
+
+Composition Context
+```
+
+### OSHA
+
+```text
+Explore Further
+    ↓
+Regulatory Basis
+
+Related Standards
+
+Training Requirements
+
+Enforcement Considerations
+```
+
+### NEC
+
+```text
+Explore Further
+    ↓
+Related Articles
+
+Safety Intent
+
+Exceptions
+
+Cross References
+```
+
+The exploration mechanism remains consistent while participating themes vary by domain.
+
+This indicates that Exploration represents a platform-level capability rather than a domain-specific capability.
+
+---
+
+## Architectural Classification
+
+### Kernel Authority
+
+```text
+QueryService
+```
+
+Classification:
+
+```text
+Kernel Authority
+```
+
+Responsibilities:
+
+* Execution control
+* Capability coordination
+* Response assembly
+* Participation determination
+* Authority enforcement
+
+---
+
+### Exploration
+
+Classification:
+
+```text
+Platform Capability Candidate
+```
+
+Responsibilities:
+
+* Present exploration opportunities
+* Govern participation eligibility
+* Coordinate participating domain themes
+* Support reader-directed exploration
+
+Exploration does not:
+
+* Orchestrate execution
+* Determine capability sequencing
+* Control other capabilities
+* Assume kernel authority
+
+---
+
+### Context Themes
+
+Classification:
+
+```text
+BTA Domain Authority
+```
+
+Responsibilities:
+
+* Define Scripture-specific context participation themes
+* Support Context capability execution
+* Participate in Exploration when qualified
+
+Examples:
+
+* Scene Context
+* Relationship Context
+* Historical Context
+* Composition Context
+* Participation Context
+
+---
+
+## Consequences
+
+### Retained
+
+The following architectural decisions remain unchanged:
+
+* QueryService as orchestration authority
+* QueryService as response assembly authority
+* Context as a domain capability
+* Context Theme Registry authority model
+* Reader Sovereignty principles
+* Human-Centered Governance principles
+
+### Clarified
+
+The following distinctions are established:
+
+```text
+Exploration
+    ≠
+Context
+
+Exploration
+    governs participation
+
+Themes
+    participate in exploration
+```
+
+### Avoided Rework
+
+This decision prevents future extraction and renaming efforts that would occur if Exploration were implemented as a BTA-specific Context capability and later reused by additional domains.
+
+---
+
+## Future Direction
+
+Future implementation work may introduce:
+
+* Exploration Capability Contracts
+* Exploration Participation Registries
+* Exploration Qualification Rules
+* Exploration Metrics
+* PostgreSQL Exploration Authority Persistence
+
+These future implementations shall preserve:
+
+```text
+QueryService
+    =
+Kernel Authority
+```
+
+and shall not create competing orchestration authorities.
+
+---
+
+## Architectural Note
+
+This decision originated during BTA Version 4 Dynamic Context implementation but applies beyond the Bible domain.
+
+Exploration is recognized as a reusable Human-Centered Platform Capability.
+
+Domain authorities participate in Exploration.
+
+Exploration does not replace domain authorities.
+
+Exploration does not replace kernel authority.
+
+This record is retained to preserve architectural traceability and prevent future reclassification of Exploration as a domain-specific capability.

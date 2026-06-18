@@ -21,7 +21,7 @@ export default function ExpandableSection({
         <button
           type="button"
           onClick={() => setIsExpanded(true)}
-          className="text-sm font-medium text-neutral-700 hover:text-neutral-900"
+          className="text-base font-semibold text-blue-700 underline hover:text-blue-900"
         >
           ...More
         </button>
@@ -34,7 +34,7 @@ export default function ExpandableSection({
           <button
             type="button"
             onClick={() => setIsExpanded(false)}
-            className="text-sm font-medium text-neutral-700 hover:text-neutral-900"
+            className="text-base font-semibold text-blue-700 underline hover:text-blue-900"
           >
             Show Less
           </button>
