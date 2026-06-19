@@ -246,8 +246,12 @@ export default function ResultsClient() {
         }
         expanded={
           contextExploration ? (
-            <div className="mt-8 whitespace-pre-line">
-              {contextExploration}
+            <div className="space-y-4">
+              <div className="h-4" />
+
+              <div className="whitespace-pre-line">
+                {contextExploration}
+              </div>
             </div>
           ) : (
             <div />
