@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Bible Therapy Assistant (BTA) — Version 4.00",
+  title: "Bible Therapy Assistant (BTA) — Version 4.5",
   description:
     "A Scripture-centered, AI-assisted experience designed to help Christians, missionaries, and seekers engage God’s Word through deeper understanding, reflection, connected meaning, and the 'why' behind Scripture while keeping God’s Word central to the journey of spiritual understanding.",
 };
@@ -19,7 +19,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-neutral-50 text-neutral-800 flex flex-col">
         {/* Version 2 Banner */}
         <div className="w-full bg-amber-100 border-b border-amber-300 text-amber-900 text-sm px-4 py-2 text-center">
-          <strong>Version 4.00:</strong> This system is designed to support thoughtful reflection on Scripture. Content may continue to evolve and should not be considered authoritative guidance.
+          <strong>Version 4.5:</strong> This system is designed to support thoughtful reflection on Scripture. Content may continue to evolve and should not be considered authoritative guidance.
         </div>
 
         {/* Header */}
@@ -73,7 +73,7 @@ export default function RootLayout({
 
             <div className="text-xs text-neutral-500 pt-2 space-y-1">
               <div>Powered by OpenAI</div>
-              <div>© {currentYear} Bible Therapy Assistant — Version 4.00</div>
+              <div>© {currentYear} Bible Therapy Assistant — Version 4.5</div>
             </div>
           </div>
         </footer>
