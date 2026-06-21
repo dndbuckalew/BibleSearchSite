@@ -45,6 +45,53 @@ APPROVED_COMMENTATORS: Dict[str, CommentatorSource] = {
         url=None,
         notes="Historical and linguistic emphasis.",
     ),
+    "john_wesley": CommentatorSource(
+    source_id="john_wesley",
+    display_name="John Wesley",
+    public_domain_verified=True,
+    attribution="John Wesley Commentary (Public Domain)",
+    testament_applicability="BOTH",
+    emphasis=["practical", "devotional"],
+    approved=True,
+    url=None,
+    notes="Methodist theologian.",
+),
+
+"charles_spurgeon": CommentatorSource(
+    source_id="charles_spurgeon",
+    display_name="Charles Spurgeon",
+    public_domain_verified=True,
+    attribution="Charles Spurgeon Commentary (Public Domain)",
+    testament_applicability="BOTH",
+    emphasis=["devotional", "practical"],
+    approved=True,
+    url=None,
+    notes="Baptist preacher.",
+),
+
+"adam_clarke": CommentatorSource(
+    source_id="adam_clarke",
+    display_name="Adam Clarke",
+    public_domain_verified=True,
+    attribution="Adam Clarke Commentary (Public Domain)",
+    testament_applicability="BOTH",
+    emphasis=["expository", "linguistic"],
+    approved=True,
+    url=None,
+    notes="Biblical scholar.",
+),
+
+"albert_barnes": CommentatorSource(
+    source_id="albert_barnes",
+    display_name="Albert Barnes",
+    public_domain_verified=True,
+    attribution="Albert Barnes Commentary (Public Domain)",
+    testament_applicability="BOTH",
+    emphasis=["expository", "practical"],
+    approved=True,
+    url=None,
+    notes="Biblical commentator.",
+),
 }
 
 
