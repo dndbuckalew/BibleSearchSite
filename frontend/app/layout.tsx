@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Bible Therapy Assistant (BTA) — Version 4.5",
+  title: "Bible Therapy Assistant™ (BTA) — Version 4.5",
   description:
-    "A Scripture-centered, AI-assisted experience designed to help Christians, missionaries, and seekers engage God’s Word through deeper understanding, reflection, connected meaning, and the 'why' behind Scripture while keeping God’s Word central to the journey of spiritual understanding.",
+    "Bible Therapy Assistant™ is a Scripture-centered, AI-assisted experience designed to help Christians, missionaries, and seekers engage God’s Word through deeper understanding, reflection, connected meaning, and the 'why' behind Scripture while keeping God’s Word central to the journey of spiritual understanding.",
 };
 
 export default function RootLayout({
@@ -72,8 +72,20 @@ export default function RootLayout({
             </div>
 
             <div className="text-xs text-neutral-500 pt-2 space-y-1">
+              <div>
+                <strong>Bible Therapy Assistant™</strong>
+              </div>
+              <div>
+                A product of TAD Concepts LLC
+              </div>
+              <div>
+                © {currentYear} TAD Concepts LLC. All rights reserved.
+              </div>
+               <div>
+                <strong>Patent Pending</strong>
+              </div>
               <div>Powered by OpenAI</div>
-              <div>© {currentYear} Bible Therapy Assistant — Version 4.5</div>
+            
             </div>
           </div>
         </footer>
