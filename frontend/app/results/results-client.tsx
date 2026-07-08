@@ -280,23 +280,21 @@ export default function ResultsClient() {
       </Section>
 
 {/* --------------------------------------------------------------
-   Phase 9.1F — Commentary Hidden (Deferred)
+   Phase 9.1F — Commentary
 -------------------------------------------------------------- */}
-{/*
+
 {wantCommentary && (
   <Section
     title="Commentary"
     blurb="Commentary is an optional future-facing layer that may be provided when requested."
   >
-{commentary ? (
-  <div className="whitespace-pre-line">{commentary}</div>
-) : (
-  <EmptyText text="Commentary is not available yet. This section will be expanded in a future release." />
-)}
-
+    {commentary ? (
+      <div className="whitespace-pre-line">{commentary}</div>
+    ) : (
+      <EmptyText text="Commentary is not available yet. This section will be expanded in a future release." />
+    )}
   </Section>
 )}
-*/}
 
           <button
         onClick={() => router.push("/")}

@@ -55,6 +55,7 @@ class VerseCommentaryExcerpt:
     testament: Literal["OT", "NT"]
     source_id: str
     excerpt: str
+    perspective: Optional[str] = None
     confidence: Optional[float] = None
     warnings: List[str] = field(default_factory=list)
 

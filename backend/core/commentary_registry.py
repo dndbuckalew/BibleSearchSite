@@ -32,8 +32,14 @@ APPROVED_COMMENTATORS: Dict[str, CommentatorSource] = {
         emphasis=["devotional", "expository"],
         approved=True,
         url=None,
-        notes="Classic devotional-expository commentary.",
+        notes=(
+           "Known for careful devotional and expository study of Scripture, "
+            "Matthew Henry consistently sought to reveal God's character, "
+            "encourage practical Christian living, and help readers understand "
+            "why God revealed these truths through each passage." 
+        ),
     ),
+    
     "jamieson_fausset_brown": CommentatorSource(
         source_id="jamieson_fausset_brown",
         display_name="Jamieson-Fausset-Brown",
@@ -54,7 +60,12 @@ APPROVED_COMMENTATORS: Dict[str, CommentatorSource] = {
     emphasis=["practical", "devotional"],
     approved=True,
     url=None,
-    notes="Methodist theologian.",
+    notes=(
+        "Known for emphasizing God's grace, practical Christian living, "
+        "and a life of growing faith, John Wesley sought to help readers "
+        "understand why Scripture calls believers to both trust God and "
+        "live out their faith each day."
+    ),
 ),
 
 "charles_spurgeon": CommentatorSource(

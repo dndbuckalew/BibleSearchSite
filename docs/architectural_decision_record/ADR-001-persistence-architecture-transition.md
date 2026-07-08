@@ -150,3 +150,53 @@ MongoDB was successfully evaluated and validated.
 The retirement decision reflects an architectural evolution toward PostgreSQL + pgvector to better support BTA's long-term governance, semantic orchestration, multilingual, and NSF/SBIR research objectives.
 
 This record is retained to preserve architectural traceability and prevent duplicate future evaluation efforts.
+
+
+## Administrative Traceability Update (TI-EP Alignment Mapping)
+
+This ADR is extended to explicitly document implementation traceability to downstream enforcement layers.
+
+The following architectural implementation specifications are formally mapped to this decision:
+
+### TI-EP-002 — Domain Isolation Layer (Enforcement Implementation)
+
+TI-EP-002 operationalizes the persistence architecture decision defined in this ADR by introducing:
+
+- PostgreSQL Row-Level Security (RLS) as the primary isolation mechanism
+- session-scoped domain context via `app.current_domain`
+- default deny-by-design query behavior for cross-domain access
+- structural enforcement of domain boundaries at the database execution layer
+
+These mechanisms implement strict domain isolation consistent with the PostgreSQL + pgvector persistence direction defined in this ADR.
+
+---
+
+### TI-EP-003 — Cross-Domain Governance Layer (Controlled Exception Model)
+
+TI-EP-003 extends the persistence architecture defined in this ADR by introducing governed cross-domain access through:
+
+- Domain Participation Contract model
+- contract lifecycle state machine (PENDING / ACTIVE / SUSPENDED / REVOKED)
+- status-driven authorization model replacing boolean enablement flags
+- RLS policy extension for contract-based cross-domain visibility
+- trigger-based audit logging for write operations
+- explicit prohibition of self-referential contracts (source_domain_id ≠ target_domain_id)
+
+This layer defines controlled exceptions to TI-EP-002 isolation while preserving strict boundary enforcement.
+
+---
+
+## Architectural Traceability Statement
+
+ADR-001 defines the canonical persistence architecture for the system (PostgreSQL + pgvector).
+
+TI-EP-002 and TI-EP-003 are direct enforcement realizations of this architecture:
+
+- ADR-001 → defines persistence strategy and system direction
+- TI-EP-002 → enforces domain isolation at the database layer
+- TI-EP-003 → introduces governed cross-domain exception handling with auditability
+
+Together, these form a unified enforcement architecture ensuring:
+- deterministic persistence behavior
+- strict domain isolation by default
+- controlled and auditable cross-domain interaction

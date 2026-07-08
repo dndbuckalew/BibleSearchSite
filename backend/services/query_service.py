@@ -206,16 +206,24 @@ class QueryService:
                 ref = getattr(it, "reference", "") or ""
                 source_id = getattr(it, "source_id", "") or ""
                 excerpt = getattr(it, "excerpt", "") or ""
+                perspective = getattr(it, "perspective", "") or ""
 
                 source = get_commentator(source_id)
                 source_name = source.display_name if source else source_id
 
                 if ref and excerpt and source_name:
-                    lines.append(f"- {ref} ({source_name}): {excerpt}")
+                    if perspective:
+                        lines.append(
+                            f"- {ref} ({source_name}) — {perspective}: {excerpt}"
+                        )
+                    else:
+                        lines.append(
+                            f"- {ref} ({source_name}): {excerpt}"
+                        )
+
                 elif excerpt:
                     lines.append(f"- {excerpt}")
-
-            lines.append("")
+                lines.append("")
 
         return "\n".join([ln.rstrip() for ln in lines]).strip()
 

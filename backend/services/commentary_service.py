@@ -17,15 +17,15 @@ from __future__ import annotations
 import logging
 import re
 from typing import Any, Dict, List, Optional, Sequence, Tuple
-
+from backend.core.commentary_data.BTA_commentary_repository import (
+    get_commentary_records,
+)
 from backend.core.commentary_registry import (
     get_commentator,
     list_commentators,
     validate_registry,
 )
-from backend.core.commentary_data.canonical_commentary_dataset import (
-    CANONICAL_COMMENTARY_DATASET,
-)
+
 from backend.models.commentary_models import (
     CommentaryResult,
     TestamentBlock,
@@ -115,11 +115,19 @@ def build_commentary(
                 excerpt_max_chars,
             )
 
+            perspective = ""
+
+            for record in get_commentary_records(reference=reference):
+                if record.get("source_id") == source_id:
+                    perspective = record.get("perspective", "")
+                    break
+
             excerpts.append(
                 VerseCommentaryExcerpt(
                     reference=reference,
                     testament=testament,
                     source_id=source_id,
+                    perspective=perspective,
                     excerpt=excerpt_text,
                     confidence=None,
                     warnings=[],
@@ -226,19 +234,11 @@ def _retrieve_excerpt(*, source_id: str, reference: str) -> Optional[str]:
     No fuzzy logic.
     """
 
-    verse_ref = (reference or "").strip().lower()
-
-    for record in CANONICAL_COMMENTARY_DATASET:
-        rec_ref = (record.get("reference") or "").strip().lower()
-
-        if (
-            record.get("source_id") == source_id
-            and rec_ref == verse_ref
-        ):
+    for record in get_commentary_records(reference=reference):
+        if record.get("source_id") == source_id:
             return record.get("excerpt")
 
     return None
-
 
 def _enforce_excerpt_bounds(text: str, max_chars: int) -> str:
     text = (text or "").strip()

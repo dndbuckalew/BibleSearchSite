@@ -1,0 +1,181 @@
+TI-EP-003 — CROSS-DOMAIN GOVERNANCE LAYER
+
+STATUS: CLOSED
+
+------------------------------------------------------------
+SECTION 1 — PURPOSE AND STRUCTURAL DEFINITION
+------------------------------------------------------------
+
+The Cross-Domain Governance Layer defines controlled interaction between structurally isolated domains within a multi-domain enterprise architecture.
+
+TI-EP-002 enforces strict domain isolation at the database level. TI-EP-003 introduces governed exceptions that allow explicitly authorized cross-domain interaction without violating isolation guarantees.
+
+Cross-domain access is never implicit. It is governed, contract-based, and auditable.
+
+Core capabilities introduced:
+- controlled cross-domain visibility
+- explicit authorization for inter-domain interaction
+- auditable cross-domain activity tracking
+- contractual participation rules between domains
+
+------------------------------------------------------------
+SECTION 2 — DOMAIN PARTICIPATION CONTRACT MODEL
+------------------------------------------------------------
+
+CREATE TABLE domain_participation_contract (
+    contract_id UUID PRIMARY KEY,
+    source_domain_id UUID NOT NULL,
+    target_domain_id UUID NOT NULL,
+    status TEXT NOT NULL DEFAULT 'PENDING',
+    access_scope TEXT NOT NULL,
+    approved_by UUID,
+    approved_at TIMESTAMP,
+    revoked_at TIMESTAMP,
+    reason TEXT,
+    created_at TIMESTAMP DEFAULT now(),
+
+    CONSTRAINT fk_source_domain
+        FOREIGN KEY (source_domain_id)
+        REFERENCES domain(domain_id)
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_target_domain
+        FOREIGN KEY (target_domain_id)
+        REFERENCES domain(domain_id)
+        ON DELETE RESTRICT,
+
+    CONSTRAINT unique_domain_pair
+        UNIQUE (source_domain_id, target_domain_id),
+
+    CONSTRAINT no_self_contract
+        CHECK (source_domain_id <> target_domain_id),
+
+    CONSTRAINT contract_status_valid
+        CHECK (status IN ('PENDING','ACTIVE','SUSPENDED','REVOKED')),
+
+    CONSTRAINT access_scope_valid
+        CHECK (access_scope IN ('READ','WRITE','ADMIN'))
+);
+
+------------------------------------------------------------
+SECTION 3 — ENFORCEMENT INTEGRATION MODEL (RLS + CONTRACT RESOLUTION)
+------------------------------------------------------------
+
+DROP POLICY IF EXISTS expert_identity_domain_isolation
+ON expert_identity;
+
+------------------------------------------------------------
+
+CREATE POLICY expert_identity_read_visibility
+ON expert_identity
+FOR SELECT
+USING (
+    domain_id = current_setting('app.current_domain', true)::uuid
+
+    OR EXISTS (
+        SELECT 1
+        FROM domain_participation_contract dpc
+        WHERE dpc.status = 'ACTIVE'
+          AND dpc.access_scope IN ('READ','ADMIN')
+          AND (
+                (dpc.source_domain_id = current_setting('app.current_domain', true)::uuid
+                 AND dpc.target_domain_id = expert_identity.domain_id)
+             OR (dpc.target_domain_id = current_setting('app.current_domain', true)::uuid
+                 AND dpc.source_domain_id = expert_identity.domain_id)
+          )
+    )
+);
+
+------------------------------------------------------------
+
+CREATE POLICY expert_identity_write_own_domain
+ON expert_identity
+FOR INSERT
+WITH CHECK (
+    domain_id = current_setting('app.current_domain', true)::uuid
+);
+
+CREATE POLICY expert_identity_update_own_domain
+ON expert_identity
+FOR UPDATE
+USING (
+    domain_id = current_setting('app.current_domain', true)::uuid
+)
+WITH CHECK (
+    domain_id = current_setting('app.current_domain', true)::uuid
+);
+
+CREATE POLICY expert_identity_delete_own_domain
+ON expert_identity
+FOR DELETE
+USING (
+    domain_id = current_setting('app.current_domain', true)::uuid
+);
+
+------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION log_domain_write_attempt()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO domain_cross_access_log (
+        log_id,
+        source_domain_id,
+        target_domain_id,
+        entity_type,
+        entity_id,
+        action,
+        was_allowed,
+        timestamp
+    )
+    VALUES (
+        gen_random_uuid(),
+        current_setting('app.current_domain', true)::uuid,
+        COALESCE(NEW.domain_id, OLD.domain_id),
+        'expert_identity',
+        COALESCE(NEW.expert_id, OLD.expert_id),
+        TG_OP,
+        true,
+        now()
+    );
+
+    RETURN COALESCE(NEW, OLD);
+END;
+$$ LANGUAGE plpgsql;
+
+------------------------------------------------------------
+
+CREATE TRIGGER trg_expert_identity_write_log
+AFTER INSERT OR UPDATE OR DELETE ON expert_identity
+FOR EACH ROW
+EXECUTE FUNCTION log_domain_write_attempt();
+
+------------------------------------------------------------
+SECTION 4 — DOMAIN PARTICIPATION CONTRACT LIFECYCLE
+------------------------------------------------------------
+
+Contract lifecycle is governed through the status field defined in Section 2.
+
+Only ACTIVE contracts are enforceable within the RLS model defined in Section 3.
+
+Lifecycle states:
+- PENDING → not enforceable
+- ACTIVE → enforceable
+- SUSPENDED → temporarily disabled
+- REVOKED → permanently disabled
+
+Valid transitions:
+- PENDING → ACTIVE
+- ACTIVE → SUSPENDED
+- SUSPENDED → ACTIVE
+- ACTIVE → REVOKED
+
+No transitions are permitted out of REVOKED.
+
+Self-contracts are prohibited via Section 2 constraint:
+source_domain_id <> target_domain_id
+
+------------------------------------------------------------
+
+END OF TI-EP-003
+------------------------------------------------------------
+ 

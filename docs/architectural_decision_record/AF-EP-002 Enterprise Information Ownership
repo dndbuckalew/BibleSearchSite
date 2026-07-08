@@ -1,0 +1,433 @@
+# AF-EP-002 — Enterprise Information Ownership
+
+**Project:** BTA V5.1 — HCGO Enterprise Persistence Architecture
+
+**Status:** Approved
+
+**Classification:** Analysis Finding
+
+---
+
+# Purpose
+
+Identify the authoritative ownership of enterprise information across HCGO.
+
+This analysis establishes authoritative enterprise information ownership prior to Enterprise Information Flow Analysis and Persistence Architecture.
+
+This analysis identifies enterprise information ownership only.
+
+It does not define runtime execution, implementation, persistence, APIs, database structures, or technology.
+
+---
+
+# Analysis Principles
+
+Enterprise Information Ownership shall identify:
+
+- Enterprise information categories
+- Authoritative ownership
+- Information stewardship
+- Information responsibility
+- Authorized consumers
+- Authorized references
+
+Enterprise Information Ownership shall not identify:
+
+- Database tables
+- Data structures
+- Foreign keys
+- Runtime information flow
+- APIs
+- Message formats
+- Persistence implementation
+- PostgreSQL schema
+
+---
+
+# Enterprise Ownership Principles
+
+Every enterprise information category shall have one and only one authoritative enterprise owner.
+
+Authoritative ownership shall be unique, explicit, and governed.
+
+Ownership may only change through approved enterprise governance.
+
+Information may have many authorized consumers.
+
+Consumers may reference, classify, validate, or use enterprise information, but ownership never transfers through consumption.
+
+Information ownership remains independent of implementation, persistence, and technology.
+
+---
+
+# Enterprise Information Ownership
+
+## Enterprise Information Category
+
+### Enterprise Communication Normalization
+
+**Authoritative Owner**
+
+Language Management
+
+**Information Steward**
+
+Language Management
+
+**Information Responsibility**
+
+Maintains authoritative enterprise communication normalization, language normalization, communication metadata, and language classifications.
+
+**Authorized Consumers**
+
+- Human Understanding
+
+**Authorized References**
+
+- Audit & Traceability
+
+**Ownership Notes**
+
+Language Management owns communication normalization.
+
+It does not own enterprise understanding.
+
+---
+
+## Enterprise Information Category
+
+### Enterprise Understanding
+
+**Authoritative Owner**
+
+Human Understanding
+
+**Information Steward**
+
+Human Understanding
+
+**Information Responsibility**
+
+Maintains the authoritative enterprise understanding of the human before enterprise execution.
+
+**Authorized Consumers**
+
+- Enterprise Capabilities
+
+**Authorized References**
+
+- Audit & Traceability
+- Governance Metadata
+
+**Ownership Notes**
+
+Enterprise Understanding may only be modified by Human Understanding.
+
+Consumers never become owners.
+
+---
+
+## Enterprise Information Category
+
+### Expert Identity
+
+**Authoritative Owner**
+
+Expert Registry
+
+**Information Steward**
+
+Expert Registry
+
+**Information Responsibility**
+
+Maintains authoritative enterprise expert identity, attribution, governance identity, and enterprise stewardship.
+
+**Authorized Consumers**
+
+- Participation Registry
+- Enterprise Capabilities
+
+**Authorized References**
+
+- Audit & Traceability
+
+**Ownership Notes**
+
+Expert identity remains owned by the Expert Registry regardless of how many capabilities consume it.
+
+---
+
+## Enterprise Information Category
+
+### Source Identity
+
+**Authoritative Owner**
+
+Source Registry
+
+**Information Steward**
+
+Source Registry
+
+**Information Responsibility**
+
+Maintains authoritative knowledge source identity, origin, acquisition metadata, and governance identity.
+
+**Authorized Consumers**
+
+- Participation Registry
+- Enterprise Capabilities
+
+**Authorized References**
+
+- Audit & Traceability
+
+**Ownership Notes**
+
+Source Registry owns knowledge origin.
+
+It does not own knowledge usage.
+
+---
+
+## Enterprise Information Category
+
+### Participation Authorization
+
+**Authoritative Owner**
+
+Participation Registry
+
+**Information Steward**
+
+Participation Registry
+
+**Information Responsibility**
+
+Maintains participation authorization, scope, approvals, governance, and participation relationships.
+
+**Authorized Consumers**
+
+- Enterprise Capabilities
+
+**Authorized References**
+
+- Audit & Traceability
+
+**Ownership Notes**
+
+Participation authorization remains independent of participant identity.
+
+---
+
+## Enterprise Information Category
+
+### Domain Definition
+
+**Authoritative Owner**
+
+Domain Registry
+
+**Information Steward**
+
+Domain Registry
+
+**Information Responsibility**
+
+Maintains domain identity, purpose, governance identity, classifications, and lifecycle.
+
+**Authorized Consumers**
+
+- Enterprise Capability Registry
+- Enterprise Governance
+
+**Authorized References**
+
+- Audit & Traceability
+
+**Ownership Notes**
+
+Domain Registry owns enterprise boundaries.
+
+It does not own enterprise capabilities.
+
+---
+
+## Enterprise Information Category
+
+### Governance Metadata
+
+**Authoritative Owner**
+
+Governance Metadata
+
+**Information Steward**
+
+Governance Metadata
+
+**Information Responsibility**
+
+Maintains governance classifications, governance relationships, governance lifecycle, governance versioning, and governance approvals.
+
+**Authorized Consumers**
+
+- Enterprise Governance
+- Enterprise Capabilities
+
+**Authorized References**
+
+- Audit & Traceability
+
+**Ownership Notes**
+
+Governance Metadata owns governance metadata.
+
+It does not own governance policy.
+
+---
+
+## Enterprise Information Category
+
+### Enterprise Audit Evidence
+
+**Authoritative Owner**
+
+Audit & Traceability
+
+**Information Steward**
+
+Audit & Traceability
+
+**Information Responsibility**
+
+Maintains enterprise audit evidence, traceability relationships, audit history, and enterprise evidence metadata.
+
+**Authorized Consumers**
+
+- Enterprise Governance
+- Compliance
+- Enterprise Capabilities
+
+**Authorized References**
+
+- None
+
+**Ownership Notes**
+
+Audit & Traceability owns enterprise evidence.
+
+It does not own enterprise behavior.
+
+---
+
+## Enterprise Information Category
+
+### Platform Configuration
+
+**Authoritative Owner**
+
+Platform Configuration Management
+
+**Information Steward**
+
+Platform Configuration Management
+
+**Information Responsibility**
+
+Maintains authoritative enterprise platform configuration, operational configuration, feature configuration, configuration lifecycle, and configuration metadata.
+
+**Authorized Consumers**
+
+- Platform Capabilities
+
+**Authorized References**
+
+- Audit & Traceability
+
+**Ownership Notes**
+
+Platform Configuration governs configuration.
+
+It does not govern runtime execution.
+
+---
+
+## Enterprise Information Category
+
+### Enterprise Capability Definition
+
+**Authoritative Owner**
+
+Enterprise Capability Registry
+
+**Information Steward**
+
+Enterprise Capability Registry
+
+**Information Responsibility**
+
+Maintains enterprise capability identity, purpose, ownership, stewardship, classification, lifecycle, and enterprise relationships.
+
+**Authorized Consumers**
+
+- Enterprise
+- Domain Registry
+- Enterprise Governance
+
+**Authorized References**
+
+- Audit & Traceability
+
+**Ownership Notes**
+
+Enterprise Capability Registry owns capability definitions.
+
+It does not own implementation.
+
+---
+
+# Enterprise Information Ownership Model
+
+| Enterprise Information Category | Authoritative Owner |
+|---------------------------------|---------------------|
+| Enterprise Communication Normalization | Language Management |
+| Enterprise Understanding | Human Understanding |
+| Expert Identity | Expert Registry |
+| Source Identity | Source Registry |
+| Participation Authorization | Participation Registry |
+| Domain Definition | Domain Registry |
+| Governance Metadata | Governance Metadata |
+| Enterprise Audit Evidence | Audit & Traceability |
+| Platform Configuration | Platform Configuration Management |
+| Enterprise Capability Definition | Enterprise Capability Registry |
+
+---
+
+# Analysis Summary
+
+Enterprise information ownership is independent of implementation, persistence, runtime execution, and technology.
+
+Every enterprise information category has one and only one authoritative owner.
+
+Ownership establishes enterprise authority.
+
+Consumers and references establish enterprise collaboration.
+
+Ownership never transfers through consumption.
+
+---
+
+# Current Assessment
+
+Enterprise Information Ownership establishes the authoritative ownership model for enterprise information across HCGO.
+
+These ownership boundaries provide the foundation for:
+
+- AF-EP-003 — Enterprise Information Flow
+- Enterprise Conceptual Information Model
+- Persistence Architecture
+- Logical Data Modeling
+- Future HCGO implementation
+
+Enterprise information ownership intentionally precedes information flow to ensure that information movement always originates from an identified authoritative owner.

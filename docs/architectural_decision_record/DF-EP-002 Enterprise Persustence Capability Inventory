@@ -1,0 +1,187 @@
+# DF-EP-002 — Enterprise Capability Inventory
+
+**Project:** BTA V5.1 — HCGO Enterprise Persistence Architecture
+
+**Status:** Approved
+
+**Classification:** Discovery Finding
+
+---
+
+# Purpose
+
+Identify the enterprise capabilities that the HCGO Enterprise Persistence Architecture shall support.
+
+This discovery identifies enterprise business capabilities rather than database tables, schemas, technologies, or implementation details.
+
+Enterprise Persistence Architecture shall be designed to support these capabilities independent of implementation technology.
+
+---
+
+# Discovery Principles
+
+The capability inventory shall identify:
+
+- Enterprise capabilities
+- Enterprise ownership boundaries
+- Primary architectural consumers
+- Architectural responsibilities
+
+The capability inventory shall **not** identify:
+
+- Database tables
+- SQL design
+- ORM models
+- Physical implementation
+- Technology-specific solutions
+
+---
+
+# Enterprise Capability Inventory
+
+## Platform-Owned Capabilities
+
+Reusable across all HCGO domains.
+
+- Language Management
+- Expert Registry
+- Source Registry
+- Participation Registry
+- Domain Registry
+- Human Understanding
+- Governance Metadata
+- Audit & Traceability
+- Platform Configuration Management
+
+---
+
+## Domain-Owned Capabilities
+
+Capabilities unique to an individual HCGO domain.
+
+### Bible Domain
+
+- Translation Management
+- Commentary Management
+- Scripture Knowledge Assets
+
+### Future Domains
+
+- OSHA Knowledge Assets
+- Healthcare Knowledge Assets
+- Legal Knowledge Assets
+- Future Domain Knowledge Assets
+
+---
+
+## Reader-Owned Capabilities
+
+Governed by Reader Sovereignty.
+
+- Reader Journey
+- Exploration Continuity
+- Reader Preferences
+- Reader Contact Information
+- Communication Consent
+- Testimonies
+- Saved Exploration (Future)
+- Reader Notes (Future)
+
+---
+
+## Corporate-Owned Capabilities
+
+Business and contractual responsibilities.
+
+- License Agreement Management
+- Source Authorization
+- Partner Relationships
+- Commercial Participation
+- Subscription Management (Future)
+
+---
+
+## Governance-Owned Capabilities
+
+Support Human-Centered Governance.
+
+- Constitutional Policies
+- Participation Policies
+- Domain Registration
+- Governance Configuration
+- Governance Audit
+- Governance Traceability
+
+---
+
+# Discovery Refinements
+
+## Language Management ≠ Translation Management
+
+Language Management is a platform capability supporting localization and multilingual user experiences across all HCGO domains.
+
+Translation Management is a Bible Domain capability governing Bible translations (e.g., KJV, NKJV, NIV, NASB, ESV) and associated licensing, metadata, and presentation.
+
+These capabilities shall remain architecturally independent.
+
+---
+
+## Reader Contact & Communication Consent
+
+HCGO shall persist only the reader contact information and communication consent necessary to fulfill its constitutional and business responsibilities.
+
+Communication delivery and marketing automation may be implemented through approved third-party platforms without altering the Enterprise Persistence Architecture.
+
+---
+
+## Enterprise Capability First
+
+Enterprise capabilities define the architecture.
+
+Enterprise Persistence Architecture shall be designed around enterprise business capabilities rather than backend implementation, frontend presentation, database structure, or implementation technology.
+
+Implementation technologies shall conform to the approved architecture.
+
+---
+
+## Technology Independence
+
+Enterprise Persistence Architecture is technology independent.
+
+Implementation technologies are interchangeable and shall implement the approved Enterprise Persistence Architecture.
+
+Technology selection shall never redefine enterprise capabilities.
+
+---
+
+## External Provider Integration
+
+Specialized external providers may implement non-core enterprise services through governed integration.
+
+Enterprise capabilities remain defined and governed by HCGO regardless of implementation provider.
+
+Examples include:
+
+- CRM
+- Payment Processing
+- Email Delivery
+- Identity Providers
+- Analytics Platforms
+
+---
+
+# Discovery Summary
+
+This discovery establishes the stable Enterprise Capability Inventory required to support the HCGO Enterprise Persistence Architecture.
+
+These capabilities represent long-lived enterprise responsibilities that remain independent of implementation technology and support future platform evolution without architectural redesign.
+
+---
+
+# Current Assessment
+
+**Discovery Complete**
+
+The Enterprise Capability Inventory is approved and establishes the foundation for Enterprise Capability Ownership Validation in DF-EP-003.
+
+No physical persistence architecture, schema design, or implementation shall begin until ownership validation is completed.

@@ -1,0 +1,150 @@
+TI-EP-001 — Enterprise Instantiated Model Layer (Hardened v1.1)
+1. Purpose
+
+The Enterprise Instantiated Model Layer defines the concrete realization of enterprise concepts into implementable, verifiable data structures within the persistence layer.
+
+It terminates the abstraction chain established in prior architectural phases by ensuring all governed enterprise constructs are expressed as explicit entities, attributes, relationships, and constraints suitable for implementation.
+
+This layer does not define governance or methodology. It defines instantiated system structure only.
+
+2. Core Constitutional Principle
+
+This layer is the termination point of abstraction.
+
+All enterprise constructs MUST resolve into:
+
+Explicit entities
+Explicit attributes
+Explicit relationships
+Explicit constraints
+Explicit domain assignment
+
+No architectural construct may remain purely conceptual within this layer.
+
+No further deferral to downstream architectural phases is permitted for instantiated elements defined herein.
+
+3. Domain Boundary Requirement (NEW)
+
+All instantiated entities MUST belong to a defined enterprise domain.
+
+A domain is a first-class structural boundary that governs:
+
+semantic scope
+entity validity
+relationship interpretation
+selection rules
+3.1 Domain Table (Required)
+CREATE TABLE domain (
+    domain_id UUID PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT now()
+);
+3.2 Required Initial Domain
+
+All current entities SHALL belong to:
+
+name: bible
+purpose: Commentary and Scripture interpretation domain
+3.3 Domain Rule
+
+All future domains:
+
+MUST NOT modify existing schema
+MUST ONLY extend via new domain records
+MUST reuse existing entity structures
+4. Primary Instantiated Entity — Expert Identity
+4.1 Definition
+
+Expert Identity represents a uniquely identifiable authority within a domain, including scholars, commentary sources, and interpretive agents used in reasoning and retrieval systems.
+
+4.2 PostgreSQL Implementation
+CREATE TABLE expert_identity (
+    expert_id UUID PRIMARY KEY,
+    domain_id UUID REFERENCES domain(domain_id),
+
+    name TEXT NOT NULL,
+
+    type TEXT CHECK (
+        type IN ('scholar', 'commentary_source', 'domain_expert')
+    ),
+
+    authority_level INT CHECK (
+        authority_level BETWEEN 1 AND 5
+    ),
+
+    lifecycle_status TEXT DEFAULT 'active',
+
+    created_at TIMESTAMP DEFAULT now(),
+    updated_at TIMESTAMP DEFAULT now()
+);
+4.3 Relationships (Logical Layer)
+Expert Identity → produces → Commentary Output
+Expert Identity → participates_in → Domain Interpretation
+
+(Physical implementation handled in service layer)
+
+4.4 Example Instantiated Row
+expert_id: 550e8400-e29b-41d4-a716-446655440000
+domain_id: bible
+name: Matthew Henry
+type: commentary_source
+authority_level: 5
+lifecycle_status: active
+5. Dynamic Scholars (Runtime Instantiation Model)
+5.1 Definition
+
+Dynamic Scholars are NOT stored entities.
+
+They are a runtime filtered projection of Expert Identity within a domain.
+
+5.2 Selection Rule
+
+Dynamic Scholars are derived by:
+
+Filtering by domain_id
+Filtering lifecycle_status = 'active'
+Sorting by authority_level (descending)
+Applying contextual relevance scoring (implementation-defined)
+5.3 Result
+
+Dynamic Scholars = ordered runtime subset of Expert Identity.
+
+6. Traceability Model
+Conceptual Category	Logical Group	Physical Structure	Implementation Mapping
+Domain Definition	Enterprise Boundary Group	Domain Model	domain table
+Expert Identity	Authority Classification Group	Entity Model	expert_identity table
+Dynamic Scholars	Runtime Selection Group	Projection Model	query-time filtering
+7. Cross-Domain Extension Model
+
+This architecture supports multiple domains without schema modification.
+
+Each new domain:
+
+adds a new row to the domain table
+reuses existing entity structures
+applies domain-scoped filtering at runtime
+
+No core schema changes are required for expansion.
+
+8. Architectural Completion Statement
+
+This layer terminates the abstraction chain for instantiated enterprise modeling.
+
+All entities defined herein are:
+
+concrete
+domain-bound
+structurally enforceable
+implementation-ready
+
+No further conceptual deferral applies within instantiated scope.
+
+9. Architectural Note
+
+This layer defines structure only.
+
+Execution logic, service composition, and orchestration are defined in:
+
+Enterprise Service Architecture (SA)
+Technology Implementation Layer (TI-EP-002+)
