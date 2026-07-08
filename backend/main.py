@@ -17,6 +17,7 @@ from backend.api.results import router as results_router
 from backend.routes.persona_routes import router as persona_router
 from backend.routes.flipped_routes import router as flipped_router
 from backend.routes.donation_routes import router as donation_router
+from backend.routes.audience.audience_routes import router as audience_router
 
 # ------------------------------------------------------------------
 # API OPENAI
@@ -86,6 +87,7 @@ app.include_router(
 )
 
 app.include_router(donation_router)
+app.include_router(audience_router)
 
 # ------------------------------------------------------------------
 # Health check
