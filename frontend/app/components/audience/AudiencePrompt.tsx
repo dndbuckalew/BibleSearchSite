@@ -3,42 +3,38 @@
 import { useState } from "react";
 
 type ContactType =
-    | "Individual"
-    | "Church"
-    | "Faith-Based Organization"
-    | "Ministry"
-    | "Business"
-    | "Non-Profit"
-    | "Educational Institution"
-    | "Other";
+  | "Individual"
+  | "Church"
+  | "Faith-Based Organization"
+  | "Ministry"
+  | "Business"
+  | "Non-Profit"
+  | "Educational Institution"
+  | "Other";
 
 type AudienceFormData = {
-    name: string;
-    email: string;
-    contactType: ContactType | "";
-    organization: string;
-    city: string;
-    state: string;
-    consent: boolean;
-};
-
-type AudienceSubmission = AudienceFormData & {
-    source: "BTA-AUDIENCE-PROMPT";
-    submittedAt: string;
+  name: string;
+  email: string;
+  contactType: ContactType | "";
+  organization: string;
+  city: string;
+  state: string;
+  consent: boolean;
 };
 
 const CONTACT_TYPES: ContactType[] = [
-    "Individual",
-    "Church",
-    "Faith-Based Organization",
-    "Ministry",
-    "Business",
-    "Non-Profit",
-    "Educational Institution",
-    "Other",
+  "Individual",
+  "Church",
+  "Faith-Based Organization",
+  "Ministry",
+  "Business",
+  "Non-Profit",
+  "Educational Institution",
+  "Other",
 ];
 
-const initialFormData: AudienceFormData = {
+export default function AudiencePrompt() {
+  const [formData, setFormData] = useState<AudienceFormData>({
     name: "",
     email: "",
     contactType: "",
@@ -46,269 +42,239 @@ const initialFormData: AudienceFormData = {
     city: "",
     state: "",
     consent: false,
-};
+  });
 
-export default function AudiencePrompt() {
-    const [formData, setFormData] = useState<AudienceFormData>(initialFormData);
-    const [errors, setErrors] = useState<Partial<Record<keyof AudienceFormData, string>>>({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [successMessage, setSuccessMessage] = useState("");
+  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-    function updateField<K extends keyof AudienceFormData>(
-        field: K,
-        value: AudienceFormData[K]
-    ) {
-        setFormData((current) => ({
-            ...current,
-            [field]: value,
-        }));
+  function updateField<K extends keyof AudienceFormData>(
+    field: K,
+    value: AudienceFormData[K]
+  ) {
+    setFormData((current) => ({
+      ...current,
+      [field]: value,
+    }));
+  }
 
-        setErrors((current) => ({
-            ...current,
-            [field]: "",
-        }));
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
 
-        setSuccessMessage("");
-    }
+    setSubmitting(true);
+    setMessage("");
 
-    function validateForm() {
-        const nextErrors: Partial<Record<keyof AudienceFormData, string>> = {};
-
-        if (!formData.name.trim()) {
-            nextErrors.name = "Please enter your name.";
-        }
-
-        if (!formData.email.trim()) {
-            nextErrors.email = "Please enter your email address.";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
-            nextErrors.email = "Please enter a valid email address.";
-        }
-
-        if (!formData.contactType) {
-            nextErrors.contactType = "Please select a contact type.";
-        }
-
-        if (!formData.consent) {
-            nextErrors.consent = "Please confirm that we may contact you.";
-        }
-
-        setErrors(nextErrors);
-
-        return Object.keys(nextErrors).length === 0;
-    }
-
-    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-
-        if (!validateForm()) {
-            return;
-        }
-
-        setIsSubmitting(true);
-        setSuccessMessage("");
-
-        const submission: AudienceSubmission = {
-            ...formData,
-            name: formData.name.trim(),
-            email: formData.email.trim(),
-            organization: formData.organization.trim(),
-            city: formData.city.trim(),
-            state: formData.state.trim(),
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/audience/stay-connected`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            contact_type: formData.contactType,
+            organization: formData.organization,
+            city: formData.city,
+            state: formData.state,
+            consent: formData.consent,
             source: "BTA-AUDIENCE-PROMPT",
-            submittedAt: new Date().toISOString(),
-        };
-
-        try {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_BASE_URL}/audience/stay-connected`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(submission),
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error("Audience submission failed.");
-            }
-
-            setSuccessMessage(
-                "Thank you. Your information has been received."
-            );
-
-            setFormData(initialFormData);
-        } catch (error) {
-            console.error("Audience submission error:", error);
-
-            setErrors({
-                email:
-                    "We could not complete your request right now. Please try again shortly.",
-            });
-        } finally {
-            setIsSubmitting(false);
+          }),
         }
+      );
+
+      if (!response.ok) {
+        throw new Error("Submission failed");
+      }
+
+      setMessage(
+        "Thank you for staying connected with Bible Therapy Assistant."
+      );
+
+      setFormData({
+        name: "",
+        email: "",
+        contactType: "",
+        organization: "",
+        city: "",
+        state: "",
+        consent: false,
+      });
+    } catch {
+      setMessage(
+        "We were unable to complete your request. Please try again."
+      );
+    } finally {
+      setSubmitting(false);
     }
+  }
 
-    return (
-        <section className="w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <div className="mb-5">
-                <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
-                    Stay Connected
-                </p>
+  return (
+    <section className="w-full rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm">
 
-                <h2 className="mt-1 text-2xl font-bold text-slate-900">
-                    Connect with Bible Therapy Assistant
-                </h2>
+      <div className="mb-6">
+        <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
+          Stay Connected
+        </p>
 
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                    Receive occasional updates about new BTA features, Bible studies,
-                    devotionals, and future TAD Concepts resources.
-                </p>
-            </div>
+        <h2 className="mt-2 text-3xl font-semibold text-neutral-900">
+          Connect with Bible Therapy Assistant
+        </h2>
 
-            {successMessage && (
-                <div className="mb-5 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-800">
-                    {successMessage}
-                </div>
-            )}
+        <p className="mt-3 text-sm leading-6 text-neutral-600">
+          Receive updates about new BTA features, Bible studies,
+          devotionals, and future TAD Concepts resources.
+        </p>
+      </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label className="block text-sm font-medium text-slate-800">
-                        Name <span className="text-red-600">*</span>
-                    </label>
+      {message && (
+        <div className="mb-5 rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700">
+          {message}
+        </div>
+      )}
 
-                    <input
-                        type="text"
-                        value={formData.name}
-                        onChange={(event) => updateField("name", event.target.value)}
-                        className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                        placeholder="Your name"
-                    />
+      <form onSubmit={handleSubmit} className="space-y-6">
 
-                    {errors.name && (
-                        <p className="mt-1 text-sm text-red-600">{errors.name}</p>
-                    )}
-                </div>
+        <div className="grid gap-5 md:grid-cols-2">
 
-                <div>
-                    <label className="block text-sm font-medium text-slate-800">
-                        Email Address <span className="text-red-600">*</span>
-                    </label>
+          <div>
+            <label className="block text-sm font-medium text-neutral-800">
+              Name
+            </label>
 
-                    <input
-                        type="email"
-                        value={formData.email}
-                        onChange={(event) => updateField("email", event.target.value)}
-                        className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                        placeholder="you@example.com"
-                    />
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) =>
+                updateField("name", e.target.value)
+              }
+              className="mt-1 w-full rounded-lg border border-neutral-300 px-4 py-3"
+              placeholder="Your name"
+            />
+          </div>
 
-                    {errors.email && (
-                        <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-                    )}
-                </div>
+          <div>
+            <label className="block text-sm font-medium text-neutral-800">
+              Email Address
+            </label>
 
-                <div>
-                    <label className="block text-sm font-medium text-slate-800">
-                        Contact Type <span className="text-red-600">*</span>
-                    </label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) =>
+                updateField("email", e.target.value)
+              }
+              className="mt-1 w-full rounded-lg border border-neutral-300 px-4 py-3"
+              placeholder="you@example.com"
+            />
+          </div>
 
-                    <select
-                        value={formData.contactType}
-                        onChange={(event) =>
-                            updateField("contactType", event.target.value as ContactType | "")
-                        }
-                        className="mt-1 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                    >
-                        <option value="">Select contact type</option>
+        </div>
 
-                        {CONTACT_TYPES.map((type) => (
-                            <option key={type} value={type}>
-                                {type}
-                            </option>
-                        ))}
-                    </select>
 
-                    {errors.contactType && (
-                        <p className="mt-1 text-sm text-red-600">{errors.contactType}</p>
-                    )}
-                </div>
+        <div>
+          <label className="block text-sm font-medium text-neutral-800">
+            Contact Type
+          </label>
 
-                <div>
-                    <label className="block text-sm font-medium text-slate-800">
-                        Organization
-                    </label>
+          <select
+            value={formData.contactType}
+            onChange={(e) =>
+              updateField(
+                "contactType",
+                e.target.value as ContactType
+              )
+            }
+            className="mt-1 w-full rounded-lg border border-neutral-300 bg-white px-4 py-3"
+          >
+            <option value="">
+              Select contact type
+            </option>
 
-                    <input
-                        type="text"
-                        value={formData.organization}
-                        onChange={(event) => updateField("organization", event.target.value)}
-                        className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                        placeholder="Church, ministry, business, or organization"
-                    />
-                </div>
+            {CONTACT_TYPES.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
 
-                <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                        <label className="block text-sm font-medium text-slate-800">
-                            City
-                        </label>
+          </select>
+        </div>
 
-                        <input
-                            type="text"
-                            value={formData.city}
-                            onChange={(event) => updateField("city", event.target.value)}
-                            className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                            placeholder="City"
-                        />
-                    </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-slate-800">
-                            State
-                        </label>
+        <div>
+          <label className="block text-sm font-medium text-neutral-800">
+            Organization
+          </label>
 
-                        <input
-                            type="text"
-                            value={formData.state}
-                            onChange={(event) => updateField("state", event.target.value)}
-                            className="mt-1 w-full rounded-xl border border-slate-300 px-4 py-3 text-sm text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
-                            placeholder="State"
-                        />
-                    </div>
-                </div>
+          <input
+            type="text"
+            value={formData.organization}
+            onChange={(e) =>
+              updateField("organization", e.target.value)
+            }
+            className="mt-1 w-full rounded-lg border border-neutral-300 px-4 py-3"
+            placeholder="Church, ministry, business, or organization"
+          />
+        </div>
 
-                <div>
-                    <label className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
-                        <input
-                            type="checkbox"
-                            checked={formData.consent}
-                            onChange={(event) => updateField("consent", event.target.checked)}
-                            className="mt-1 h-4 w-4 rounded border-slate-300"
-                        />
 
-                        <span>
-                            I would like to receive occasional updates from Bible Therapy
-                            Assistant and TAD Concepts.
-                        </span>
-                    </label>
+        <div className="grid gap-5 md:grid-cols-2">
 
-                    {errors.consent && (
-                        <p className="mt-1 text-sm text-red-600">{errors.consent}</p>
-                    )}
-                </div>
+          <input
+            type="text"
+            value={formData.city}
+            onChange={(e) =>
+              updateField("city", e.target.value)
+            }
+            className="rounded-lg border border-neutral-300 px-4 py-3"
+            placeholder="City"
+          />
 
-                <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full rounded-xl bg-blue-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-400"
-                >
-                    {isSubmitting ? "Submitting..." : "Keep Me Connected"}
-                </button>
-            </form>
-        </section>
-    );
+          <input
+            type="text"
+            value={formData.state}
+            onChange={(e) =>
+              updateField("state", e.target.value)
+            }
+            className="rounded-lg border border-neutral-300 px-4 py-3"
+            placeholder="State"
+          />
+
+        </div>
+
+
+        <label className="flex items-start gap-3 rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm">
+
+          <input
+            type="checkbox"
+            checked={formData.consent}
+            onChange={(e) =>
+              updateField("consent", e.target.checked)
+            }
+            className="mt-1"
+          />
+
+          <span>
+            I would like to receive occasional updates from
+            Bible Therapy Assistant and TAD Concepts.
+          </span>
+
+        </label>
+
+
+        <button
+          type="submit"
+          disabled={submitting}
+          className="w-full rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 disabled:bg-neutral-400"
+        >
+          {submitting
+            ? "Submitting..."
+            : "Keep Me Connected"}
+        </button>
+
+      </form>
+
+    </section>
+  );
 }

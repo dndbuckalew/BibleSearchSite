@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { runReflection } from './lib/btaApi';
 import { getQueryCount } from "./lib/btaApi";
 import DonationPrompt from "./components/donation/DonationPrompt";
+import AudiencePrompt from "./components/audience/AudiencePrompt";
 
 type DecisionResponse = {
   decision: 'PROCEED' | 'REDIRECT' | 'STOP';
@@ -149,7 +150,7 @@ export default function WhyPage() {
   };
 
   return (
-    <section className="space-y-10 max-w-2xl pl-4">
+    <section className="space-y-10 max-w-4xl pl-4">
       <h2 className="text-2xl font-semibold">
         Explore Scripture & Understanding
       </h2>
@@ -232,6 +233,11 @@ export default function WhyPage() {
           </button>
         </div>
       </form>
+
+    <div className="pt-6">
+      <AudiencePrompt />
+    </div>
+
     </section>
   );
 }
