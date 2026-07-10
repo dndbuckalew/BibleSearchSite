@@ -235,7 +235,8 @@ export default function WhyPage() {
       </form>
 
     <div className="pt-6">
-      <AudiencePrompt />
+      {/* AudiencePrompt temporarily hidden pending UX review */}
+      {/* <AudiencePrompt /> */}
     </div>
 
     </section>
