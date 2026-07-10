@@ -1,0 +1,226 @@
+# TI-EP-004 — Execution Integrity & Build Guarantee Layer
+
+**Project:** BTA V5 — HCGO Persistence Architecture
+
+**Status:** Active — validation rule set defined; not itself a schema or enforcement layer
+
+**Classification:** Technical Implementation — Build Validation
+
+---
+
+## Section 1 — Purpose
+
+TI-EP-004 defines the execution integrity layer for the TI-EP
+architecture system.
+
+This layer ensures that TI-EP-002 (Domain Isolation), TI-EP-003
+(Cross-Domain Governance), and all supporting infrastructure are
+fully buildable, dependency-resolved, and execution-safe.
+
+TI-EP-004 does **not** define schema or enforcement logic.
+
+It defines whether the system is structurally complete enough to
+execute without runtime failure or hidden dependency drift.
+
+Core responsibilities:
+- enforce schema completeness validation
+- enforce execution ordering constraints
+- eliminate implicit or missing dependencies
+- validate build readiness of TI-EP layers
+- prevent partial or inconsistent deployment states
+
+---
+
+## Section 2 — Schema Completeness Rules
+
+The following rules govern all TI-EP implementations:
+
+1. All database objects MUST be explicitly defined before use:
+   tables, columns, constraints, indexes, triggers, functions.
+2. No TI-EP layer may reference undeclared schema objects.
+3. All cross-table dependencies MUST be explicitly declared in
+   canonical TI-EP documents.
+4. No "assumed existence" of database objects is permitted.
+5. Any referenced object missing from TI-EP-002 or TI-EP-003 MUST be
+   treated as a **BLOCKING ERROR**.
+
+---
+
+## Section 3 — Execution Order Guarantee
+
+All implementations MUST follow strict execution order:
+
+**PHASE 0 — Infrastructure**
+- PostgreSQL instance exists
+- connectivity verified
+- environment available
+
+**PHASE 1 — Database Foundation**
+- database created
+- extensions installed (pgcrypto, pgvector if required)
+- schema initialized
+
+**PHASE 2 — Schema Deployment (TI-EP-002 / TI-EP-003)**
+- `domain` table
+- `expert_identity` table
+- `domain_participation_contract` table
+- `domain_cross_access_log` table
+- all required columns and constraints
+- migration sequence executed in full order
+
+**PHASE 3 — Constraints & Relationships**
+- foreign keys
+- CHECK constraints
+- uniqueness constraints
+- lifecycle constraints
+
+**PHASE 4 — Enforcement Layer Activation**
+- Row-Level Security enabled
+- FORCE ROW LEVEL SECURITY applied to all domain tables
+- RLS policies applied (TI-EP-002 + TI-EP-003)
+
+**PHASE 5 — Governance Logic**
+- contract lifecycle enforcement
+- access_scope enforcement
+- self-contract prohibition
+- status-based authorization model
+
+**PHASE 6 — Audit & Logging**
+- trigger functions created
+- write audit logging enabled
+- logging table validated
+
+---
+
+## Section 4 — Enforcement Validation Rules
+
+Before a system is considered buildable:
+
+1. RLS policies MUST only reference existing columns and tables.
+2. Triggers MUST only reference existing tables and functions.
+3. All foreign keys MUST reference existing declared tables.
+4. No enforcement logic may depend on undeclared schema.
+5. TI-EP-002 and TI-EP-003 MUST be fully deployable without
+   modification.
+6. FORCE ROW LEVEL SECURITY MUST be applied wherever RLS is enabled.
+
+---
+
+## Section 5 — Failure Conditions (Blocking Rules)
+
+The system is considered **NON-BUILDABLE** if any of the following
+occur:
+
+- missing table referenced by trigger or policy
+- missing constraint referenced by enforcement logic
+- RLS enabled without FORCE ROW LEVEL SECURITY
+- undeclared dependency between TI-EP layers
+- schema mismatch between TI-EP-002 and TI-EP-003
+- implicit object assumptions
+- out-of-order execution dependency
+
+Any failure condition MUST halt execution immediately.
+
+---
+
+## Section 6 — Final Guarantee
+
+TI-EP-004 ensures:
+- TI-EP-002 is executable without structural modification
+- TI-EP-003 is executable without structural modification
+- no hidden dependencies exist across TI layers
+- system deployment is deterministic and repeatable
+- no runtime "first execution failure" occurs due to missing schema
+
+---
+
+## Section 7 — Applied History (Added for Traceability)
+
+TI-EP-004's own Section 5 failure conditions were applied against the
+actual state of TI-EP-002/003 on July 3, 2026, and correctly
+identified two real blocking issues that existed at that time:
+
+1. `domain_cross_access_log` was referenced by the TI-EP-003 write
+   trigger but had no `CREATE TABLE` statement anywhere in the
+   canonical documents — a violation of Section 5's "missing table
+   referenced by trigger or policy."
+2. `FORCE ROW LEVEL SECURITY` was not applied to `expert_identity` —
+   a direct violation of Section 4, rule 6.
+
+Both were corrected the same day (see decision packet: "TI-EP SYSTEM
+— IMPLEMENTATION PROCEEDING DECISION"). This confirms TI-EP-004's
+rule set is functionally correct — it caught real issues when
+checked against the actual build state, rather than only describing
+categories of issue in the abstract.
+
+Note: TI-EP-004 is a validation rule set, not a fix. Applying it does
+not itself close a gap — it only identifies where a gap exists. The
+two fixes above were made separately, in the referenced decision
+packet.
+
+20260709
+ADD TO TI-EP-004 — LOCK CONFIRMATION ADDENDUM
+(Insert as new Section 8, after existing Section 7. Also apply the
+one wording change to Section 1 noted below.)
+
+------------------------------------------------------------
+WORDING CHANGE TO SECTION 1
+------------------------------------------------------------
+
+REPLACE:
+"This layer ensures that TI-EP-002 (Domain Isolation), TI-EP-003
+(Cross-Domain Governance), and all supporting infrastructure are
+fully buildable, dependency-resolved, and execution-safe."
+
+WITH:
+"This layer ensures that all TI-EP persistence layers — including
+TI-EP-002 (Domain Isolation), TI-EP-003 (Cross-Domain Governance),
+TI-EP-005 (Commentary), and future domain extensions — are fully
+buildable, dependency-resolved, and execution-safe."
+
+------------------------------------------------------------
+NEW SECTION 8 — LOCK CONFIRMATION (July 2026)
+------------------------------------------------------------
+
+Before removing Draft status, four clarifications were requested and
+confirmed. This section is the permanent record of that confirmation.
+
+**1. Applied History (Section 7) — Confirmed accurate.**
+No corrections required. The identification of the missing
+`domain_cross_access_log` table and the missing `FORCE ROW LEVEL
+SECURITY` on `expert_identity` is correct, and both issues were
+resolved within the same implementation cycle. Section 7 stands as
+part of the locked record without amendment.
+
+**2. Phase Numbering Authority — TI-EP-004's Phase 0-6 model is
+authoritative.**
+This execution sequence supersedes the alternate Phase 0-3 model used
+in the "TI-EP SYSTEM — FINAL IMPLEMENTATION VALIDATION REQUEST"
+decision packet. That document's phase numbering is deprecated as of
+this lock. Any document retaining the Phase 0-3 model should carry a
+note indicating it has been superseded by this section. All future
+TI-EP documents inherit the Phase 0-6 structure defined in Section 3.
+
+**3. Scope of Applicability — TI-EP-004 is universal, not scoped to
+TI-EP-002/003 only.**
+This validation rule set applies to all TI-EP persistence layers,
+present and future — including TI-EP-005 (Commentary), OSHA extension
+tables, CRM tables, and any subsequent domain additions (legal,
+healthcare, etc.). See wording change to Section 1, above.
+
+**4. "No Structural Modification" Guarantee — Point-in-time only.**
+The Section 6 guarantee ("TI-EP-002 is executable without structural
+modification," and equivalent for TI-EP-003) reflects validated state
+at the time TI-EP-004 was last run — July 3, 2026. It is not a
+permanent or self-renewing guarantee. If TI-EP-002, TI-EP-003, or any
+future layer covered under item 3 above is modified, TI-EP-004 MUST
+be re-run and the guarantee re-validated before it may be relied upon
+again. No inherited validity is assumed across changes.
+
+------------------------------------------------------------
+LOCK STATUS
+------------------------------------------------------------
+
+With the above four items confirmed, TI-EP-004 is approved for
+removal of "Draft" status effective July 2026. Rename file from
+TI-EP-004-Draft to TI-EP-004 upon commit.
