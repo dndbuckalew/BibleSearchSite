@@ -45,8 +45,8 @@ print("===================================")
 # ------------------------------------------------------------------
 
 app = FastAPI(
-    title="Bible Therapy Assistant",
-    description="Production API for the Bible Therapy Assistant",
+    title="Bible Therapy Assistant™",
+    description="Production API for the Bible Therapy Assistant™",
     version="2.0.0",
 )
 

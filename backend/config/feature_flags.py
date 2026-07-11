@@ -1,6 +1,6 @@
 """
 PURPOSE:
-Centralized runtime execution controls for the Bible Therapy Assistant (BTA).
+Centralized runtime execution controls for the Bible Therapy Assistant™ (BTA).
 
 Design principles:
 - Feature flags are authoritative and explicit

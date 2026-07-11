@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = FastAPI(
-    title="Bible Therapy Assistant",
-    description="Backend API wiring for the Bible Therapy Assistant",
+    title="Bible Therapy Assistant™",
+    description="Backend API wiring for the Bible Therapy Assistant™",
     version="2.0.0",
 )
 

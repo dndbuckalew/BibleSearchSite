@@ -1,5 +1,5 @@
 # GUARDRAILS.md
-## Bible Therapy Assistant (BTA)
+## Bible Therapy Assistant™ (BTA)
 ### Core Guardrails — Version 1 Scope
 
 ---

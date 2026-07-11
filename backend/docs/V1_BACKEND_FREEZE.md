@@ -1,7 +1,7 @@
 # BTA – Backend V1 Freeze Declaration
 
 **Date:** 2026-01-01  
-**Project:** Bible Therapy Assistant (BTA)  
+**Project:** Bible Therapy Assistant™ (BTA)  
 **Scope:** Backend API, control logic, and safety guardrails
 
 ## Declaration

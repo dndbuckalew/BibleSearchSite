@@ -19,7 +19,7 @@ def generate_ai_reflection(
         return None
 
     prompt = f"""
-You are generating the Personal Reflection layer for the Bible Therapy Assistant (BTA).
+You are generating the Personal Reflection layer for the Bible Therapy Assistant™ (BTA).
 
 This is NOT a summary.
 This is NOT an explanation of the passage.

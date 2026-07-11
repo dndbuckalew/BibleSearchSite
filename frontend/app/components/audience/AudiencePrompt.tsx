@@ -89,7 +89,7 @@ export default function AudiencePrompt() {
       }
 
       setMessage(
-        "Thank you for staying connected with Bible Therapy Assistant."
+        "Thank you for staying connected with Bible Therapy Assistant™."
       );
 
       setFormData({
@@ -119,7 +119,7 @@ export default function AudiencePrompt() {
         </p>
 
         <h2 className="mt-2 text-3xl font-semibold text-neutral-900">
-          Connect with Bible Therapy Assistant
+          Connect with Bible Therapy Assistant™
         </h2>
 
         <p className="mt-3 text-sm leading-6 text-neutral-600">
@@ -134,7 +134,7 @@ export default function AudiencePrompt() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6 w-full">
 
         <div className="grid gap-5 md:grid-cols-2">
 
@@ -257,7 +257,7 @@ export default function AudiencePrompt() {
 
           <span>
             I would like to receive occasional updates from
-            Bible Therapy Assistant and TAD Concepts.
+            Bible Therapy Assistant™ and TAD Concepts.
           </span>
 
         </label>

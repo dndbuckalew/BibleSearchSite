@@ -26,7 +26,7 @@ export default function RootLayout({
         <header className="border-b bg-white">
           <div className="max-w-4xl mx-auto px-4 py-4">
             <h1 className="text-2xl font-semibold">
-              Bible Therapy Assistant
+              Bible Therapy Assistant™
             </h1>
 
             <div className="mt-2 space-y-2">
