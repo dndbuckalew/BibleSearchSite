@@ -1,0 +1,218 @@
+# ADR-001: Security Framework References, Compliance Statements, and Architectural Language Standard
+
+## Status
+ACCEPTED — Constitutional Requirement
+
+## Date
+July 7, 2026
+
+## Deciders
+Donald A. Buckalew — Sole Inventor, TAD Concepts LLC
+
+## Applies To
+All TAD Concepts domains and products including:
+- HCGO Platform (Human-Centered Governed Orchestration)
+- BTA (Bible Therapy Assistant)
+- OSHA Domain
+- All future platform implementations and domains
+
+All TAD Concepts documentation including:
+- Patent filings and non-provisional applications
+- SBIR/STTR proposals and federal grant submissions
+- Investor materials and pitch documents
+- Website and marketing collateral
+- Architecture documentation and technical specifications
+- Future publications and white papers
+
+---
+
+## Context
+
+During architecture review and NSF SBIR Phase I proposal development (July 2026), the need for a permanent, governing standard on security framework language was identified.
+
+TAD Concepts intentionally incorporates recognized security engineering principles — including principles derived from NIST SP 800-53, NIST AI 200-1, and related frameworks — as architectural design guidance throughout the HCGO platform.
+
+The distinction between **architectural alignment** and **formal compliance** is legally, contractually, and architecturally significant:
+
+- Formal compliance claims (e.g., "NIST 800-53 compliant," "FedRAMP compliant") imply independent verification, audit completion, accreditation, or authorization that TAD Concepts has not obtained and does not currently require
+- Unsupported compliance claims create legal exposure, contractual obligations, and credibility risk during investor and government due diligence
+- Patent filings containing compliance claims can narrow patent scope or create prior art issues if compliance status changes
+- NSF and federal reviewers flag unsupported compliance claims as credibility risks
+
+This ADR establishes the permanent constitutional requirement governing all TAD Concepts language on this subject.
+
+---
+
+## Decision
+
+### Constitutional Requirement
+
+TAD Concepts SHALL use recognized industry and government security frameworks as **architectural design references and engineering guidance**.
+
+TAD Concepts SHALL NOT represent, imply, or state that a product, platform, or architecture is formally compliant, certified, accredited, or authorized unless such status has been independently verified and is explicitly required for the applicable customer, contract, grant, or regulatory environment.
+
+---
+
+## Approved Language
+
+The following statements ARE approved for use in all TAD Concepts documentation:
+
+```
+- Designed using established security engineering principles.
+- Architecture incorporates recognized security design practices.
+- Security-by-design principles are applied throughout the platform.
+- Architecture reflects recognized government and industry security engineering guidance.
+- Data minimization and authority separation are core architectural principles.
+- Identity persistence is intentionally minimized to reduce platform risk.
+- Platform architecture incorporates principles derived from recognized security 
+  frameworks where appropriate.
+```
+
+---
+
+## Prohibited Language
+
+Unless explicitly required AND independently validated, the following statements SHALL NOT appear in any TAD Concepts documentation:
+
+```
+- NIST compliant
+- NIST certified
+- 800-53 compliant
+- FedRAMP compliant
+- HIPAA compliant
+- CJIS compliant
+- FISMA compliant
+- SOC 2 compliant
+- ISO 27001 certified
+- PCI compliant
+- CMMC compliant
+```
+
+Or any similar statement implying formal certification, authorization, accreditation, audit completion, or regulatory approval.
+
+---
+
+## Covered Frameworks
+
+This standard applies to all security and compliance frameworks including but not limited to:
+
+| Framework | Governing Body | Notes |
+|---|---|---|
+| NIST SP 800-53 | NIST / Federal | Security controls for federal systems |
+| NIST Cybersecurity Framework (CSF) | NIST | Enterprise cybersecurity guidance |
+| NIST AI 200-1 | NIST | AI Use Case Taxonomy — referenced as extension framework only |
+| FedRAMP | GSA / Federal | Cloud authorization for federal use |
+| FISMA | Federal | Federal information security management |
+| HIPAA | HHS | Healthcare data privacy |
+| CJIS | FBI | Criminal justice information systems |
+| SOC 2 | AICPA | Service organization controls |
+| ISO 27001 | ISO | Information security management |
+| PCI DSS | PCI SSC | Payment card industry |
+| CMMC | DoD | Cybersecurity maturity model |
+
+---
+
+## Exception
+
+If a future SBIR solicitation, government contract, commercial customer, or regulatory requirement **explicitly requires** formal compliance, accreditation, certification, or authorization:
+
+1. Documentation SHALL describe only the validated status supported by evidence for that specific engagement
+2. No broader compliance claim shall be inferred or generalized to the TAD Concepts platform as a whole
+3. The exception must be documented in a new ADR referencing this ADR as the governing standard
+4. Patent counsel must be consulted before any compliance claim appears in a patent filing
+
+---
+
+## Validation Against Filed Documents
+
+### USPTO Provisional Patent — App No. 64/100,983 — Filed June 29, 2026
+✅ No compliance claims present
+✅ NIST AI 200-1 referenced as extension framework only — not as compliance standard
+✅ CONSISTENT with this ADR
+
+### NSF SBIR Phase I Project Pitch — SBIR_Refinement_20260707.docx
+✅ Section 4 references "two 3-year ATOs on classified DoD systems via NIST 800-53 partnership" — describes founder personal credential only — not platform compliance claim
+✅ No platform compliance claims present
+✅ CONSISTENT with this ADR
+
+### tadconcepts.com — Landing Page — Deployed July 3, 2026
+✅ No compliance claims present
+✅ CONSISTENT with this ADR
+
+### TAD Concepts Document Series — TAD_001 through TAD_008
+⚠️ Recommend review of investor documents before distribution
+✅ Credential references (DoD ATO, NIST 800-53 partnership) are in personal credential context only
+✅ CONSISTENT with this ADR — confirm before investor distribution
+
+---
+
+## Architectural Rationale
+
+TAD Concepts intentionally adopts recognized security engineering principles as part of its Human-Centered Governed Orchestration (HCGO) architecture to:
+
+- Improve system quality and reduce security exposure
+- Support scalable enterprise design
+- Enable future deployment into regulated environments
+- Maintain architectural integrity across domain expansion
+
+The architectural objective is **sound engineering** — not unsupported compliance claims.
+
+This standard preserves architectural accuracy while avoiding unintended legal, contractual, or audit obligations.
+
+---
+
+## Relationship to HCGO Constitutional Architecture
+
+This ADR is itself an expression of HCGO's constitutional governance model applied to TAD Concepts LLC as an organization:
+
+- **Constitutional Guardrail** — explicit written requirement governing all language decisions
+- **Approved language** — authorized outputs (parallel to authorized source material)
+- **Prohibited language** — boundary detection (parallel to Component 106)
+- **Exception handling** — governed process for edge cases (parallel to Domain Participation Contracts)
+- **Audit trail** — this ADR as the governance event record (parallel to Component 138)
+
+Constitutional governance applies not only to the platform — it governs the organization that built it.
+
+---
+
+## Consequences
+
+### Positive
+- Eliminates legal exposure from unsupported compliance claims
+- Protects patent scope from compliance language that could narrow claims
+- Preserves credibility with NSF, DoD, enterprise, and investor reviewers
+- Establishes clear organizational standard for all future documentation
+- Enables future compliance claims to be made precisely when earned
+
+### Negative / Accepted Trade-offs
+- Some marketing language may feel less authoritative without compliance labels
+- Sales conversations may require additional explanation of "security-by-design" vs. certification
+- Accepted: architectural accuracy outweighs marketing convenience
+
+---
+
+## References
+
+- USPTO Provisional Patent Application No. 64/100,983 — Filed June 29, 2026
+- TAD_006 — Terminology and Patent Alignment Registry — July 3, 2026
+- TAD_007 — Master Session Document — July 3, 2026 (Updated)
+- NSF SBIR Phase I Project Pitch — SBIR_Refinement_20260707.docx — July 7, 2026
+- NIST AI 200-1 — AI Use Case Taxonomy — March 2024
+- NIST SP 800-53 — Security and Privacy Controls for Information Systems
+
+---
+
+## Review Schedule
+
+This ADR shall be reviewed:
+- Before each patent filing (provisional or non-provisional)
+- Before each federal grant submission
+- Before each investor distribution
+- When a new domain or product is added to the TAD Concepts platform
+- When a customer or contract explicitly requires formal compliance
+
+---
+
+*TAD Concepts LLC — Donald A. Buckalew, Sole Inventor*
+*Patent Pending — USPTO App No. 64/100,983 — Filed June 29, 2026*
+*ADR-001 — Accepted July 7, 2026 — Constitutional Requirement — Single Source of Truth*

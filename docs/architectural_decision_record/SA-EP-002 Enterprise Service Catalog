@@ -1,0 +1,255 @@
+# SA-EP-002 — Enterprise Service Catalog
+
+**Project:** BTA V5.1 — HCGO Enterprise Service Architecture
+
+**Status:** Approved
+
+**Classification:** Enterprise Service Architecture
+
+---
+
+# Purpose
+
+Establish the authoritative architectural inventory of Enterprise Services across HCGO.
+
+The Enterprise Service Catalog faithfully inventories the Enterprise Services that expose approved Enterprise Capabilities while preserving enterprise authority, ownership, stewardship, governance, lifecycle authority, traceability, and enterprise semantics.
+
+The Enterprise Service Catalog is an architectural artifact.
+
+It is not a technology implementation artifact.
+
+---
+
+# Architecture Objective
+
+Establish the authoritative Enterprise Service Catalog for HCGO.
+
+The Enterprise Service Catalog is the authoritative architectural inventory of Enterprise Services that expose approved Enterprise Capabilities across HCGO.
+
+It faithfully represents Enterprise Capability Architecture without introducing implementation concerns.
+
+Enterprise Services remain independent of APIs, runtime implementation, messaging, protocols, databases, or implementation technologies.
+
+---
+
+# Enterprise Service Catalog
+
+The Enterprise Service Catalog shall identify:
+
+- Enterprise Service Name
+- Enterprise Capability Exposed
+- Enterprise Service Purpose
+- Authoritative Enterprise Capability
+- Enterprise Service Steward
+- Enterprise Service Classification
+- Enterprise Service Responsibilities
+- Enterprise Service Relationships
+- Enterprise Service Boundaries
+- Enterprise Service Consumers
+- Enterprise Service Governance
+
+For every Enterprise Service identify:
+
+- Service Name
+- Enterprise Capability Exposed
+- Purpose
+- Authoritative Enterprise Capability
+- Steward
+- Responsibilities
+- Authorized Consumers
+- Enterprise Relationships
+- Enterprise Boundaries
+- Governance Notes
+
+---
+
+# The Enterprise Service Catalog Shall NOT Identify
+
+The Enterprise Service Catalog shall not identify:
+
+- REST APIs
+- FastAPI Endpoints
+- HTTP Methods
+- URLs
+- GraphQL
+- gRPC
+- Messaging
+- Runtime Execution
+- Service Implementation
+- Database Implementation
+- Technology Implementation
+
+Those responsibilities belong to the Technology Implementation phase.
+
+---
+
+# Enterprise Service Boundary Preservation
+
+Enterprise Services shall expose Enterprise Capabilities while preserving:
+
+- Capability Boundaries
+- Ownership Boundaries
+- Stewardship Boundaries
+- Governance Boundaries
+- Information Boundaries
+
+Enterprise Services shall never collapse or bypass these enterprise boundaries.
+
+---
+
+# Enterprise Principle
+
+Every Enterprise Service shall expose one authoritative Enterprise Capability.
+
+Enterprise Services faithfully expose Enterprise Capability responsibilities.
+
+Enterprise Services shall never redefine:
+
+- Enterprise Authority
+- Enterprise Ownership
+- Enterprise Stewardship
+- Enterprise Governance
+- Enterprise Lifecycle Authority
+- Enterprise Semantics
+
+Enterprise Services remain architectural representations of Enterprise Capabilities.
+
+---
+
+# Enterprise Capability Ownership Preservation
+
+The Enterprise Service Catalog shall identify Enterprise Services.
+
+It shall not redefine Enterprise Capabilities.
+
+Each Enterprise Service shall trace directly to one authoritative Enterprise Capability.
+
+Enterprise Capability ownership, authority, stewardship, governance, lifecycle authority, and enterprise semantics remain vested in the owning Enterprise Capability.
+
+The Enterprise Service Catalog faithfully inventories the Enterprise Services that expose those responsibilities.
+
+---
+
+# Architectural Rationale
+
+Throughout Constitutional Governance, Enterprise Discovery, Enterprise Analysis, Enterprise Persistence Architecture, and Enterprise Service Architecture, HCGO has consistently distinguished between enterprise responsibilities and the architectural representations of those responsibilities.
+
+Enterprise Capabilities define enterprise responsibilities.
+
+Enterprise Services expose enterprise responsibilities.
+
+The Enterprise Service Catalog inventories Enterprise Services.
+
+The catalog therefore represents Enterprise Service Architecture rather than Enterprise Capability Architecture.
+
+This preserves the constitutional separation between:
+
+- Enterprise Capability
+- Enterprise Service
+- Enterprise Service Catalog
+- Technology Implementation
+
+Each architectural layer has a unique constitutional responsibility.
+
+The Enterprise Capability remains the authoritative enterprise responsibility.
+
+The Enterprise Service remains the architectural exposure of that responsibility.
+
+The Enterprise Service Catalog remains the authoritative architectural inventory of those Enterprise Services.
+
+Technology faithfully implements the Enterprise Service Catalog.
+
+At no point does architectural inventory transfer enterprise authority.
+
+---
+
+# Constitutional Principle
+
+Architectural inventory never transfers enterprise authority.
+
+Enterprise Capabilities remain the constitutional source of enterprise responsibility.
+
+Enterprise Services faithfully expose those responsibilities.
+
+The Enterprise Service Catalog faithfully inventories those Enterprise Services.
+
+Technology faithfully implements the Enterprise Service Catalog.
+
+Neither architectural representation nor architectural inventory may redefine:
+
+- Enterprise Authority
+- Enterprise Ownership
+- Enterprise Stewardship
+- Enterprise Governance
+- Enterprise Lifecycle Authority
+- Enterprise Semantics
+
+---
+
+# Architecture Outcome
+
+The Enterprise Service Catalog becomes the authoritative architectural inventory of Enterprise Services across HCGO.
+
+Every Enterprise Service shall trace directly to one authoritative Enterprise Capability.
+
+Every Enterprise Capability may expose one or more Enterprise Services as approved through Enterprise Architecture.
+
+All Enterprise Service artifacts shall faithfully conform to the Enterprise Service Catalog.
+
+Technology implementations shall faithfully implement the Enterprise Service Catalog without redefining:
+
+- Enterprise Capabilities
+- Enterprise Services
+- Enterprise Authority
+- Enterprise Ownership
+- Enterprise Stewardship
+- Enterprise Governance
+- Enterprise Lifecycle Authority
+- Enterprise Traceability
+- Enterprise Semantics
+
+The Enterprise Service Catalog therefore becomes the authoritative architectural bridge between Enterprise Capability Architecture and Technology Implementation.
+
+---
+
+# Current Assessment
+
+The Enterprise Service Catalog completes the architectural inventory layer of HCGO.
+
+The constitutional progression is:
+
+Enterprise Semantics
+
+↓
+
+Enterprise Capability
+(Defines Enterprise Responsibility)
+
+↓
+
+Enterprise Service
+(Exposes Enterprise Responsibility)
+
+↓
+
+Enterprise Service Catalog
+(Authoritative Architectural Inventory)
+
+↓
+
+Technology Implementation
+(Implements Enterprise Services)
+
+Each architectural layer faithfully represents the authoritative outcomes established by the previous layer.
+
+Enterprise Capabilities remain the constitutional source of enterprise responsibility.
+
+Enterprise Services remain the architectural exposure of those responsibilities.
+
+The Enterprise Service Catalog remains the authoritative architectural inventory of those Enterprise Services.
+
+Technology faithfully implements the Enterprise Service Catalog.
+
+This preserves the foundational HCGO constitutional principle:
+
+**Architectural inventories faithfully represent architectural artifacts. They never replace the authoritative enterprise responsibilities those artifacts represent.**

@@ -1,0 +1,324 @@
+# AF-EP-001 — Enterprise Capability Relationships
+
+**Project:** BTA V5.1 — HCGO Enterprise Persistence Architecture
+
+**Status:** Approved
+
+**Classification:** Analysis Finding
+
+---
+
+# Purpose
+
+Establish the authoritative enterprise relationships between validated HCGO enterprise capabilities.
+
+This analysis identifies enterprise relationships only.
+
+It does not define runtime execution, implementation, persistence, APIs, database structures, or technology.
+
+---
+
+# Analysis Principles
+
+Enterprise relationship analysis shall identify:
+
+- Enterprise responsibility relationships
+- Provider / Consumer relationships
+- Organizational relationships
+- Governance relationships
+- Authorization relationships
+- Configuration relationships
+- Evidence relationships
+
+Enterprise relationship analysis shall not identify:
+
+- Runtime execution
+- Service invocation
+- API dependencies
+- Database relationships
+- Foreign keys
+- PostgreSQL design
+- Implementation dependencies
+
+---
+
+# Enterprise Relationship Principles
+
+Enterprise capabilities form an interconnected enterprise ecosystem.
+
+Enterprise capabilities collaborate through well-defined enterprise relationships.
+
+Enterprise relationships remain:
+
+- Enterprise-level
+- Technology independent
+- Domain independent
+- Implementation independent
+- Persistence independent
+
+Relationships define enterprise semantics.
+
+They do not define runtime execution.
+
+---
+
+# Enterprise Capability Relationships
+
+## Language Management → Human Understanding
+
+**Relationship**
+
+Provider → Consumer
+
+**Analysis**
+
+Language Management provides normalized enterprise communication.
+
+Human Understanding consumes normalized communication to establish authoritative enterprise understanding.
+
+Language Management does not determine intent.
+
+Human Understanding does not normalize language.
+
+---
+
+## Human Understanding → Enterprise Capabilities
+
+**Relationship**
+
+Provider → Consumer
+
+**Analysis**
+
+Human Understanding provides the authoritative enterprise understanding required before enterprise capabilities execute.
+
+Enterprise capabilities consume that understanding.
+
+Human Understanding does not execute domain behavior.
+
+---
+
+## Expert Registry → Participation Registry
+
+**Relationship**
+
+Provider → Consumer
+
+**Analysis**
+
+Expert Registry defines authoritative enterprise experts.
+
+Participation Registry determines whether those experts are authorized to participate.
+
+Identity remains independent of authorization.
+
+---
+
+## Source Registry → Participation Registry
+
+**Relationship**
+
+Provider → Consumer
+
+**Analysis**
+
+Source Registry defines authoritative knowledge sources.
+
+Participation Registry determines whether those sources are authorized to participate.
+
+Knowledge origin remains independent of participation.
+
+---
+
+## Participation Registry → Enterprise Capabilities
+
+**Relationship**
+
+Authorization Provider
+
+**Analysis**
+
+Enterprise capabilities consume participation authorization.
+
+Participation Registry never determines how participation is used.
+
+Capabilities determine how authorized participation contributes.
+
+---
+
+## Domain Registry → Enterprise Capability Registry
+
+**Relationship**
+
+Organizational Relationship
+
+**Analysis**
+
+Domain Registry defines enterprise boundaries.
+
+Enterprise Capability Registry defines enterprise responsibilities.
+
+Domains organize capabilities.
+
+Capabilities remain independently defined.
+
+---
+
+## Governance Metadata → Enterprise Capabilities
+
+**Relationship**
+
+Governance Metadata Provider
+
+**Analysis**
+
+Governance Metadata provides authoritative governance classifications used throughout the enterprise.
+
+It enables governance.
+
+It does not perform governance.
+
+---
+
+## Audit & Traceability → Enterprise Capabilities
+
+**Relationship**
+
+Enterprise Evidence Provider
+
+**Analysis**
+
+Audit & Traceability maintains authoritative enterprise evidence describing enterprise activity.
+
+Enterprise capabilities generate traceable events.
+
+Audit & Traceability records those events.
+
+---
+
+## Platform Configuration Management → Platform Capabilities
+
+**Relationship**
+
+Configuration Provider
+
+**Analysis**
+
+Platform Configuration Management provides authoritative enterprise platform configuration.
+
+Platform capabilities consume approved configuration.
+
+Configuration governs configuration.
+
+Capabilities govern behavior.
+
+---
+
+## Enterprise Capability Registry → Enterprise
+
+**Relationship**
+
+Enterprise Definition Authority
+
+**Analysis**
+
+Enterprise Capability Registry defines the authoritative enterprise capabilities.
+
+Other enterprise capabilities relate to those definitions.
+
+It does not implement them.
+
+---
+
+# Enterprise Relationship Matrix
+
+| Provider | Consumer | Relationship Type |
+|----------|----------|-------------------|
+| Language Management | Human Understanding | Provider → Consumer |
+| Human Understanding | Enterprise Capabilities | Provider → Consumer |
+| Expert Registry | Participation Registry | Provider → Consumer |
+| Source Registry | Participation Registry | Provider → Consumer |
+| Participation Registry | Enterprise Capabilities | Authorization Provider |
+| Domain Registry | Enterprise Capability Registry | Organizational |
+| Governance Metadata | Enterprise Capabilities | Governance Metadata Provider |
+| Audit & Traceability | Enterprise Capabilities | Enterprise Evidence Provider |
+| Platform Configuration Management | Platform Capabilities | Configuration Provider |
+| Enterprise Capability Registry | Enterprise | Enterprise Definition Authority |
+
+---
+
+# Enterprise Relationship Model
+
+```text
+Enterprise
+        │
+        ▼
+Enterprise Capability Registry
+        │
+Defines enterprise capabilities
+        │
+        ▼
+Domain Registry
+        │
+Organizes enterprise capabilities
+        │
+        ▼
+Participation Registry
+        ▲           ▲
+        │           │
+Expert Registry   Source Registry
+        │           │
+Identity       Knowledge Origin
+
+Language Management
+        │
+        ▼
+Human Understanding
+        │
+Provides authoritative enterprise understanding
+        │
+        ▼
+Enterprise Capabilities
+
+Governance Metadata
+        │
+Provides governance classifications
+        │
+──────────────────────────────► Enterprise Capabilities
+
+Platform Configuration Management
+        │
+Provides platform configuration
+        │
+──────────────────────────────► Platform Capabilities
+
+Audit & Traceability
+        │
+Maintains authoritative enterprise evidence
+        │
+◄────────────────────────────── Enterprise Activity
+```
+
+---
+
+# Analysis Summary
+
+Enterprise Discovery identified the authoritative enterprise entities.
+
+Enterprise Analysis establishes the authoritative relationships between those entities.
+
+Enterprise capabilities form an interconnected enterprise ecosystem.
+
+Each capability owns one authoritative enterprise responsibility while collaborating through well-defined enterprise relationships.
+
+These relationships remain independent of runtime execution, implementation, persistence, APIs, and technology.
+
+---
+
+# Current Assessment
+
+Enterprise relationship analysis establishes the semantic foundation for subsequent Persistence Architecture.
+
+Logical data models, persistence architecture, enterprise services, and runtime orchestration shall be derived from these validated enterprise relationships rather than implementation-specific assumptions.
+
+Enterprise relationship analysis intentionally precedes persistence architecture to preserve constitutional separation between enterprise semantics and technology implementation.

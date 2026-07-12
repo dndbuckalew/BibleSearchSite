@@ -1,0 +1,241 @@
+# PA-EP-002 — Enterprise Conceptual Information Model (ECIM)
+
+**Project:** BTA V5.1 — HCGO Enterprise Persistence Architecture
+
+**Status:** Approved
+
+**Classification:** Persistence Architecture
+
+---
+
+# Purpose
+
+Establish the authoritative Enterprise Conceptual Information Model (ECIM) for HCGO.
+
+The Enterprise Conceptual Information Model (ECIM) is the authoritative conceptual representation of enterprise information and enterprise information relationships across HCGO.
+
+It faithfully represents the enterprise semantic model established through Constitutional Governance, Enterprise Discovery, Enterprise Analysis, and Enterprise Persistence Architecture without introducing logical or physical implementation concerns.
+
+The Enterprise Conceptual Information Model identifies enterprise concepts only.
+
+It does not define logical data models, physical database design, PostgreSQL implementation, APIs, runtime execution, messaging, or technology.
+
+---
+
+# Architecture Objective
+
+Establish the authoritative conceptual representation of enterprise information independently of technology, persistence implementation, runtime execution, or physical storage.
+
+The Enterprise Conceptual Information Model serves as the authoritative semantic bridge between Enterprise Architecture and Persistence Design.
+
+---
+
+# Enterprise Conceptual Information Model
+
+The Enterprise Conceptual Information Model shall identify:
+
+- Enterprise Information Categories
+- Enterprise Information Definitions
+- Enterprise Information Authorities
+- Enterprise Relationships
+- Enterprise Constraints
+- Enterprise Information Boundaries
+- Enterprise Ownership Boundaries
+- Enterprise Stewardship Boundaries
+
+For every Enterprise Information Category identify:
+
+- Enterprise Information Category
+- Enterprise Definition
+- Authoritative Owner
+- Steward
+- Enterprise Information Authorities
+- Conceptual Relationships
+- Enterprise Constraints
+- Enterprise Information Boundaries
+- Ownership Notes
+
+---
+
+# Enterprise Conceptual Information Model Does NOT Identify
+
+The Enterprise Conceptual Information Model shall not identify:
+
+- PostgreSQL tables
+- Database entities
+- Columns
+- Foreign keys
+- Indexes
+- SQL
+- APIs
+- Runtime execution
+- Service calls
+- Logical implementation
+- Physical persistence
+- Technology implementation
+
+Those responsibilities belong to subsequent architectural and implementation phases.
+
+---
+
+# Enterprise Conceptual Information Categories
+
+The Enterprise Conceptual Information Model represents, at a minimum, the following Enterprise Information Categories:
+
+- Enterprise Communication Normalization
+- Enterprise Understanding
+- Expert Identity
+- Source Identity
+- Participation Authorization
+- Domain Definition
+- Governance Metadata
+- Enterprise Audit Evidence
+- Platform Configuration
+- Enterprise Capability Definition
+
+Additional Enterprise Information Categories may be introduced through approved enterprise governance without redefining the conceptual model.
+
+---
+
+# Enterprise Conceptual Information Authorities
+
+The Enterprise Conceptual Information Model conceptually represents enterprise authorities including:
+
+- Authoritative Owner
+- Creation Authority
+- Modification Authority
+- Archival Authority
+- Retirement Authority
+- Lifecycle Governance Authority
+
+These authorities define conceptual enterprise responsibility.
+
+They do not imply implementation responsibilities.
+
+---
+
+# Enterprise Conceptual Relationships
+
+Conceptual relationships describe authoritative enterprise semantics only.
+
+They identify conceptual relationships between Enterprise Information Categories without implying:
+
+- Logical data structures
+- Database relationships
+- Foreign keys
+- Runtime execution
+- Orchestration
+- APIs
+- Persistence implementation
+- Technology implementation
+
+Logical Information Models shall faithfully represent these conceptual relationships.
+
+They shall never redefine them.
+
+---
+
+# Enterprise Conceptual Constraints
+
+The Enterprise Conceptual Information Model establishes enterprise constraints governing:
+
+- Information ownership
+- Information authority
+- Stewardship
+- Participation
+- Governance
+- Traceability
+- Lifecycle
+- Enterprise relationships
+
+These constraints remain conceptual and technology independent.
+
+---
+
+# Enterprise Information Boundaries
+
+Enterprise Information Boundaries define the conceptual limits within which enterprise information exists, is owned, is governed, and relates to other enterprise information.
+
+Examples include:
+
+- Domain Boundaries
+- Capability Boundaries
+- Information Boundaries
+- Ownership Boundaries
+- Stewardship Boundaries
+
+These boundaries are enterprise semantic constructs.
+
+They do not imply:
+
+- Database schemas
+- Tables
+- Columns
+- APIs
+- Services
+- Runtime execution
+- Persistence implementation
+
+Logical and physical persistence models shall faithfully represent these conceptual boundaries.
+
+They shall never redefine them.
+
+---
+
+# Enterprise Principle
+
+Every Enterprise Information Category represents an authoritative enterprise concept.
+
+Conceptual relationships describe authoritative enterprise semantics only.
+
+The Enterprise Conceptual Information Model establishes enterprise concepts independently of logical implementation, persistence structures, runtime execution, or technology.
+
+---
+
+# Architecture Outcome
+
+The Enterprise Conceptual Information Model becomes the authoritative conceptual representation of enterprise information across HCGO.
+
+It faithfully represents the enterprise semantic model established through:
+
+- Constitutional Governance
+- Enterprise Discovery
+- Enterprise Analysis
+- Enterprise Persistence Architecture
+
+All subsequent Logical Information Models and Physical Persistence Models shall conform to the Enterprise Conceptual Information Model.
+
+No logical or physical persistence artifact may redefine:
+
+- Enterprise concepts
+- Enterprise ownership
+- Enterprise authorities
+- Enterprise stewardship
+- Enterprise relationships
+- Enterprise constraints
+- Enterprise information boundaries
+
+established within the Enterprise Conceptual Information Model.
+
+---
+
+# Current Assessment
+
+The Enterprise Conceptual Information Model establishes the authoritative semantic representation of enterprise information across HCGO.
+
+It defines:
+
+- Enterprise Information Categories
+- Enterprise Information Definitions
+- Enterprise Information Authorities
+- Enterprise Relationships
+- Enterprise Constraints
+- Enterprise Information Boundaries
+- Enterprise Ownership Boundaries
+- Enterprise Stewardship Boundaries
+
+Together these elements establish the complete conceptual semantic model that all subsequent Logical Information Models, Physical Persistence Models, PostgreSQL implementations, and future persistence technologies shall faithfully represent.
+
+The Enterprise Conceptual Information Model remains the authoritative bridge between Enterprise Architecture and Persistence Design.
+
+No subsequent architectural or implementation artifact may redefine the enterprise semantics established by the Enterprise Conceptual Information Model.

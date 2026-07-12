@@ -1,0 +1,439 @@
+# AF-EP-004 — Enterprise Information Lifecycle
+
+**Project:** BTA V5.1 — HCGO Enterprise Persistence Architecture
+
+**Status:** Approved
+
+**Classification:** Analysis Finding
+
+---
+
+# Purpose
+
+Establish the authoritative lifecycle of Enterprise Information Categories across HCGO.
+
+This analysis identifies enterprise lifecycle authority only.
+
+It does not define database operations, CRUD implementation, persistence mechanisms, runtime execution, orchestration, APIs, messaging, or technology.
+
+---
+
+# Analysis Principles
+
+Enterprise Information Lifecycle shall identify:
+
+- Enterprise Information Categories
+- Lifecycle Authority
+- Lifecycle Stewardship
+- Lifecycle Responsibilities
+- Lifecycle Governance
+- Enterprise Lifecycle Transitions
+
+Enterprise Information Lifecycle shall not identify:
+
+- Database CRUD operations
+- PostgreSQL schema
+- APIs
+- Runtime execution
+- Orchestration
+- Messaging
+- Persistence implementation
+- Technology implementation
+
+---
+
+# Enterprise Lifecycle Principles
+
+Every Enterprise Information Category shall follow an authoritative enterprise lifecycle governed by its authoritative owner.
+
+Only the authoritative owner may create, modify, archive, retire, or authorize lifecycle transitions unless explicitly delegated through approved enterprise governance.
+
+Lifecycle authority never transfers through information flow or information consumption.
+
+Information consumption and information reference remain enterprise access relationships governed by AF-EP-003 rather than lifecycle transitions.
+
+Enterprise lifecycle remains independent of implementation, persistence, runtime execution, and technology.
+
+---
+
+# Enterprise Information Lifecycle
+
+## Enterprise Information Category
+
+### Enterprise Communication Normalization
+
+**Authoritative Owner**
+
+Language Management
+
+**Creation Authority**
+
+Language Management
+
+**Modification Authority**
+
+Language Management
+
+**Archival Authority**
+
+Language Management
+
+**Retirement Authority**
+
+Language Management
+
+**Lifecycle Governance Authority**
+
+Enterprise Governance
+
+**Lifecycle Notes**
+
+Enterprise Communication Normalization is governed solely by Language Management unless authority is explicitly delegated through approved enterprise governance.
+
+---
+
+## Enterprise Information Category
+
+### Enterprise Understanding
+
+**Authoritative Owner**
+
+Human Understanding
+
+**Creation Authority**
+
+Human Understanding
+
+**Modification Authority**
+
+Human Understanding
+
+**Archival Authority**
+
+Human Understanding
+
+**Retirement Authority**
+
+Human Understanding
+
+**Lifecycle Governance Authority**
+
+Enterprise Governance
+
+**Lifecycle Notes**
+
+Enterprise Understanding may only be created, modified, archived, or retired by Human Understanding under approved enterprise governance.
+
+---
+
+## Enterprise Information Category
+
+### Expert Identity
+
+**Authoritative Owner**
+
+Expert Registry
+
+**Creation Authority**
+
+Expert Registry
+
+**Modification Authority**
+
+Expert Registry
+
+**Archival Authority**
+
+Expert Registry
+
+**Retirement Authority**
+
+Expert Registry
+
+**Lifecycle Governance Authority**
+
+Enterprise Governance
+
+**Lifecycle Notes**
+
+Expert Identity remains under the exclusive lifecycle authority of the Expert Registry.
+
+---
+
+## Enterprise Information Category
+
+### Source Identity
+
+**Authoritative Owner**
+
+Source Registry
+
+**Creation Authority**
+
+Source Registry
+
+**Modification Authority**
+
+Source Registry
+
+**Archival Authority**
+
+Source Registry
+
+**Retirement Authority**
+
+Source Registry
+
+**Lifecycle Governance Authority**
+
+Enterprise Governance
+
+**Lifecycle Notes**
+
+Knowledge source lifecycle authority remains exclusively with the Source Registry.
+
+---
+
+## Enterprise Information Category
+
+### Participation Authorization
+
+**Authoritative Owner**
+
+Participation Registry
+
+**Creation Authority**
+
+Participation Registry
+
+**Modification Authority**
+
+Participation Registry
+
+**Archival Authority**
+
+Participation Registry
+
+**Retirement Authority**
+
+Participation Registry
+
+**Lifecycle Governance Authority**
+
+Enterprise Governance
+
+**Lifecycle Notes**
+
+Participation Authorization remains under the lifecycle authority of the Participation Registry.
+
+---
+
+## Enterprise Information Category
+
+### Domain Definition
+
+**Authoritative Owner**
+
+Domain Registry
+
+**Creation Authority**
+
+Domain Registry
+
+**Modification Authority**
+
+Domain Registry
+
+**Archival Authority**
+
+Domain Registry
+
+**Retirement Authority**
+
+Domain Registry
+
+**Lifecycle Governance Authority**
+
+Enterprise Governance
+
+**Lifecycle Notes**
+
+Enterprise Domains remain governed by Domain Registry under Enterprise Governance Authority.
+
+---
+
+## Enterprise Information Category
+
+### Governance Metadata
+
+**Authoritative Owner**
+
+Governance Metadata
+
+**Creation Authority**
+
+Governance Metadata
+
+**Modification Authority**
+
+Governance Metadata
+
+**Archival Authority**
+
+Governance Metadata
+
+**Retirement Authority**
+
+Governance Metadata
+
+**Lifecycle Governance Authority**
+
+Enterprise Governance
+
+**Lifecycle Notes**
+
+Governance Metadata governs enterprise governance information and follows enterprise governance lifecycle authority.
+
+---
+
+## Enterprise Information Category
+
+### Enterprise Audit Evidence
+
+**Authoritative Owner**
+
+Audit & Traceability
+
+**Creation Authority**
+
+Audit & Traceability
+
+**Modification Authority**
+
+Audit & Traceability
+
+**Archival Authority**
+
+Audit & Traceability
+
+**Retirement Authority**
+
+Audit & Traceability
+
+**Lifecycle Governance Authority**
+
+Enterprise Governance
+
+**Lifecycle Notes**
+
+Enterprise Audit Evidence is governed by Audit & Traceability under approved enterprise governance.
+
+---
+
+## Enterprise Information Category
+
+### Platform Configuration
+
+**Authoritative Owner**
+
+Platform Configuration Management
+
+**Creation Authority**
+
+Platform Configuration Management
+
+**Modification Authority**
+
+Platform Configuration Management
+
+**Archival Authority**
+
+Platform Configuration Management
+
+**Retirement Authority**
+
+Platform Configuration Management
+
+**Lifecycle Governance Authority**
+
+Enterprise Governance
+
+**Lifecycle Notes**
+
+Platform Configuration follows the lifecycle authority established by Platform Configuration Management.
+
+---
+
+## Enterprise Information Category
+
+### Enterprise Capability Definition
+
+**Authoritative Owner**
+
+Enterprise Capability Registry
+
+**Creation Authority**
+
+Enterprise Capability Registry
+
+**Modification Authority**
+
+Enterprise Capability Registry
+
+**Archival Authority**
+
+Enterprise Capability Registry
+
+**Retirement Authority**
+
+Enterprise Capability Registry
+
+**Lifecycle Governance Authority**
+
+Enterprise Governance
+
+**Lifecycle Notes**
+
+Enterprise Capability Definitions remain governed by the Enterprise Capability Registry throughout their lifecycle.
+
+---
+
+# Enterprise Lifecycle Model
+
+| Enterprise Information Category | Owner | Create | Modify | Archive | Retire | Lifecycle Governance Authority |
+|--------------------------------|-------|--------|---------|----------|---------|--------------------------------|
+| Enterprise Communication Normalization | Language Management | Language Management | Language Management | Language Management | Language Management | Enterprise Governance |
+| Enterprise Understanding | Human Understanding | Human Understanding | Human Understanding | Human Understanding | Human Understanding | Enterprise Governance |
+| Expert Identity | Expert Registry | Expert Registry | Expert Registry | Expert Registry | Expert Registry | Enterprise Governance |
+| Source Identity | Source Registry | Source Registry | Source Registry | Source Registry | Source Registry | Enterprise Governance |
+| Participation Authorization | Participation Registry | Participation Registry | Participation Registry | Participation Registry | Participation Registry | Enterprise Governance |
+| Domain Definition | Domain Registry | Domain Registry | Domain Registry | Domain Registry | Domain Registry | Enterprise Governance |
+| Governance Metadata | Governance Metadata | Governance Metadata | Governance Metadata | Governance Metadata | Governance Metadata | Enterprise Governance |
+| Enterprise Audit Evidence | Audit & Traceability | Audit & Traceability | Audit & Traceability | Audit & Traceability | Audit & Traceability | Enterprise Governance |
+| Platform Configuration | Platform Configuration Management | Platform Configuration Management | Platform Configuration Management | Platform Configuration Management | Platform Configuration Management | Enterprise Governance |
+| Enterprise Capability Definition | Enterprise Capability Registry | Enterprise Capability Registry | Enterprise Capability Registry | Enterprise Capability Registry | Enterprise Capability Registry | Enterprise Governance |
+
+---
+
+# Analysis Summary
+
+Enterprise Information Lifecycle establishes the authoritative stewardship of enterprise information throughout its existence.
+
+Lifecycle authority remains exclusively with the authoritative owner unless explicitly delegated through approved enterprise governance.
+
+Lifecycle governance remains independent of information ownership, information flow, implementation, persistence, runtime execution, and technology.
+
+---
+
+# Current Assessment
+
+Enterprise Analysis establishes four complementary enterprise semantic models:
+
+- AF-EP-001 — Enterprise Capability Relationships
+- AF-EP-002 — Enterprise Information Ownership
+- AF-EP-003 — Enterprise Information Flow
+- AF-EP-004 — Enterprise Information Lifecycle
+
+Together these Analysis Findings establish the complete enterprise semantic foundation required for Persistence Architecture.
+
+Subsequent Persistence Architecture shall represent these validated enterprise semantics without altering enterprise authority, ownership, information flow, or lifecycle governance.

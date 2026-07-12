@@ -1,0 +1,247 @@
+# DF-EP-003 — Enterprise Capability Stewardship
+
+**Project:** BTA V5.1 — HCGO Enterprise Persistence Architecture
+
+**Status:** Approved
+
+**Classification:** Discovery Finding
+
+---
+
+# Purpose
+
+Validate the authoritative enterprise stewardship of each enterprise capability identified in DF-EP-002.
+
+This discovery establishes enterprise responsibility boundaries prior to Analysis and Persistence Architecture.
+
+This discovery identifies enterprise stewardship only.
+
+It does not define architecture, database structures, implementation, or technology.
+
+---
+
+# Discovery Principles
+
+Enterprise stewardship shall identify:
+
+- Enterprise responsibility
+- Enterprise ownership boundaries
+- Enterprise governance responsibilities
+- Enterprise capability purpose
+
+Enterprise stewardship shall not identify:
+
+- Database design
+- PostgreSQL schema
+- Backend implementation
+- Frontend implementation
+- Repository structure
+- Physical persistence
+
+---
+
+# Platform Capability Stewardship
+
+## Language Management
+
+**Enterprise Question**
+
+How do humans communicate across the enterprise?
+
+**Steward**
+
+Platform
+
+**Responsibility**
+
+Maintains the authoritative enterprise capability for human language communication and normalization across HCGO.
+
+Domains determine whether this capability is required.
+
+---
+
+## Human Understanding
+
+**Enterprise Question**
+
+What is the authoritative enterprise understanding of the human before execution?
+
+**Steward**
+
+Platform
+
+**Responsibility**
+
+Maintains the authoritative enterprise understanding of the human's communication, objective, and intent before any domain-specific capability executes.
+
+---
+
+## Expert Registry
+
+**Enterprise Question**
+
+Who contributes knowledge?
+
+**Steward**
+
+Platform
+
+**Responsibility**
+
+Maintains the authoritative enterprise identity, governance, authorization, and attribution of approved experts.
+
+Domain-specific participation remains the responsibility of the consuming capability.
+
+---
+
+## Source Registry
+
+**Enterprise Question**
+
+Where does the authoritative knowledge originate?
+
+**Steward**
+
+Platform
+
+**Responsibility**
+
+Maintains the authoritative enterprise identity, governance, authorization, acquisition, and metadata of knowledge sources.
+
+Source usage remains the responsibility of the consuming capability.
+
+---
+
+## Participation Registry
+
+**Enterprise Question**
+
+Who or what is authorized to participate within specific capabilities?
+
+**Steward**
+
+Platform
+
+**Responsibility**
+
+Maintains the authoritative enterprise authorization governing participation within enterprise capabilities under defined governance conditions.
+
+Participation execution remains the responsibility of the consuming capability.
+
+---
+
+## Domain Registry
+
+**Enterprise Question**
+
+What enterprise domains exist and what are their governing characteristics?
+
+**Steward**
+
+Platform
+
+**Responsibility**
+
+Maintains the authoritative enterprise definition, governance characteristics, and lifecycle of HCGO domains.
+
+Domain behavior remains the responsibility of the domain.
+
+---
+
+## Governance Metadata
+
+**Enterprise Question**
+
+What authoritative governance metadata governs enterprise assets?
+
+**Steward**
+
+Platform
+
+**Responsibility**
+
+Maintains the authoritative governance metadata used to classify, relate, version, approve, and govern enterprise assets.
+
+Governance execution remains the responsibility of enterprise governance.
+
+---
+
+## Audit & Traceability
+
+**Enterprise Question**
+
+What authoritative enterprise evidence demonstrates what occurred and how it can be traced?
+
+**Steward**
+
+Platform
+
+**Responsibility**
+
+Maintains the authoritative enterprise evidence required to demonstrate what occurred, why it occurred, and how it can be traced across HCGO.
+
+Audit evidence supports governance but does not perform governance.
+
+---
+
+## Platform Configuration Management
+
+**Enterprise Question**
+
+What authoritative platform configuration governs platform capabilities?
+
+**Steward**
+
+Platform
+
+**Responsibility**
+
+Maintains the authoritative enterprise platform configuration governing how HCGO platform capabilities are configured.
+
+Capability execution remains the responsibility of the consuming capability.
+
+---
+
+# Enterprise Stewardship Principles
+
+Enterprise capabilities shall answer one authoritative enterprise question.
+
+Each capability shall own one clearly defined enterprise responsibility.
+
+Enterprise capabilities shall not assume responsibilities belonging to other capabilities.
+
+Platform capabilities provide enterprise services.
+
+Domain capabilities provide domain-specific behavior.
+
+Platform capabilities govern enterprise consistency.
+
+Domain capabilities govern domain execution.
+
+---
+
+# Discovery Summary
+
+The following enterprise stewardship responsibilities have been validated.
+
+| Enterprise Capability | Enterprise Question |
+|------------------------|---------------------------------------------------------------|
+| Language Management | How do humans communicate across the enterprise? |
+| Human Understanding | What is the authoritative enterprise understanding of the human before execution? |
+| Expert Registry | Who contributes knowledge? |
+| Source Registry | Where does the authoritative knowledge originate? |
+| Participation Registry | Who or what is authorized to participate within specific capabilities? |
+| Domain Registry | What enterprise domains exist and what are their governing characteristics? |
+| Governance Metadata | What authoritative governance metadata governs enterprise assets? |
+| Audit & Traceability | What authoritative enterprise evidence demonstrates what occurred and how it can be traced? |
+| Platform Configuration Management | What authoritative platform configuration governs platform capabilities? |
+
+---
+
+# Current Assessment
+
+Enterprise stewardship boundaries have been validated for all platform-owned enterprise capabilities.
+
+These stewardship boundaries establish the authoritative enterprise responsibilities that will guide subsequent Analysis Findings (AF-EP) and Persistence Architecture (PA-EP).
+
+Enterprise stewardship has been intentionally separated from implementation, persistence, orchestration, and technology to preserve constitutional separation of concerns.

@@ -1,0 +1,135 @@
+# PR-EP-001 — Prior Discovery Validation
+
+**Project:** BTA V5.1 — HCGO Enterprise Persistence Architecture
+
+**Status:** LOCKED
+
+**Classification:** Project Rule
+
+**Version:** 1.0
+
+---
+
+# Purpose
+
+Establish the methodology for incorporating previously approved architectural work into the current workstream while preventing both unnecessary rediscovery and architectural drift.
+
+This Project Rule governs how prior Discoveries, Analyses, Architectural Decisions, Constitutional Guardrails, and other approved architectural artifacts are evaluated during the Enterprise Persistence Architecture effort.
+
+---
+
+# Project Rule
+
+Previously approved architectural work shall **not** be automatically inherited.
+
+Likewise, previously approved architectural work shall **not** be rediscovered.
+
+Instead, every previously approved artifact shall undergo Prior Discovery Validation before becoming part of the current architectural baseline.
+
+---
+
+# Validation Process
+
+Every inherited architectural artifact shall follow the same validation process.
+
+```
+Previously Approved Artifact
+            │
+            ▼
+Retrieve Prior Determination
+            │
+            ▼
+Review Against Current Scope
+            │
+            ▼
+Identify New Discoveries
+            │
+            ▼
+Determine Disposition
+            │
+            ▼
+Approve Current Baseline
+```
+
+---
+
+# Review Objectives
+
+Each review shall:
+
+- Preserve previously approved architectural work.
+- Prevent unnecessary rediscovery.
+- Identify newly discovered findings.
+- Detect architectural drift.
+- Maintain constitutional consistency.
+- Maintain patent alignment.
+- Produce a single authoritative architectural baseline.
+
+---
+
+# Disposition Classifications
+
+Every reviewed artifact shall receive one of the following dispositions.
+
+| Disposition | Definition |
+|-------------|------------|
+| **Confirmed** | Previous determination remains fully valid without modification. |
+| **Expanded** | Previous determination remains valid with additional approved findings. |
+| **Amended** | Previous determination requires approved modifications. |
+| **Superseded** | Previous determination is replaced by a newly approved determination. |
+
+---
+
+# Review Criteria
+
+Every inherited artifact shall be evaluated against:
+
+- Current project scope
+- Constitutional Guardrails
+- Approved HCGO architecture
+- Filed Patent (PPA)
+- Newly approved discoveries
+- Enterprise architecture objectives
+- Future platform scalability
+
+---
+
+# Constitutional Constraint
+
+No previously approved architectural determination shall be modified without explicit review and approval.
+
+No previously approved determination shall be inherited without validation against the current workstream.
+
+---
+
+# Purpose Within Discovery
+
+This Project Rule ensures Discovery becomes an iterative architectural refinement process rather than either:
+
+- repeating previously completed work, or
+- accepting prior work without validation.
+
+The result is a continuously improving architectural baseline while preserving approved decisions and preventing architectural drift.
+
+---
+
+# Governance
+
+This Project Rule applies to all:
+
+- Discovery Findings
+- Analysis Findings
+- Constitutional Guardrails
+- Architectural Decision Records (ADRs)
+- Architecture Documents
+- Enterprise Architecture artifacts
+
+unless explicitly superseded by a future approved Project Rule.
+
+---
+
+# Approval
+
+**Status:** LOCKED
+
+PR-EP-001 is approved as the governing methodology for incorporating previously approved architectural work into BTA V5.1 — HCGO Enterprise Persistence Architecture.

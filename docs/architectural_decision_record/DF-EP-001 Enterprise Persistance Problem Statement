@@ -1,0 +1,145 @@
+DF-EP-001 — Enterprise Persistence Problem Statement (Draft for Discovery)
+
+Status: Discovery (Not Yet Locked)
+
+Purpose
+
+Define why the HCGO platform requires Enterprise Persistence before identifying what shall be persisted or how persistence will be implemented.
+
+This discovery establishes the business and architectural justification for Enterprise Persistence and becomes the traceability anchor for all subsequent Discovery, Analysis, Architecture, and Implementation activities.
+
+Discovery
+Enterprise Persistence is NOT Required Because BTA Needs a Database
+
+The requirement for Enterprise Persistence is not driven by PostgreSQL, Commentary, CRM, or any individual feature.
+
+Rather, Enterprise Persistence is required because HCGO is evolving from a single-domain application into a governed enterprise platform supporting multiple independent domains, governed participation, and long-term reader relationships.
+
+Persistence therefore becomes a platform capability, not an application capability.
+
+Enterprise Problems Being Solved
+Problem 1 — Knowledge Must Persist Beyond Runtime
+
+The current runtime architecture is intentionally transient.
+
+QueryService orchestrates responses for a single interaction.
+
+However, governed knowledge assets—including commentary, expert metadata, source registries, and future domain participants—must persist independently of individual requests.
+
+Without Enterprise Persistence, these governed knowledge assets cannot scale across domains.
+
+Problem 2 — Enterprise Assets Must Become Managed Resources
+
+Many platform resources become enterprise assets rather than application artifacts.
+
+Examples include:
+
+Commentary corpus
+Scholar metadata
+Expert registries
+Translation metadata
+Source registries
+Participation metadata
+Governance metadata
+
+These assets require lifecycle management independent of application code.
+
+Problem 3 — Reader Relationships Extend Beyond Individual Sessions
+
+HCGO is designed to support ongoing Human-Centered Exploration.
+
+This requires persistence of reader-owned information that survives beyond a single interaction while remaining governed by Reader Sovereignty.
+
+Examples include:
+
+Reader Journey
+Exploration continuity
+CRM
+Preferences
+Testimonies
+Consent
+Problem 4 — Platform Growth Requires Domain Independence
+
+Future HCGO domains will introduce additional governed knowledge participants.
+
+Examples include:
+
+Bible scholars
+OSHA subject experts
+Healthcare authorities
+Legal authorities
+Regulatory experts
+Future domain specialists
+
+Enterprise Persistence must support these participants through configuration rather than architectural redesign.
+
+Problem 5 — Commercial Participation Requires Enterprise Governance
+
+Future participation models introduce enterprise responsibilities including:
+
+Public domain sources
+Licensed sources
+Subscription content
+Permission-based participation
+Organizational agreements
+
+These relationships become corporate assets requiring governed persistence.
+
+Problem 6 — Constitutional Governance Requires Persistent State
+
+Human-Centered Governance extends beyond runtime orchestration.
+
+Governance itself requires persistent configuration supporting:
+
+Participation policies
+Domain registration
+Authorization metadata
+Auditability
+Traceability
+Future governance evolution
+
+Persistence supports governance while remaining subordinate to QueryService orchestration authority.
+
+Discovery Observation
+
+Enterprise Persistence is fundamentally different from traditional application persistence.
+
+Traditional persistence primarily stores application data.
+
+Enterprise Persistence stores governed enterprise assets that are:
+
+reusable,
+traceable,
+independently managed,
+constitutionally governed,
+domain-independent.
+Initial Discovery Conclusion
+
+Enterprise Persistence exists to preserve governed enterprise state across the HCGO platform.
+
+It is not introduced to satisfy a database requirement.
+
+It is introduced because HCGO requires persistent management of governed knowledge, governed participation, reader continuity, and enterprise assets while preserving constitutional authority separation.
+
+Items Identified for Further Discovery
+
+This problem statement identifies several areas requiring dedicated Discovery:
+
+Enterprise Persistence Capabilities
+Ownership Classification
+Reader-Owned Persistence
+Platform-Owned Persistence
+Domain-Owned Persistence
+Corporate-Owned Persistence
+Governance-Owned Persistence
+Knowledge Asset Lifecycle
+Authorization & Licensing
+Reader Journey
+Human Understanding Metrics
+Audit & Traceability
+Future Multi-Domain Expansion
+My Assessment
+
+I think this is the right place to start, and I'd deliberately leave it in Discovery for now rather than locking it immediately.
+
+Here's why: we've intentionally written it at a high level. As we work through capability discovery, ownership, and analysis, we'll almost certainly discover refinements or additional enterprise problems. Once Discovery is complete, we can return to DF-EP-001, update it to reflect those findings, and then lock it as the authoritative Enterprise Persistence Problem Statement.

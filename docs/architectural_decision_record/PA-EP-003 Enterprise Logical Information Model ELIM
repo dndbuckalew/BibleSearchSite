@@ -1,0 +1,342 @@
+# PA-EP-003 — Enterprise Logical Information Model (ELIM)
+
+**Project:** BTA V5.1 — HCGO Enterprise Persistence Architecture
+
+**Status:** Approved
+
+**Classification:** Persistence Architecture
+
+---
+
+# Purpose
+
+Establish the authoritative Enterprise Logical Information Model (ELIM) for HCGO.
+
+The Enterprise Logical Information Model (ELIM) organizes Enterprise Information Categories into logical enterprise structures while faithfully preserving the Enterprise Conceptual Information Model (ECIM).
+
+The Enterprise Logical Information Model remains independent of physical persistence technologies.
+
+It identifies logical organization only.
+
+It does not define PostgreSQL, tables, schemas, columns, foreign keys, indexes, APIs, runtime execution, messaging, or technology implementation.
+
+---
+
+# Architecture Objective
+
+Establish the authoritative logical organization of Enterprise Information Categories independently of persistence technology.
+
+The Enterprise Logical Information Model organizes enterprise information for logical consistency while preserving the conceptual enterprise semantics established by:
+
+- Constitutional Governance
+- Enterprise Discovery
+- Enterprise Analysis
+- Enterprise Persistence Architecture
+- Enterprise Conceptual Information Model
+
+The Enterprise Logical Information Model serves as the authoritative logical bridge between conceptual enterprise semantics and physical persistence architecture.
+
+---
+
+# Enterprise Logical Information Model
+
+The Enterprise Logical Information Model shall identify:
+
+- Logical Enterprise Information Groups
+- Enterprise Information Categories
+- Enterprise Logical Relationships
+- Enterprise Logical Dependencies
+- Enterprise Logical Constraints
+- Enterprise Logical Ownership
+- Enterprise Logical Stewardship
+- Enterprise Logical Boundaries
+
+For every Enterprise Information Category identify:
+
+- Logical Information Group
+- Enterprise Information Category
+- Logical Definition
+- Authoritative Owner
+- Logical Relationships
+- Logical Dependencies
+- Logical Constraints
+- Logical Boundaries
+- Ownership Notes
+
+---
+
+# Enterprise Logical Information Model Does NOT Identify
+
+The Enterprise Logical Information Model shall not identify:
+
+- PostgreSQL tables
+- Schemas
+- Columns
+- Primary Keys
+- Foreign Keys
+- Indexes
+- SQL
+- Database normalization
+- APIs
+- Runtime execution
+- Service implementation
+- Physical persistence
+- Technology implementation
+
+Those responsibilities belong to subsequent Physical Persistence Architecture and Technology Implementation phases.
+
+---
+
+# Enterprise Logical Organization
+
+The Enterprise Logical Information Model organizes Enterprise Information Categories into logical enterprise structures while preserving conceptual authority.
+
+Logical organization shall include, at a minimum:
+
+- Enterprise Communication Normalization
+- Enterprise Understanding
+- Expert Identity
+- Source Identity
+- Participation Authorization
+- Domain Definition
+- Governance Metadata
+- Enterprise Audit Evidence
+- Platform Configuration
+- Enterprise Capability Definition
+
+Additional logical enterprise structures may be introduced through approved enterprise governance without redefining conceptual enterprise semantics.
+
+---
+
+# Enterprise Logical Relationships
+
+Logical relationships organize enterprise information.
+
+Logical relationships faithfully represent conceptual relationships.
+
+Logical relationships shall never redefine:
+
+- Enterprise Concepts
+- Enterprise Information Categories
+- Enterprise Authorities
+- Enterprise Ownership
+- Enterprise Stewardship
+- Enterprise Relationships
+- Enterprise Constraints
+- Enterprise Information Boundaries
+
+Logical relationships organize enterprise information.
+
+They do not redefine enterprise semantics.
+
+---
+
+# Enterprise Logical Dependencies
+
+Logical dependencies identify enterprise information dependencies required for logical organization.
+
+Logical dependencies:
+
+- Preserve enterprise ownership
+- Preserve enterprise authorities
+- Preserve enterprise stewardship
+- Preserve enterprise lifecycle governance
+- Preserve enterprise traceability
+
+Logical dependencies shall remain independent of:
+
+- Runtime execution
+- Service invocation
+- APIs
+- Database dependencies
+- Technology implementation
+
+---
+
+# Enterprise Logical Constraints
+
+The Enterprise Logical Information Model establishes logical constraints governing:
+
+- Information ownership
+- Information authorities
+- Stewardship
+- Participation
+- Governance
+- Traceability
+- Lifecycle
+- Enterprise relationships
+
+Logical constraints faithfully represent conceptual constraints.
+
+They do not redefine conceptual enterprise semantics.
+
+---
+
+# Enterprise Logical Boundaries
+
+Enterprise Logical Boundaries organize enterprise information within conceptual boundaries previously established by the Enterprise Conceptual Information Model.
+
+Logical boundaries include:
+
+- Domain Boundaries
+- Capability Boundaries
+- Information Boundaries
+- Ownership Boundaries
+- Stewardship Boundaries
+
+Logical boundaries organize enterprise information.
+
+They do not redefine conceptual boundaries.
+
+---
+
+# Enterprise Principle
+
+Logical organization faithfully represents conceptual enterprise semantics.
+
+Logical organization shall never redefine:
+
+- Enterprise Concepts
+- Enterprise Information Categories
+- Enterprise Information Definitions
+- Enterprise Authorities
+- Enterprise Ownership
+- Enterprise Stewardship
+- Enterprise Relationships
+- Enterprise Constraints
+- Enterprise Information Boundaries
+- Enterprise Ownership Boundaries
+- Enterprise Stewardship Boundaries
+
+The Enterprise Logical Information Model organizes enterprise information.
+
+It does not create, modify, or redefine enterprise semantics.
+
+---
+
+# Architectural Observation — Enterprise Semantics Precede Logical Modeling
+
+Traditional persistence methodologies commonly follow this progression:
+
+Conceptual Model
+
+↓
+
+Logical Model
+
+↓
+
+Physical Model
+
+HCGO introduces an additional architectural foundation that precedes conceptual modeling.
+
+The HCGO progression becomes:
+
+Constitutional Governance
+
+↓
+
+Enterprise Discovery
+
+↓
+
+Enterprise Analysis
+
+↓
+
+Enterprise Persistence Architecture
+
+↓
+
+Enterprise Conceptual Information Model
+
+↓
+
+Enterprise Logical Information Model
+
+↓
+
+Physical Persistence Model
+
+↓
+
+Technology Implementation
+
+---
+
+# Architectural Rationale
+
+By the time the Enterprise Logical Information Model is developed, the enterprise semantic model has already been established and validated through:
+
+- Constitutional Governance
+- Enterprise Discovery
+- Enterprise Analysis
+- Enterprise Persistence Architecture
+- Enterprise Conceptual Information Model
+
+Accordingly, the responsibility of the Enterprise Logical Information Model is not to define enterprise semantics.
+
+Its responsibility is to faithfully organize previously established enterprise semantics into a logical enterprise structure suitable for subsequent physical persistence design.
+
+The Enterprise Logical Information Model is therefore an organizational artifact rather than a semantic discovery artifact.
+
+---
+
+# Constitutional Principle
+
+Enterprise semantics always precede conceptual representation.
+
+Conceptual representation always precedes logical organization.
+
+Logical organization always precedes physical representation.
+
+Physical representation always precedes technology implementation.
+
+Each architectural phase faithfully represents the authoritative outcomes established by the previous phase.
+
+No architectural or implementation phase may redefine authoritative enterprise decisions established by an earlier phase except through approved Constitutional Governance.
+
+---
+
+# Architecture Outcome
+
+The Enterprise Logical Information Model becomes the authoritative logical organization of enterprise information across HCGO.
+
+It faithfully represents:
+
+- Constitutional Governance
+- Enterprise Discovery
+- Enterprise Analysis
+- Enterprise Persistence Architecture
+- Enterprise Conceptual Information Model
+
+All subsequent Physical Persistence Models shall faithfully implement the Enterprise Logical Information Model.
+
+No Physical Persistence Model or Technology Implementation may redefine:
+
+- Enterprise Concepts
+- Enterprise Information Categories
+- Enterprise Information Definitions
+- Enterprise Authorities
+- Enterprise Ownership
+- Enterprise Stewardship
+- Enterprise Relationships
+- Enterprise Constraints
+- Enterprise Information Boundaries
+- Enterprise Ownership Boundaries
+- Enterprise Stewardship Boundaries
+- Enterprise Logical Organization
+
+---
+
+# Current Assessment
+
+The Enterprise Logical Information Model establishes the authoritative logical organization of enterprise information across HCGO.
+
+It organizes previously validated enterprise semantics into a logical enterprise structure while preserving constitutional governance, enterprise authority, ownership, stewardship, traceability, lifecycle governance, and conceptual boundaries.
+
+The Enterprise Logical Information Model remains the authoritative bridge between the Enterprise Conceptual Information Model and Physical Persistence Architecture.
+
+No subsequent persistence or implementation artifact may redefine the enterprise semantics or logical organization established by the Enterprise Logical Information Model.
+
+This preserves complete architectural traceability from Constitutional Governance through final technology implementation.

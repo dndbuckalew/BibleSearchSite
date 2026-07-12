@@ -1,0 +1,105 @@
+# CG-EP-001 — Enterprise Persistence Ownership
+
+**Project:** BTA V5.1 — HCGO Enterprise Persistence Architecture
+
+**Status:** LOCKED
+
+**Classification:** Constitutional Guardrail
+
+**Version:** 1.0
+
+---
+
+# Purpose
+
+Establish the constitutional ownership boundaries governing Enterprise Persistence across the Human-Centered Governed Orchestration (HCGO) platform.
+
+This Constitutional Guardrail governs all Enterprise Persistence architecture decisions throughout BTA Version 5.1 and future HCGO platform evolution.
+
+---
+
+# Constitutional Principle
+
+Enterprise Persistence shall be organized by **ownership authority** rather than by application, implementation, repository structure, or database convenience.
+
+Ownership shall be determined before persistence architecture is designed.
+
+Persistence architecture shall preserve these ownership boundaries throughout the HCGO platform.
+
+---
+
+# Enterprise Ownership Model
+
+| Ownership Authority | Responsibility | Examples |
+|---------------------|----------------|----------|
+| **Platform** | Capabilities reusable across all HCGO domains | Commentary corpus, scholar metadata, expert registries, source registry, translation registry, participation metadata |
+| **Domain** | Information unique to a specific domain implementation | Scripture references (Bible Domain), OSHA regulations (OSHA Domain), healthcare guidance, legal authorities |
+| **Reader** | Reader-owned information governed by Reader Sovereignty | Reader Journey, exploration continuity, preferences, CRM profile, testimonies, consent records |
+| **Corporate** | Organizational, legal, licensing, and commercial assets | Licensing agreements, contracts, authorization records, subscription metadata, legal compliance |
+| **Governance** | Governance configuration and policy metadata consumed by QueryService | Constitutional policies, participation rules, domain registration, governance metadata, audit configuration |
+
+---
+
+# Constitutional Rules
+
+- Ownership shall be established before persistence design begins.
+- Platform capabilities shall remain domain-independent.
+- Domain-specific information shall not become platform-owned.
+- Platform capabilities shall not become domain-owned.
+- Reader-owned information shall remain under Reader Sovereignty.
+- Corporate assets shall remain isolated from domain data.
+- Governance metadata shall configure behavior but shall not perform orchestration.
+- QueryService remains the sole orchestration authority.
+- Persistence stores governed state.
+- QueryService governs behavior.
+
+---
+
+# Architectural Validation Checklist
+
+Every new persistence capability shall answer the following before entering architecture.
+
+| Validation Question | Status |
+|---------------------|--------|
+| Ownership authority identified? | ☐ |
+| Platform ownership justified? | ☐ |
+| Domain ownership justified? | ☐ |
+| Reader ownership preserved? | ☐ |
+| Corporate ownership preserved? | ☐ |
+| Governance ownership appropriate? | ☐ |
+| QueryService remains orchestration authority? | ☐ |
+| Persistence remains storage only? | ☐ |
+| Platform/Domain separation preserved? | ☐ |
+| Consistent with HCGO constitutional architecture? | ☐ |
+| Consistent with filed PPA architecture? | ☐ |
+
+---
+
+# Governance
+
+This Constitutional Guardrail supersedes implementation convenience.
+
+No schema, repository structure, persistence mechanism, or implementation decision may violate these ownership boundaries without an approved constitutional review.
+
+---
+
+# Relationship to Existing Constitutional Principles
+
+This guardrail extends and reinforces existing HCGO constitutional principles.
+
+- QueryService remains the single orchestration authority.
+- Human-Centered Governance remains unchanged.
+- Reader Sovereignty remains unchanged.
+- Domain Services never independently orchestrate.
+- Persistence stores governed state.
+- QueryService governs behavior.
+
+---
+
+# Approval
+
+**Status:** LOCKED
+
+This Constitutional Guardrail is approved as a governing principle for BTA V5.1 — HCGO Enterprise Persistence Architecture.
+
+All future Discovery, Analysis, Architecture, and Implementation activities shall validate against this guardrail.
