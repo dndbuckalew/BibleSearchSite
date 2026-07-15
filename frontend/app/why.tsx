@@ -237,11 +237,28 @@ export default function WhyPage() {
       </div>
    
     <div className="pt-6">
-      {/* AudiencePrompt temporarily hidden pending UX review */}
-      {/* <AudiencePrompt /> */}
+      {/* 
+===========================================================================
+AudiencePrompt removed from Home page.
+
+Reason:
+The Stay Connected capability has been migrated to the dedicated
+/stay-connected page and is now accessed through the persistent
+platform navigation.
+
+Retained temporarily for rollback during validation.
+
+Remove permanently after Donate migration and navigation validation.
+===========================================================================
+<div className="pt-6">
+  <AudiencePrompt />
+</div>
+*/}
+
     </div>
 
     </section>
   );
 }
+
 

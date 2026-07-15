@@ -1,0 +1,105 @@
+UI-EP-001 — BTA User Interface Standards
+
+Document ID: UI-EP-001
+Title: Bible Therapy Assistant™ User Interface Standards
+Status: Draft – Phase 2A
+Owner: BTA Platform Architecture
+Applies To: All BTA user interface presentation components
+
+1. Purpose
+
+This document establishes the User Interface (UI) standards governing the visual presentation of Bible Therapy Assistant™ (BTA).
+
+The purpose of this standard is to ensure the BTA interface presents a consistent, accessible, professional, and Scripture-centered experience across all pages and devices while supporting the constitutional principles established for the platform.
+
+This document governs presentation only.
+
+2. Scope
+
+UI standards include, but are not limited to:
+
+Navigation layout
+Page layout
+Header and footer presentation
+Typography
+Color standards
+Visual hierarchy
+Icons
+Buttons
+Links
+Responsive presentation
+Accessibility presentation
+Component appearance
+Mobile presentation
+3. Relationship Between UI and UX
+
+Although User Interface (UI) and User Experience (UX) are closely related, they serve different purposes within the BTA governance model.
+
+User Interface (UI)
+
+User Interface governs how the application appears to the reader.
+
+Examples include:
+
+Navigation placement
+Header design
+Footer design
+Typography
+Color selection
+Visual hierarchy
+Component styling
+Responsive layout
+Accessibility presentation
+
+UI answers the question:
+
+"What does the reader see?"
+
+User Experience (UX)
+
+User Experience governs how the reader interacts with the application to accomplish a task.
+
+Examples include:
+
+Scripture search workflow
+Connect workflow
+Contact workflow
+Donation workflow
+Progressive Disclosure
+Reader journey
+Confirmation messaging
+Error recovery
+Workspace transitions
+
+UX answers the question:
+
+"How does the reader accomplish their objective?"
+
+4. Governance Principle
+
+User Interface standards shall govern presentation.
+
+User Experience standards shall govern interaction workflows.
+
+The two disciplines are complementary but shall remain independently governed to allow presentation changes without altering workflows, and workflow improvements without requiring presentation redesign.
+
+5. Design Objective
+
+The BTA interface shall communicate:
+
+Trust
+Clarity
+Calmness
+Accessibility
+Professionalism
+
+while keeping God's Word as the central focus of the reader experience.
+
+Presentation elements shall support Scripture engagement rather than compete for the reader's attention.
+
+I especially like Section 3 because it gives future developers and designers a clear constitutional boundary:
+
+UI = appearance.
+UX = interaction.
+
+That simple distinction will help prevent future governance documents from overlapping and gives you a natural place for a future UX-EP-001 when you begin documenting workflows such as Connect, Contact, Donate, and Progressive Disclosure.

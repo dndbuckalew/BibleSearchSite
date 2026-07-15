@@ -4,9 +4,10 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-
 class AudienceRequest(BaseModel):
-    name: str = Field(..., min_length=1)
+    first_name: str = Field(..., min_length=1)
+    last_name: str = Field(..., min_length=1)
+
     email: str = Field(..., min_length=1)
 
     contact_type: str = Field(..., min_length=1)
@@ -17,10 +18,12 @@ class AudienceRequest(BaseModel):
 
     consent: bool = Field(default=False)
 
-    source: str = Field(default="BTA-STAY-CONNECTED")
+    hcgo_domain: str = Field(default="bta")
 
+    source: str = Field(default="BTA-STAY-CONNECTED")
 
 class AudienceResponse(BaseModel):
     success: bool
+    status: str
     message: str
     

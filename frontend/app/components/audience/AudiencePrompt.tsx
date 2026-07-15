@@ -13,7 +13,8 @@ type ContactType =
   | "Other";
 
 type AudienceFormData = {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   contactType: ContactType | "";
   organization: string;
@@ -35,7 +36,8 @@ const CONTACT_TYPES: ContactType[] = [
 
 export default function AudiencePrompt() {
   const [formData, setFormData] = useState<AudienceFormData>({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     contactType: "",
     organization: "",
@@ -72,13 +74,15 @@ export default function AudiencePrompt() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            name: formData.name,
+            first_name: formData.firstName,
+            last_name: formData.lastName,
             email: formData.email,
             contact_type: formData.contactType,
             organization: formData.organization,
             city: formData.city,
             state: formData.state,
             consent: formData.consent,
+            hcgo_domain: "bta",
             source: "BTA-AUDIENCE-PROMPT",
           }),
         }
@@ -89,11 +93,12 @@ export default function AudiencePrompt() {
       }
 
       setMessage(
-        "Thank you for staying connected with Bible Therapy Assistant™."
+        "Welcome to Bible Therapy Assistant™! Thank you for staying connected. We look forward to sharing future updates, new features, and resources with you." 
       );
 
       setFormData({
-        name: "",
+        firstName: "",
+        lastName: "",
         email: "",
         contactType: "",
         organization: "",
@@ -101,18 +106,20 @@ export default function AudiencePrompt() {
         state: "",
         consent: false,
       });
-    } catch {
+
+    } catch (err) {
+      console.log("Audience catch executed", err);
+
       setMessage(
-        "We were unable to complete your request. Please try again."
+          "Thank you for your interest in Bible Therapy Assistant™. We were unable to complete your request at this time. Please try again in a few minutes."
       );
-    } finally {
+     } finally {
       setSubmitting(false);
-    }
-  }
+    }  
+  } 
 
   return (
     <section className="w-full rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm">
-
       <div className="mb-6">
         <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
           Stay Connected
@@ -134,44 +141,56 @@ export default function AudiencePrompt() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6 w-full">
-
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid gap-5 md:grid-cols-2">
-
           <div>
             <label className="block text-sm font-medium text-neutral-800">
-              Name
+              First Name
             </label>
 
             <input
               type="text"
-              value={formData.name}
+              value={formData.firstName}
               onChange={(e) =>
-                updateField("name", e.target.value)
+                updateField("firstName", e.target.value)
               }
               className="mt-1 w-full rounded-lg border border-neutral-300 px-4 py-3"
-              placeholder="Your name"
+              placeholder="First name"
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-neutral-800">
-              Email Address
+              Last Name
             </label>
 
             <input
-              type="email"
-              value={formData.email}
+              type="text"
+              value={formData.lastName}
               onChange={(e) =>
-                updateField("email", e.target.value)
+                updateField("lastName", e.target.value)
               }
               className="mt-1 w-full rounded-lg border border-neutral-300 px-4 py-3"
-              placeholder="you@example.com"
+              placeholder="Last name"
             />
           </div>
-
         </div>
 
+        <div>
+          <label className="block text-sm font-medium text-neutral-800">
+            Email Address
+          </label>
+
+          <input
+            type="email"
+            value={formData.email}
+            onChange={(e) =>
+              updateField("email", e.target.value)
+            }
+            className="mt-1 w-full rounded-lg border border-neutral-300 px-4 py-3"
+            placeholder="you@example.com"
+          />
+        </div>
 
         <div>
           <label className="block text-sm font-medium text-neutral-800">
@@ -197,10 +216,8 @@ export default function AudiencePrompt() {
                 {type}
               </option>
             ))}
-
           </select>
         </div>
-
 
         <div>
           <label className="block text-sm font-medium text-neutral-800">
@@ -218,9 +235,7 @@ export default function AudiencePrompt() {
           />
         </div>
 
-
         <div className="grid gap-5 md:grid-cols-2">
-
           <input
             type="text"
             value={formData.city}
@@ -240,12 +255,9 @@ export default function AudiencePrompt() {
             className="rounded-lg border border-neutral-300 px-4 py-3"
             placeholder="State"
           />
-
         </div>
 
-
         <label className="flex items-start gap-3 rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm">
-
           <input
             type="checkbox"
             checked={formData.consent}
@@ -256,25 +268,29 @@ export default function AudiencePrompt() {
           />
 
           <span>
-            I would like to receive occasional updates from
-            Bible Therapy Assistant™ and TAD Concepts.
+            I would like to receive occasional updates from Bible Therapy
+            Assistant™ and TAD Concepts.
           </span>
-
         </label>
-
 
         <button
           type="submit"
           disabled={submitting}
-          className="w-full rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 disabled:bg-neutral-400"
+          style={{
+            width: "100%",
+            padding: "12px",
+            backgroundColor: "#2563eb",
+            color: "#ffffff",
+            borderRadius: "8px",
+            border: "none",
+            fontWeight: 600,
+            cursor: "pointer",
+          }}
         >
-          {submitting
-            ? "Submitting..."
-            : "Keep Me Connected"}
+          {submitting ? "Submitting..." : "Keep Me Connected"}
         </button>
-
+        
       </form>
-
     </section>
   );
 }
