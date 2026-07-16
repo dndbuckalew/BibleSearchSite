@@ -150,14 +150,16 @@ export default function WhyPage() {
   };
 
   return (
-    <section className="space-y-10 max-w-4xl px-4">
-      <h2 className="text-2xl font-semibold">
+    <section
+      className="space-y-10"
+      style={{ width: "100%" }}
+    >
+      <h2 className="text-2xl font-semibold text-center">
         Explore Scripture & Understanding
       </h2>
 
-<form onSubmit={handleSubmit} className="space-y-4 w-full max-w-4xl">
-      
-
+<form onSubmit={handleSubmit} className="space-y-4 w-full">
+  
         <input
           ref={inputRef}
           type="text"
@@ -168,9 +170,18 @@ export default function WhyPage() {
           disabled={loading}
         />
 
-        <label className="block text-sm text-neutral-700">
-          What would you like to explore in Scripture?
-        </label>
+        <div className="text-center py-2">
+          <label className="block text-sm text-neutral-700">
+            What would you like to explore in Scripture?
+          </label>
+
+          <p className="text-sm text-neutral-500 mt-2">
+            Examples:<br />
+            John 3:16 • Psalm 23 • Romans 8:28–39<br />
+            "What does God say about fear?"<br />
+            "I feel anxious and need peace."
+          </p>
+        </div>
 
         {message && (
           <div className="space-y-1">
@@ -194,6 +205,7 @@ export default function WhyPage() {
           </div>
         )}
 
+
         <div style={{ width: "100%", textAlign: "center", paddingTop: "16px" }}>
           <button
             type="submit"
@@ -215,26 +227,40 @@ export default function WhyPage() {
         </div>
       </form>
 
-      <div className="space-y-5 text-neutral-700">
-        <p>
-          BTA allows Christians, missionaries, and spiritually searching individuals
-          to explore Scripture in multiple ways — whether entering a Bible verse,
-          exploring an entire chapter, asking questions naturally, searching by topic
-          or emotion, or seeking deeper understanding behind God’s Word.
-        </p>
+      {/*
+=============================================================================
+Platform introduction relocated to the dedicated About workspace.
 
-        <p className="text-sm text-neutral-500 py-2">
-          Examples: John 3:16, Psalm 23, Romans 8:28–39,
-          “What does God say about fear?”, “I feel anxious and need peace.”
-        </p>
+Reason:
+The Home page is intentionally focused on helping users begin exploring
+Scripture. Platform mission, purpose, and differentiators are now presented
+through the dedicated About workspace accessed from the primary navigation.
 
-        <p className="text-neutral-700">
-          In contrast to traditional Bible search apps or concordances, BTA helps people
-          move beyond isolated verse searching into thoughtful understanding,
-          connected meaning, reflection, and the deeper “why” behind Scripture
-          while keeping God’s Word central to the experience.
-        </p>
-      </div>
+Retained temporarily during About workspace validation.
+
+Future:
+Remove this commented section after About workspace has been fully validated.
+=============================================================================
+
+<div className="space-y-5 text-neutral-700">
+
+  <p>
+    BTA allows Christians, missionaries, and spiritually searching individuals
+    to explore Scripture in multiple ways — whether entering a Bible verse,
+    exploring an entire chapter, asking questions naturally, searching by topic
+    or emotion, or seeking deeper understanding behind God’s Word.
+  </p>
+
+  <p className="text-neutral-700">
+    In contrast to traditional Bible search apps or concordances, BTA helps
+    people move beyond isolated verse searching into thoughtful understanding,
+    connected meaning, reflection, and the deeper "why" behind Scripture while
+    keeping God’s Word central to the experience.
+  </p>
+
+</div>
+
+*/}
    
     <div className="pt-6">
       {/* 

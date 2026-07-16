@@ -80,11 +80,11 @@ export default function RootLayout({
                       alignItems: "center",
                       lineHeight: "1.0",
                     }}
-                >
-                  <span>Stay</span>
-                  <span>Connected</span>
-                </span>
-              </Link>
+                  >
+                    <span>Stay</span>
+                    <span>Connected</span>
+                  </span>
+                </Link>
 
                 <Link
                   href="/donation"
@@ -92,6 +92,24 @@ export default function RootLayout({
                   style={{ marginRight: "32px" }}
                 >
                   Donate
+                </Link>
+
+                <Link
+                  href="/about"
+                  className="text-neutral-700 hover:text-blue-600 transition-colors"
+                  style={{ marginRight: "32px", textAlign: "center" }}
+                >
+                  <span
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      lineHeight: "1.0",
+                    }}
+                  >
+                    <span>About</span>
+                    <span>Us</span>
+                  </span>
                 </Link>
 
                 {/*
@@ -103,36 +121,12 @@ export default function RootLayout({
                 </button>
                 */}
               </nav>
-            </div>
-
-            <div
-              className="mt-6 text-center"
-              style={{
-                maxWidth: "900px",
-                margin: "24px auto 0 auto",
-                display: "flex",
-                flexDirection: "column",
-                gap: "20px",
-              }}
-            >
-              <p className="text-sm text-neutral-700">
-                Helping Christians, missionaries, and spiritually searching individuals
-                engage Scripture through deeper understanding, reflection, and the
-                meaningful “why” behind God’s Word.
-              </p>
-
-              <p className="text-sm text-neutral-600">
-                Unlike traditional Bible search apps or concordances, BTA uses carefully
-                guided AI assistance to help people explore Scripture through connected
-                meaning, continuity, and thoughtful reflection while keeping God’s Word
-                at the center of the experience.
-              </p>
-            </div>
-          </div>
-        </header>
+            </div>  
+        </div>
+      </header>
 
         {/* Main Content */}
-        <main className="flex-1 max-w-4xl mx-auto px-4 py-8">
+        <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-8">
           {children}
         </main>
 
