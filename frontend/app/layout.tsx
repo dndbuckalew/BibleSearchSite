@@ -55,22 +55,24 @@ export default function RootLayout({
                 className="mx-auto"
               />
             </Link>
-
-            <h1 className="text-2xl font-semi-bold">
+            <h1
+              className="mt-2 text-2xl font-semi-bold text-neutral-900 tracking-tight"
+            >
               Bible Therapy Assistant™
             </h1>
+            
           </div>
 
               {/* Persistent Platform Navigation */}
               <nav
                 aria-label="Primary Navigation"
-                className="text-4xl font-semibold"
+                className="text-xl font-normal"
                 style={{
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                   width: "100%",
-                  gap: "32px",
+                  gap: "20px",
                   marginTop: "16px",
               }}
             >
