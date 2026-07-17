@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import "./globals.css";
-import Link from "next/dist/client/link";
 
 export const metadata: Metadata = {
   title: "Bible Therapy Assistant™",
@@ -42,16 +43,28 @@ export default function RootLayout({
 
         {/* Header */}
         <header className="border-b bg-white">
-          <div className="max-w-4xl mx-auto px-4 py-4">
-            <div className="text-center">
-              <h1 className="text-2xl font-semibold">
-                Bible Therapy Assistant™
-              </h1>
+          <div className="max-w-4xl mx-auto px-6 py-4">
+          <div className="text-center">
+            <Link href="/" aria-label="Home">
+              <Image
+                src="/bta/images/bta-logo.png"
+                alt="Bible Therapy Assistant Logo"
+                width={72}
+                height={72}
+                priority
+                className="mx-auto"
+              />
+            </Link>
+
+            <h1 className="text-2xl font-semi-bold">
+              Bible Therapy Assistant™
+            </h1>
+          </div>
 
               {/* Persistent Platform Navigation */}
               <nav
                 aria-label="Primary Navigation"
-                className="text-2xl font-semibold"
+                className="text-4xl font-semibold"
                 style={{
                   display: "flex",
                   justifyContent: "center",
@@ -122,8 +135,7 @@ export default function RootLayout({
                 */}
               </nav>
             </div>  
-        </div>
-      </header>
+        </header>
 
         {/* Main Content */}
         <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-8">
