@@ -5,8 +5,8 @@ export default function Header() {
     <header
       style={{
         textAlign: "center",
-        paddingTop: "24px",
-        paddingBottom: "16px",
+        paddingTop: "clamp(16px, 3vw, 24px)",
+        paddingBottom: "clamp(12px, 2vw, 16px)",
       }}
     >
       <Image
@@ -21,7 +21,13 @@ export default function Header() {
       />
 
       <h1
-        className="mt-2 text-3xl font-medium text-neutral-900"
+        style={{
+          marginTop: "12px",
+          fontSize: "2rem",        // 32px
+          fontWeight: 500,
+          color: "#171717",
+          lineHeight: 1.2,
+        }}
       >
         Bible Therapy Assistant™
       </h1>

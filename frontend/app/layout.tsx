@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 import Header from "./components/header/header";
@@ -9,6 +9,12 @@ export const metadata: Metadata = {
   title: "Bible Therapy Assistant™",
   description:
     "Engage Scripture through deeper understanding, reflection, and the meaningful 'why' behind God's Word.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
