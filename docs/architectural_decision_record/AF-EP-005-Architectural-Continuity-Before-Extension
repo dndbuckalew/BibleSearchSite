@@ -1,0 +1,171 @@
+AF-EP-005 — Architectural Continuity Before Extension
+Status
+
+Approved
+
+Purpose
+
+To preserve the integrity, continuity, and constitutional governance of the HCGO architecture by ensuring new capabilities extend established architectural workflows before introducing new processing stages, services, or responsibilities.
+
+AF-EP-005 — Architectural Continuity Before Extension
+
+Parent Architecture: ADR-003 — Semantic Runtime Architecture
+
+Purpose
+
+To ensure that enhancements to the Semantic Runtime Architecture preserve constitutional continuity by extending established workflows before introducing new processing stages, services, or responsibilities.
+
+Principle
+
+Before implementing any enhancement within the Semantic Runtime Architecture, the existing workflow shall be reaffirmed to determine whether the proposed capability naturally extends an existing architectural responsibility.
+
+Architectural evolution shall occur through extension of constitutional workflows, not through creation of parallel processing paths.
+
+Relationship to ADR-003
+
+This principle governs the evolution of the Semantic Runtime Architecture defined by ADR-003.
+
+It does not alter the architecture established by ADR-003. Instead, it provides the constitutional decision framework used to evaluate future enhancements, ensuring that new capabilities strengthen existing architectural workflows rather than fragmenting them.
+
+Principle
+
+Implementation shall first reaffirm the existing architecture before extending it.
+
+New capabilities shall be evaluated against established workflows to determine whether they naturally extend existing architectural responsibilities or require the creation of genuinely new architectural constructs.
+
+Architectural continuity shall always take precedence over architectural expansion.
+
+Architectural Rationale
+
+Large software systems naturally evolve over time through incremental enhancements. Without deliberate architectural discipline, these enhancements often introduce redundant processing, overlapping responsibilities, duplicated logic, and fragmented workflows.
+
+Such architectural drift increases technical debt, reduces maintainability, weakens governance, and makes future evolution increasingly difficult.
+
+HCGO adopts a constitutional approach to architecture in which every enhancement first confirms its relationship to the existing architecture before introducing additional components.
+
+The objective is not to minimize change, but to ensure change occurs as an intentional extension of the established constitutional architecture.
+
+Decision Framework
+
+Before introducing any new architectural capability, the following questions shall be answered:
+
+Does an existing architectural workflow already own this responsibility?
+Does an existing architectural component already provide this capability?
+Can the proposed enhancement extend an existing workflow without violating constitutional responsibilities?
+Would introducing a new service create duplicate ownership or overlapping responsibilities?
+Does the enhancement preserve the existing authority model?
+
+Only after these questions have been evaluated shall new architectural components be introduced.
+
+Constitutional Rules
+
+Every architectural enhancement shall:
+
+• Reaffirm the existing workflow before modification.
+
+• Extend existing constitutional responsibilities whenever appropriate.
+
+• Preserve single ownership of architectural responsibilities.
+
+• Avoid duplicate semantic processing.
+
+• Maintain clear orchestration boundaries.
+
+• Preserve Separation of Concerns.
+
+• Preserve Single Responsibility.
+
+• Preserve constitutional authority relationships.
+
+Authority Model
+
+Architectural continuity is governed by existing constitutional ownership.
+
+Examples include:
+
+QueryService remains the sole orchestration authority.
+Semantic Runtime Pipeline remains the sole authority for semantic understanding.
+Knowledge Retrieval remains the authority for authoritative knowledge acquisition.
+Presentation components remain responsible only for rendering.
+
+New capabilities shall extend these authorities rather than creating parallel ownership.
+
+Example
+Incorrect
+QueryService
+
+↓
+
+Intent Classification
+
+↓
+
+NEW Independent Intent Workflow
+
+↓
+
+Scripture Retrieval
+
+This introduces a parallel semantic workflow that duplicates existing architectural responsibility.
+
+Correct
+QueryService
+
+↓
+
+Semantic Runtime Pipeline
+
+    ↓
+
+Intent Classification
+
+    ↓
+
+Intent Reaffirmation
+
+    ↓
+
+Scripture Scope Resolution
+
+    ↓
+
+Knowledge Retrieval
+
+Intent Reaffirmation extends the established Semantic Runtime Pipeline rather than creating a new architectural path.
+
+Benefits
+
+Applying this principle:
+
+Preserves architectural integrity.
+Reduces architectural drift.
+Prevents duplicate responsibilities.
+Simplifies debugging and troubleshooting.
+Improves long-term maintainability.
+Strengthens constitutional governance.
+Enables predictable architectural evolution.
+Reduces technical debt.
+Relationship to Other Architectural Principles
+
+AF-EP-005 reinforces, but does not replace:
+
+Separation of Concerns
+Single Responsibility Principle
+Constitutional Authority Model
+QueryService as Orchestration Authority
+Semantic Runtime Authority
+Implementation Consumes Architecture
+
+Together these principles ensure HCGO evolves through disciplined architectural extension rather than incremental architectural fragmentation.
+
+Architectural Lesson Learned (Version 5.6)
+
+During implementation of the Version 5.6 Intent Reaffirmation capability, the initial instinct was to identify a location for a new processing step. Before implementation proceeded, the existing Semantic Runtime Pipeline was reviewed. That review confirmed that Intent Classification was already an established constitutional stage within the pipeline.
+
+Rather than introducing a parallel semantic workflow, Intent Reaffirmation was positioned as the next semantic processing stage consuming the authoritative output of Intent Classification.
+
+This review reaffirmed an important constitutional practice:
+
+Every significant enhancement should begin by reaffirming the existing architectural workflow before introducing new capabilities.
+
+By first understanding the current architecture, HCGO preserved constitutional continuity, avoided duplicate responsibilities, and strengthened the existing Semantic Runtime Pipeline instead of fragmenting it.

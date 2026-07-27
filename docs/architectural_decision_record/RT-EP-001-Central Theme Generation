@@ -1,0 +1,151 @@
+RTL-EP-001 — Central Theme Layer
+Classification
+
+Enterprise Principle (EP)
+
+Applies To:
+All Human-Centered Governed Orchestration (HCGO) domains and implementations.
+
+Purpose
+
+The Central Theme is intent affirmation, not content synthesis.
+
+Every HCGO interaction shall begin by reaffirming the user's understood intent before presenting authoritative knowledge. This reaffirmation establishes the conversational context for the current interaction while remaining subordinate to the authoritative response.
+
+The Intent Reaffirmation shall reflect the voice of a trusted friend. It should feel natural, personal, and conversational, never mechanical or formulaic. The response should reassure the reader that their question has been understood while naturally leading into Scripture.
+
+Before presenting authoritative knowledge, every HCGO implementation shall provide a concise, domain-appropriate Central Theme that recognizes the user's intent and prepares the user for the information that follows.
+
+The Central Theme serves as a semantic bridge between the user's request and the authoritative knowledge source.
+
+Principle
+
+Users often approach an HCGO system with questions, emotions, uncertainty, curiosity, or life situations rather than direct requests for authoritative content.
+
+The Central Theme provides immediate acknowledgment that the system understands the user's intent while establishing the general direction of the forthcoming response.
+
+It improves readability, continuity, and user confidence without replacing or interpreting the authoritative source.
+
+Constitutional Requirements
+
+The Central Theme shall:
+
+Be generated after user intent has been understood.
+Be presented before authoritative knowledge.
+Be limited to 15 words or fewer.
+Consist of a single, natural-language sentence or phrase.
+Be domain appropriate.
+Reflect the user's intent without restating the entire question.
+Orient the user toward the forthcoming authoritative content.
+Never become the primary answer.
+Never replace the authoritative source.
+Never introduce unsupported facts, opinions, or conclusions.
+Never exceed the authority of the domain's governed knowledge source.
+Architectural Position
+User Request
+      │
+      ▼
+Intent Understanding
+      │
+      ▼
+Central Theme Layer
+      │
+      ▼
+Authoritative Knowledge
+      │
+      ▼
+Domain-Specific Guidance
+
+The Central Theme is an orientation layer.
+
+It is not an interpretation layer.
+
+Enterprise Characteristics
+
+The Central Theme shall be:
+
+Brief
+Human-centered
+Conversational
+Context-aware
+Domain-neutral
+Architecturally reusable
+Independent of any individual knowledge domain
+Domain Implementation Examples
+Bible Therapy Assistant (BTA)
+
+User
+
+My grandson passed away and I am depressed.
+
+Central Theme
+
+God's Word speaks hope to grieving hearts.
+
+Authoritative Knowledge
+
+Scripture
+
+OSHA Assistant
+
+User
+
+Do I need fall protection on this roof?
+
+Central Theme
+
+Fall protection requirements depend on the work being performed.
+
+Authoritative Knowledge
+
+OSHA Regulations
+
+Healthcare Assistant
+
+User
+
+My blood sugar keeps rising after dinner.
+
+Central Theme
+
+Several factors can influence evening blood sugar levels.
+
+Authoritative Knowledge
+
+Clinical guidance and approved medical references
+
+Legal Assistant
+
+User
+
+Can my employer terminate me without notice?
+
+Central Theme
+
+Employment rights depend upon applicable laws and circumstances.
+
+Authoritative Knowledge
+
+Statutes, regulations, and case law
+
+Governance
+
+The Central Theme shall derive its context from the governed intent analysis process and shall remain subordinate to the domain's authoritative knowledge.
+
+Implementations may customize wording and tone appropriate to their domain but shall not alter the constitutional purpose of the Central Theme Layer.
+
+Authority
+
+This Enterprise Principle defines a reusable HCGO semantic interaction pattern.
+
+Individual implementations (such as Bible Therapy Assistant, OSHA Assistant, Healthcare Assistant, and future HCGO solutions) shall implement this principle in accordance with their respective domain authorities.
+
+I would make one final naming change. Since this is an Enterprise Principle, I'd remove the RTL prefix altogether and use:
+
+EP-001 — Central Theme Layer
+
+Then, within BTA Version 5.6, you would reference it as:
+
+Implementation of HCGO EP-001 — Central Theme Layer
+
+That keeps the enterprise architecture clean: the principle belongs to HCGO, while BTA, OSHA, Healthcare, and other domains simply implement it according to their authoritative knowledge source.

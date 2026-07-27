@@ -26,6 +26,7 @@ interface VerseItem {
  * We keep this permissive to avoid breaking when backend adds fields.
  */
 type QueryResponse = {
+  intent_reaffirmation?: string | null;
   verses?: VerseItem[];
   context?: string | null;
   context_exploration?: string | null;
@@ -149,6 +150,16 @@ export default function ResultsClient() {
   return (
     <section className="space-y-8">
       <h2 className="text-2xl font-semibold">Scripture & Reflection</h2>
+
+      {/* 0) Intent Reaffirmation */}
+      {data.intent_reaffirmation && (
+        <Section
+          title="Intent Reaffirmation"
+          blurb="Confirming BTA understands what you're seeking."
+        >
+          <p>{data.intent_reaffirmation}</p>
+        </Section>
+      )}
 
       {/* 1) Scripture */}
       <Section

@@ -1,3 +1,24 @@
+# ============================================================================
+# HCGO Semantic Runtime Conductor
+# ----------------------------------------------------------------------------
+# QueryService is the orchestration authority for the BTA Semantic Runtime.
+#
+# Responsibilities:
+#   • Coordinate governed runtime execution.
+#   • Invoke semantic processing services in the approved architectural order.
+#   • Preserve constitutional boundaries between orchestration and
+#     implementation services.
+#
+# QueryService is intentionally a conductor. It owns orchestration, not
+# business logic. Individual semantic capabilities (pattern analysis,
+# meaning construction, context generation, reflection, etc.) remain
+# independent services coordinated by this runtime.
+#
+# Architectural Principle:
+#     "Implementation consumes architecture.
+#      Architecture does not conform to implementation."
+# ============================================================================
+
 # backend/services/query_service.py
 
 # Structural escalation router (Phase 9.8B.5)
@@ -34,6 +55,18 @@ from backend.services.context_exploration_service import (
 
 # Phase 9.1D.2 Reflection Engine
 from backend.services.reflection_engine import generate_reflection
+
+# --------------------------------------------------------------
+# HCGO Orchestration Layer
+# Intent Reaffirmation (Version 5.6)
+# --------------------------------------------------------------
+from backend.services.intent_reaffirmation_classifier_service import (
+    classify_reaffirmation_intent,
+)
+
+from backend.services.intent_reaffirmation_service import (
+    generate_intent_reaffirmation,
+)
 
 # --------------------------------------------------------------
 # Phase 9.1D.2.1 — AI Guided Summary Layer
@@ -667,6 +700,21 @@ class QueryService:
 
         commentary_text: Optional[str] = None
 
+        # ----------------------------------------------------------
+        # Phase 9.1D.2.9 — Intent Reaffirmation Initialization
+        # QueryService orchestrates the capability; generation is
+        # delegated to the Intent Reaffirmation service.
+        # ----------------------------------------------------------
+        intent_reaffirmation: Optional[str] = None
+
+        intent_result = classify_reaffirmation_intent(question)
+
+        if intent_result:
+            intent_reaffirmation = generate_intent_reaffirmation(
+                question=question,
+                conversational_intent=intent_result["intent"],
+            )
+
         if want_commentary and verse_items:
             c_res = build_commentary(verses=verse_items)
             formatted = self._format_commentary_result_as_string(c_res)
@@ -779,6 +827,7 @@ class QueryService:
         )
 
         return QueryResponse(
+            intent_reaffirmation=intent_reaffirmation,
             verses=verse_items,
             summary=final_summary,
             context=context,
