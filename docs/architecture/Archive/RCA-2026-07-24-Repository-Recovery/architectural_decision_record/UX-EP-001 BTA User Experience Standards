@@ -1,0 +1,167 @@
+UX-EP-001 — BTA User Experience Standards
+
+Document ID: UX-EP-001
+Title: Bible Therapy Assistant™ User Experience Standards
+Status: Draft – Phase 2A
+Owner: BTA Platform Architecture
+Applies To: All BTA user interaction workflows
+
+1. Purpose
+
+This document establishes the User Experience (UX) standards governing how readers interact with Bible Therapy Assistant™ (BTA).
+
+Its purpose is to ensure every interaction is intuitive, consistent, accessible, and supportive of Scripture-centered exploration while preserving the constitutional principles governing the platform.
+
+This document governs interaction workflows.
+
+2. Scope
+
+UX standards include, but are not limited to:
+
+Reader journeys
+Navigation flow
+Scripture search workflow
+Progressive Disclosure
+Contact workflow
+Connect workflow
+Donation workflow
+Error recovery
+Success confirmation
+Expand/collapse behavior
+Modal and workspace interactions
+Mobile interaction patterns
+Accessibility interactions
+3. Relationship Between UX and UI
+
+Although User Experience (UX) and User Interface (UI) are complementary disciplines, they govern different aspects of the BTA platform.
+
+User Experience (UX)
+
+User Experience governs how readers accomplish objectives within BTA.
+
+Examples include:
+
+Performing a Scripture search
+Connecting with BTA
+Contacting the ministry
+Making a donation
+Navigating Progressive Disclosure
+Receiving confirmations
+Recovering from errors
+
+UX answers the question:
+
+"How does the reader accomplish their objective?"
+
+User Interface (UI)
+
+User Interface governs how those workflows are visually presented.
+
+Examples include:
+
+Navigation layout
+Typography
+Colors
+Buttons and links
+Responsive presentation
+Component styling
+
+UI answers the question:
+
+"How is the workflow presented?"
+
+4. Governance Principle
+
+UX standards govern interaction.
+
+UI standards govern presentation.
+
+Neither document shall redefine the responsibilities of the other.
+
+Both work together to produce a consistent, accessible reader experience.
+
+5. Reader Experience Objectives
+
+Every workflow shall strive to achieve the following objectives:
+
+Minimize unnecessary steps.
+Maintain a consistent interaction model.
+Provide clear feedback after every significant action.
+Preserve reader orientation throughout navigation.
+Support both desktop and mobile interaction naturally.
+Reduce cognitive load.
+Encourage continued engagement with Scripture.
+Avoid unnecessary interruptions during reflection.
+6. Interaction Standards
+
+All user interactions should provide clear and predictable behavior.
+
+Desktop
+Hover provides visual confirmation.
+Click executes the selected action.
+Mobile
+Tap executes the selected action.
+Workflows should require no hover-dependent behavior.
+Keyboard Accessibility
+Navigation shall support keyboard traversal.
+Focus indicators shall clearly identify the active element.
+Enter or Space shall execute the selected action where appropriate.
+7. Progressive Disclosure
+
+BTA shall present information incrementally, allowing readers to choose when additional detail is desired.
+
+Progressive Disclosure shall:
+
+Reduce information overload.
+Preserve readability.
+Encourage exploration.
+Support varying levels of reader interest.
+Maintain continuity throughout the reader journey.
+8. Reader Journey Principles
+
+Every workflow should reinforce why the reader came to BTA.
+
+Interactions should promote:
+
+Trust
+Calmness
+Clarity
+Reflection
+Confidence
+Accessibility
+
+Interface behavior should never compete with Scripture for the reader's attention.
+
+9. Future Workflow Governance
+
+Future workflow standards may include:
+
+About BTA
+Contact Workspace
+Connect Workspace
+Donation Workspace
+Reader Account
+Saved Studies
+Search History
+Notifications
+Audience Engagement
+Subscription Management
+
+Each workflow shall comply with the principles established in this document.
+
+10. Revision History
+Date	Change	Author
+YYYY-MM-DD	Initial Draft	Donald A. Buckalew
+Why I think these two documents are important
+
+With these in place, you'll have a clean governance separation:
+
+Document	Governs
+UI-EP-001	How BTA looks (presentation)
+UX-EP-001	How BTA behaves (interaction)
+CG-EP-001	Constitutional governance
+ADR-001	Architectural decisions
+DF-EP-xxx	Data and persistence
+TI-EP-xxx	Technical implementation
+
+This creates a layered governance model where architecture, implementation, presentation, and interaction each have clearly defined responsibilities. I think it will make future design and development discussions much more precise because contributors will know exactly which document governs a particular decision.

@@ -1,0 +1,289 @@
+# CE-EP-001 — Audience Engagement Phase 1 Implementation
+
+## Status
+
+Approved for Implementation
+
+---
+
+# Purpose
+
+Implement the first Audience Engagement capability for Bible Therapy Assistant (BTA).
+
+This implementation establishes the reusable Audience Engagement platform capability while temporarily residing within the BibleSearchSite repository.
+
+The implementation provides a complete end-to-end workflow from the BTA user interface through HubSpot CRM while intentionally remaining independent of future PostgreSQL, Identity, Marketing Automation, and additional TAD Concepts domains.
+
+---
+
+# Scope
+
+Included
+
+- Audience Engagement frontend component
+- Backend Engagement Route
+- Backend Engagement Service
+- HubSpot CRM integration
+- Client-side validation
+- Backend validation
+- Success confirmation
+- End-to-end testing
+
+Excluded
+
+- PostgreSQL
+- CRM replacement abstraction
+- Identity
+- Authentication
+- Authorization
+- Marketing automation
+- ETL
+- Stripe
+- User Accounts
+- Analytics
+
+---
+
+# Architectural Principle
+
+Audience Engagement is a Platform Interaction Capability.
+
+Although implemented inside the BibleSearchSite repository, it is architecturally owned by the future TAD Concepts orchestration platform.
+
+Its implementation shall remain loosely coupled to enable future extraction with minimal refactoring.
+
+---
+
+# Architectural Pattern
+
+Audience Engagement shall follow the same interaction pattern established by the existing Donation capability.
+
+Presentation
+
+↓
+
+Backend Route
+
+↓
+
+Business Service
+
+↓
+
+External Provider
+
+↓
+
+HubSpot CRM
+
+Implementation shall follow the architectural structure only.
+
+No Donation business logic shall be reused.
+
+---
+
+# Repository Location
+
+Temporary implementation
+
+BibleSearchSite
+
+Future ownership
+
+TAD Concepts Platform
+
+---
+
+# Initial Capability
+
+Stay Connected
+
+Purpose
+
+Allow visitors to voluntarily request future communications from BTA.
+
+---
+
+# Frontend Responsibilities
+
+Collect
+
+- Name
+- Email
+- Consent
+
+Validate
+
+Display confirmation
+
+Call Engagement Service
+
+No CRM logic shall exist within the frontend.
+
+---
+
+# Backend Responsibilities
+
+Receive request
+
+Validate request
+
+Construct HubSpot contact
+
+Submit to HubSpot
+
+Return success or failure
+
+No presentation logic shall exist within backend services.
+
+---
+
+# HubSpot Fields
+
+Initial implementation
+
+Name
+
+Email
+
+Consent
+
+Source
+
+Submission Timestamp
+
+Future fields may be added without requiring frontend redesign.
+
+---
+
+# Initial Source Identifier
+
+BTA-STAY-CONNECTED
+
+Future implementations may include additional source identifiers.
+
+---
+
+# Folder Structure
+
+Frontend
+
+Platform
+
+Audience Engagement
+
+StayConnectedCard
+
+Engagement Types
+
+Future Components
+
+Backend
+
+Routes
+
+Engagement Route
+
+Services
+
+Engagement Service
+
+Future CRM Adapter
+
+---
+
+# Success Flow
+
+Visitor
+
+↓
+
+Stay Connected
+
+↓
+
+Validation
+
+↓
+
+Backend Route
+
+↓
+
+Engagement Service
+
+↓
+
+HubSpot
+
+↓
+
+Contact Created
+
+↓
+
+Confirmation Screen
+
+---
+
+# Confirmation Message
+
+Thank you for connecting with us.
+
+Your information has been received.
+
+We'll occasionally share updates about Bible Therapy Assistant and future TAD Concepts resources.
+
+You may unsubscribe at any time.
+
+---
+
+# Acceptance Criteria
+
+Implementation is complete when:
+
+✓ Stay Connected component renders.
+
+✓ Validation functions correctly.
+
+✓ Backend route functions.
+
+✓ Engagement Service functions.
+
+✓ HubSpot contact is successfully created.
+
+✓ Confirmation message is displayed.
+
+✓ No PostgreSQL dependency exists.
+
+✓ No Donation dependency exists.
+
+✓ No Reflection dependency exists.
+
+✓ No page-specific dependency exists.
+
+✓ Capability may be relocated anywhere within the UI without modification.
+
+---
+
+# Future Phases
+
+Phase 2
+
+CRM abstraction layer
+
+Phase 3
+
+Platform extraction into TAD Concepts
+
+Phase 4
+
+Marketing automation
+
+Phase 5
+
+Multi-domain participation
+
+---
+
+End of Document

@@ -1,0 +1,313 @@
+# TI-EP-005 — Commentary Persistence Layer
+
+**Project:** BTA V5 — HCGO Commentary / Scholars Persistence
+
+**Status:** Locked — July 2026
+
+**Classification:** Technical Implementation — Persistence
+
+---
+
+## Section 1 — Purpose
+
+Defines the persistence structure for downloaded commentary content
+(currently: CCEL-sourced public domain commentary — Matthew Henry,
+John Wesley, Charles Spurgeon, Adam Clarke, Albert Barnes).
+
+This is the content layer TI-EP-001 named but never instantiated
+(`Expert Identity -> referenced_by -> Commentary`). `expert_identity`
+stores WHO a commentator is; this table stores WHAT they wrote.
+
+Greenfield build — no migration/backfill required.
+
+Scripture verse text itself (the primary source text) remains on the
+existing Bible API path and is explicitly out of scope for this
+document — only scholarly commentary content is brought into
+Postgres, because that is the content the API cannot decompose to
+the granularity BTA needs.
+
+---
+
+## Section 2 — Table Definition
+
+```sql
+CREATE TABLE commentary (
+    commentary_id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+
+    -- who wrote it
+    expert_id       UUID NOT NULL,
+
+    -- domain isolation (same pattern as expert_identity)
+    domain_id       UUID NOT NULL,
+
+    -- passage reference
+    book            TEXT NOT NULL,
+    chapter         INT  NOT NULL,
+    verse_start     INT  NOT NULL,
+    verse_end       INT  NOT NULL,
+
+    -- content
+    body_text       TEXT NOT NULL,
+
+    -- provenance / licensing
+    ingestion_source TEXT NOT NULL DEFAULT 'CCEL',
+    source_edition   TEXT,
+    license_status   TEXT NOT NULL DEFAULT 'PUBLIC_DOMAIN',
+
+    -- lifecycle / governance metadata (per PA-EP-001 principle 12)
+    status          TEXT NOT NULL DEFAULT 'DRAFT',
+    reviewed_by     UUID,
+    reviewed_at     TIMESTAMP,
+
+    created_at      TIMESTAMP DEFAULT now(),
+    updated_at      TIMESTAMP DEFAULT now(),
+
+    CONSTRAINT fk_commentary_expert
+        FOREIGN KEY (expert_id)
+        REFERENCES expert_identity(expert_id)
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_commentary_domain
+        FOREIGN KEY (domain_id)
+        REFERENCES domain(domain_id)
+        ON DELETE RESTRICT,
+
+    CONSTRAINT verse_range_valid
+        CHECK (verse_end >= verse_start),
+
+    CONSTRAINT license_status_valid
+        CHECK (license_status IN ('PUBLIC_DOMAIN','LICENSED','RESTRICTED')),
+
+    CONSTRAINT commentary_status_valid
+        CHECK (status IN ('DRAFT','PUBLISHED','ARCHIVED'))
+);
+```
+
+---
+
+## Section 3 — Retrieval Indexes
+
+```sql
+-- primary lookup path: "commentary on Romans 8:28"
+CREATE INDEX idx_commentary_passage
+ON commentary (book, chapter, verse_start, verse_end);
+
+-- domain-scoped queries (required for RLS performance —
+-- FKs are not auto-indexed in Postgres)
+CREATE INDEX idx_commentary_domain_id
+ON commentary (domain_id);
+
+-- "all commentary by this expert"
+CREATE INDEX idx_commentary_expert_id
+ON commentary (expert_id);
+```
+
+---
+
+## Section 4 — Domain Isolation (RLS) and Write Governance
+
+Same enforcement pattern already locked for `expert_identity` in
+TI-EP-002 §4 and TI-EP-003 §3.
+
+```sql
+ALTER TABLE commentary
+ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE commentary
+FORCE ROW LEVEL SECURITY;
+
+-- READ: same-domain OR active contract with READ/ADMIN scope
+CREATE POLICY commentary_read_visibility
+ON commentary
+FOR SELECT
+USING (
+    domain_id = current_setting('app.current_domain', true)::uuid
+    OR EXISTS (
+        SELECT 1
+        FROM domain_participation_contract dpc
+        WHERE dpc.status = 'ACTIVE'
+          AND dpc.access_scope IN ('READ','ADMIN')
+          AND (
+                (dpc.source_domain_id = current_setting('app.current_domain', true)::uuid
+                 AND dpc.target_domain_id = commentary.domain_id)
+             OR (dpc.target_domain_id = current_setting('app.current_domain', true)::uuid
+                 AND dpc.source_domain_id = commentary.domain_id)
+          )
+    )
+);
+
+-- WRITE: same-domain only (no cross-domain write, matching
+-- expert_identity's baseline)
+CREATE POLICY commentary_write_own_domain
+ON commentary
+FOR INSERT
+WITH CHECK (domain_id = current_setting('app.current_domain', true)::uuid);
+
+CREATE POLICY commentary_update_own_domain
+ON commentary
+FOR UPDATE
+USING (domain_id = current_setting('app.current_domain', true)::uuid)
+WITH CHECK (domain_id = current_setting('app.current_domain', true)::uuid);
+
+CREATE POLICY commentary_delete_own_domain
+ON commentary
+FOR DELETE
+USING (domain_id = current_setting('app.current_domain', true)::uuid);
+```
+
+### 4.1 Expert Type Enforcement (resolved — see Section 5, item 2)
+
+Postgres CHECK constraints cannot reference another table, so this
+rule is enforced via trigger, not CHECK:
+
+```sql
+CREATE OR REPLACE FUNCTION enforce_commentary_source_type()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM expert_identity
+        WHERE expert_id = NEW.expert_id
+          AND type = 'commentary_source'
+    ) THEN
+        RAISE EXCEPTION 'expert_id % is not type commentary_source', NEW.expert_id;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_commentary_expert_type_check
+BEFORE INSERT OR UPDATE ON commentary
+FOR EACH ROW
+EXECUTE FUNCTION enforce_commentary_source_type();
+```
+
+### 4.2 Write Audit Logging (resolved — see Section 5, item 3)
+
+`log_domain_write_attempt()` (originally defined in TI-EP-003 §3) is
+updated here to use `TG_TABLE_NAME` instead of a hardcoded
+`entity_type`, so it can be safely shared across tables:
+
+```sql
+CREATE OR REPLACE FUNCTION log_domain_write_attempt()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO domain_cross_access_log (
+        log_id, source_domain_id, target_domain_id,
+        entity_type, entity_id, action, was_allowed, timestamp
+    )
+    VALUES (
+        gen_random_uuid(),
+        current_setting('app.current_domain', true)::uuid,
+        COALESCE(NEW.domain_id, OLD.domain_id),
+        TG_TABLE_NAME,
+        COALESCE(NEW.commentary_id, NEW.expert_id, OLD.commentary_id, OLD.expert_id),
+        TG_OP,
+        true,
+        now()
+    );
+    RETURN COALESCE(NEW, OLD);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_commentary_write_log
+AFTER INSERT OR UPDATE OR DELETE ON commentary
+FOR EACH ROW
+EXECUTE FUNCTION log_domain_write_attempt();
+```
+
+**Known limitation, tracked for future correction:** the
+`COALESCE(NEW.commentary_id, NEW.expert_id, ...)` pattern works for
+the two tables currently sharing this trigger (`expert_identity`,
+`commentary`) because their primary key columns are known and
+distinct. Adding a third table with a different primary key name will
+require either extending this COALESCE chain (fragile — a mismatch
+fails silently, logging a NULL entity_id rather than raising an
+error) or refactoring to pass the PK column name as a trigger
+argument. Revisit before OSHA or CRM tables are attached to this same
+trigger.
+
+---
+
+## Section 5 — Design Decisions (Resolved July 2026)
+
+**1. Passage reference format — LOCKED.**
+`book` / `chapter` / `verse_start` / `verse_end` is confirmed as the
+canonical, enterprise-wide scripture reference standard for BTA V5
+Commentary — not commentary-specific, not temporary. Matches existing
+BTA retrieval logic and Bible API reference resolution. OSHA
+intentionally uses a separate citation hierarchy (standard/section);
+that separation is correct and stays as-is.
+
+**2. Expert/type relationship — LOCKED.**
+Only `expert_identity` rows with `type = 'commentary_source'` may
+have associated `commentary` rows. Enforced via trigger (Section 4.1)
+— Postgres CHECK constraints cannot query another table, so this
+could not be done via CHECK as originally proposed. Prevents OSHA
+entities, CRM contacts, or future-domain actors from incorrectly
+generating commentary content.
+
+**3. Write-logging trigger — LOCKED (implementation fix applied).**
+`log_domain_write_attempt()` now uses `TG_TABLE_NAME` instead of a
+hardcoded `entity_type` value (Section 4.2). This was a required
+correction, not optional — the original TI-EP-003 version would have
+mislabeled every `commentary` write as an `expert_identity` write.
+
+**4. Multi-edition / duplicate handling — LOCKED (no UNIQUE constraint).**
+Duplicates are allowed by design — CCEL or future sources may
+legitimately provide multiple editions of the same commentator's work
+on the same passage, and forcing uniqueness would break ingestion
+flexibility. Resolution of which edition displays happens at the
+application/retrieval layer, not the database layer.
+
+**Open follow-up (not a lock blocker):** the intended retrieval rule
+references a `trust_level` concept ("resolve via ingestion_source
+priority rules") that does not yet exist as a column anywhere in the
+schema — not on `commentary`, `expert_identity`, or any
+`ingestion_source` table. This needs to be defined (which table it
+lives on, what values it takes) before the retrieval-layer resolution
+logic can actually be built. Tracked as an open item for the next
+ingestion-layer design pass, not required before this table locks.
+
+**5. Section 6 scope — CONFIRMED UNCHANGED.**
+`bible_reference_index` (verse caching) remains deferred. OSHA content
+remains a separate domain/table structure. Orchestration, Memory, and
+Commercial layers are not part of this document. Later mapping-
+foundation documents proposing broader scope do not override this.
+
+---
+
+## Section 6 — Explicitly Out of Scope
+
+- Scripture verse text / `bible_reference_index` caching — remains on
+  the live Bible API path. Deferred until post-SBIR rebuild.
+- OSHA content structure — covered separately (citation/regulatory
+  hierarchy model, not passage-based; see OSHA domain decisions).
+- Orchestration, Memory, and Commercial layers (guardrail execution
+  logging, user query history, subscriptions) — future-state scope,
+  not part of this table.
+- `trust_level` / retrieval-priority logic for multi-edition
+  resolution — see Section 5, item 4 follow-up. Application-layer
+  concern, to be defined in a future ingestion-layer document.
+
+---
+
+## Section 7 — Lock Confirmation
+
+All five items raised during review were resolved with explicit
+decisions rather than left open:
+
+| Area | Status |
+|---|---|
+| Passage format | Locked |
+| Expert/type constraint | Locked (trigger-enforced) |
+| Write-logging trigger | Locked (fixed — `TG_TABLE_NAME`) |
+| Multi-edition handling | Locked (no unique constraint; retrieval-layer resolution) |
+| Section 6 scope | Confirmed unchanged |
+
+One technical correction was made during lock review: the original
+proposal to enforce the expert/type relationship via CHECK constraint
+was not implementable in Postgres (CHECK constraints cannot reference
+other tables); a trigger was used instead (Section 4.1).
+
+TI-EP-005 is locked as of this version. Rename file from
+`TI-EP-005-Draft` to `TI-EP-005` upon commit.

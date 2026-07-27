@@ -1,0 +1,252 @@
+# DF-EP-004 — Enterprise Capability Registry
+
+**Project:** BTA V5.1 — HCGO Enterprise Persistence Architecture
+
+**Status:** Approved
+
+**Classification:** Discovery Finding
+
+---
+
+# Purpose
+
+Define the authoritative enterprise concept of an Enterprise Capability within HCGO.
+
+This discovery establishes the enterprise definition and stewardship of Enterprise Capabilities prior to Enterprise Relationship Analysis.
+
+This discovery defines the enterprise concept only.
+
+It does not define implementation, orchestration, persistence, runtime behavior, or technology.
+
+---
+
+# Discovery Principles
+
+Enterprise Capability discovery shall identify:
+
+- Enterprise capability identity
+- Enterprise capability purpose
+- Enterprise capability ownership
+- Enterprise capability stewardship
+- Enterprise capability classification
+- Enterprise capability lifecycle
+- Enterprise capability relationships
+
+Enterprise Capability discovery shall not identify:
+
+- Runtime execution
+- Business logic
+- Database design
+- Backend implementation
+- Frontend implementation
+- Physical persistence
+- Technology implementation
+
+---
+
+# Enterprise Capability
+
+## Enterprise Question
+
+What enterprise capabilities exist and what are their authoritative enterprise characteristics?
+
+---
+
+## Enterprise Definition
+
+An Enterprise Capability is an authoritative enterprise responsibility that provides a defined business or platform function within HCGO.
+
+Enterprise Capabilities represent reusable enterprise responsibilities independent of implementation, orchestration, persistence, or technology.
+
+Enterprise Capabilities may participate within one or more enterprise domains.
+
+---
+
+# Enterprise Responsibility
+
+The Enterprise Capability Registry maintains the authoritative enterprise definition of Enterprise Capabilities.
+
+It establishes:
+
+- Capability identity
+- Capability purpose
+- Capability ownership
+- Capability stewardship
+- Capability classification
+- Capability lifecycle
+- Enterprise capability relationships
+
+It does not define:
+
+- Capability implementation
+- Runtime execution
+- Query orchestration
+- Business logic
+- Persistence implementation
+- Runtime configuration
+- Governance policy
+
+Those responsibilities belong to their respective enterprise capabilities.
+
+---
+
+# Enterprise Capability Characteristics
+
+## Capability Identity
+
+Maintains the authoritative enterprise identity of each capability.
+
+Examples:
+
+- Language Management
+- Human Understanding
+- Commentary
+- Query Service
+- Audit & Traceability
+- Future enterprise capabilities
+
+---
+
+## Capability Purpose
+
+Defines the enterprise responsibility fulfilled by the capability.
+
+This defines why the capability exists.
+
+---
+
+## Capability Ownership
+
+Defines enterprise ownership.
+
+Examples:
+
+- Platform-owned
+- Domain-owned
+- Shared capability
+- Future ownership classifications
+
+---
+
+## Capability Stewardship
+
+Defines the enterprise steward responsible for the capability.
+
+This defines enterprise responsibility rather than implementation ownership.
+
+---
+
+## Capability Classification
+
+Maintains enterprise capability classifications.
+
+Examples:
+
+- Platform Capability
+- Domain Capability
+- Governance Capability
+- Shared Capability
+- Future enterprise classifications
+
+---
+
+## Capability Lifecycle
+
+Maintains enterprise lifecycle information.
+
+Examples:
+
+- Proposed
+- Active
+- Deprecated
+- Retired
+- Archived
+
+---
+
+## Capability Relationships
+
+Maintains enterprise relationships between capabilities.
+
+Examples:
+
+- Depends upon
+- Provides services to
+- Consumes
+- Future enterprise relationships
+
+These relationships identify enterprise dependencies.
+
+They do not define runtime execution.
+
+---
+
+# Constitutional Principle
+
+Enterprise Capabilities represent authoritative enterprise responsibilities.
+
+They define what responsibilities exist within the HCGO enterprise.
+
+They do not define implementation, orchestration, runtime behavior, business logic, persistence, or technology.
+
+Enterprise Capabilities are reusable enterprise responsibilities that may participate within multiple enterprise domains.
+
+---
+
+# Enterprise Relationship
+
+Enterprise
+        │
+        ▼
+Domain Registry
+        │
+Defines enterprise boundaries
+        │
+        ▼
+Enterprise Capability Registry
+        │
+Defines enterprise responsibilities
+        │
+        ▼
+Capability Implementation
+        │
+Implements approved enterprise capabilities
+
+Domains organize enterprise responsibilities.
+
+Enterprise Capabilities provide those responsibilities.
+
+Implementation realizes those responsibilities.
+
+---
+
+# Discovery Summary
+
+The Enterprise Capability Registry completes the core enterprise vocabulary required before Enterprise Relationship Analysis.
+
+Enterprise vocabulary now consists of:
+
+| Enterprise Entity | Enterprise Question |
+|------------------------------|--------------------------------------------------------------|
+| Language Management | How do humans communicate across the enterprise? |
+| Human Understanding | What is the authoritative enterprise understanding before execution? |
+| Expert Registry | Who contributes knowledge? |
+| Source Registry | Where does the authoritative knowledge originate? |
+| Participation Registry | Who or what is authorized to participate? |
+| Domain Registry | What enterprise domains exist and what are their governing characteristics? |
+| Governance Metadata | What authoritative governance metadata governs enterprise assets? |
+| Audit & Traceability | What authoritative enterprise evidence demonstrates what occurred and how it can be traced? |
+| Platform Configuration Management | What authoritative platform configuration governs platform capabilities? |
+| Enterprise Capability Registry | What enterprise capabilities exist and what are their authoritative enterprise characteristics? |
+
+---
+
+# Current Assessment
+
+Enterprise Discovery is complete.
+
+The authoritative enterprise vocabulary has been established.
+
+Subsequent Analysis Findings (AF-EP) shall build upon these validated enterprise entities to establish enterprise relationships prior to persistence architecture and logical database design.
+
+Enterprise discovery has been intentionally separated from implementation, persistence, orchestration, and technology to preserve constitutional separation of concerns.

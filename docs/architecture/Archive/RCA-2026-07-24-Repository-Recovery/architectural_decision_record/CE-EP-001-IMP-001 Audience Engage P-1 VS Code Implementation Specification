@@ -1,0 +1,257 @@
+# CE-EP-001-IMP-001 — Audience Engagement Phase 1 VS Code Implementation Specification
+
+## Status
+
+Approved for Implementation
+
+---
+
+# Purpose
+
+Implement the Audience Engagement Phase 1 capability as defined by CE-EP-001.
+
+Implementation shall follow the existing BTA architectural standards while establishing the first Platform Interaction Capability.
+
+This implementation shall integrate with HubSpot CRM using the existing Personal Access Key.
+
+---
+
+# Implementation Rules
+
+Implement only what is described in this document.
+
+Do not introduce additional features.
+
+Do not redesign existing BTA functionality.
+
+Do not implement PostgreSQL.
+
+Do not implement Identity.
+
+Do not implement Marketing Automation.
+
+Do not implement Analytics.
+
+Do not implement ETL.
+
+Do not implement OAuth.
+
+Do not implement Authentication.
+
+Do not implement Authorization.
+
+---
+
+# Architectural Goal
+
+Implement a complete end-to-end workflow:
+
+Visitor
+
+↓
+
+Stay Connected
+
+↓
+
+Frontend Validation
+
+↓
+
+Backend Route
+
+↓
+
+Engagement Service
+
+↓
+
+HubSpot Contact API
+
+↓
+
+HubSpot Contact Created
+
+↓
+
+Confirmation Screen
+
+---
+
+# Required Folder Structure
+
+Create frontend Audience Engagement capability.
+
+Create backend Engagement Route.
+
+Create backend Engagement Service.
+
+Create shared Engagement Types.
+
+Create HubSpot integration module if required.
+
+Use existing BTA project conventions.
+
+---
+
+# Frontend Responsibilities
+
+Implement reusable StayConnectedCard component.
+
+Collect:
+
+• Name
+
+• Email
+
+• Consent
+
+Perform client-side validation.
+
+Submit to backend Engagement Route.
+
+Display success confirmation.
+
+Display friendly error message if submission fails.
+
+No CRM logic shall exist in the frontend.
+
+---
+
+# Backend Responsibilities
+
+Create Engagement Route.
+
+Receive submission.
+
+Validate request.
+
+Create HubSpot contact.
+
+Return success.
+
+Return meaningful error when required.
+
+No presentation logic shall exist within backend services.
+
+---
+
+# Environment Variables
+
+Use environment variables only.
+
+Do not hardcode credentials.
+
+Support:
+
+HUBSPOT_ACCESS_TOKEN
+
+No credentials shall be committed to source control.
+
+---
+
+# HubSpot Contact
+
+Initial fields:
+
+First Name
+
+Email
+
+Consent
+
+Source
+
+Submitted Timestamp
+
+Additional fields may be added in future versions.
+
+---
+
+# Source Identifier
+
+Initial implementation:
+
+BTA-STAY-CONNECTED
+
+This value shall remain configurable.
+
+---
+
+# UI Placement
+
+Initially place the component after Reflection.
+
+This placement is temporary.
+
+Implementation shall remain independent of page layout.
+
+The component must be movable without code changes.
+
+---
+
+# Existing Code
+
+Follow the same architectural layering used by the existing Donation capability.
+
+Reuse architectural structure only.
+
+Do not copy Donation implementation.
+
+Do not duplicate Donation business logic.
+
+---
+
+# Testing
+
+Validate:
+
+✓ Component renders.
+
+✓ Validation functions.
+
+✓ Backend route reachable.
+
+✓ HubSpot authentication successful.
+
+✓ Contact created in HubSpot.
+
+✓ Confirmation displayed.
+
+✓ Errors handled gracefully.
+
+---
+
+# Acceptance Criteria
+
+Implementation is complete only when:
+
+✓ Contact successfully appears in HubSpot.
+
+✓ User receives confirmation.
+
+✓ No application regressions occur.
+
+✓ No existing BTA functionality is modified.
+
+✓ Implementation follows CE-EP-001.
+
+---
+
+# Deliverables
+
+Frontend Audience Engagement capability.
+
+Backend Engagement Route.
+
+Backend Engagement Service.
+
+HubSpot integration.
+
+Environment variable configuration.
+
+End-to-end validated workflow.
+
+---
+
+End of Document

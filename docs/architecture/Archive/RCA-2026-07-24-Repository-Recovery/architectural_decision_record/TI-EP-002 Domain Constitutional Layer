@@ -1,0 +1,158 @@
+TI-EP-002 — Domain Constitutional Layer
+
+------------------------------------------------------------
+SECTION 1 — DOMAIN PURPOSE AND STRUCTURAL DEFINITION
+------------------------------------------------------------
+
+The Domain Constitutional Layer defines structural boundaries that govern multi-domain data isolation and integrity across a relational enterprise system.
+
+A domain is a first-class structural boundary that defines the valid semantic and operational context for all instantiated entities.
+
+Each domain represents a persistent structural entity enforced through a required domain identifier (domain_id) on all instantiated entities.
+
+All instantiated entities MUST belong to exactly one domain via domain_id.
+
+Domain extension is achieved through addition of new domain records without requiring redesign of existing entity structures.
+
+Domain boundaries define semantic scope and execution context. Isolation is enforced through database-level constraints and Row-Level Security (RLS).
+
+------------------------------------------------------------
+SECTION 2 — DOMAIN MODEL AND MIGRATION SEQUENCE
+------------------------------------------------------------
+
+CREATE TABLE domain (
+    domain_id UUID PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT now()
+);
+
+ALTER TABLE expert_identity
+ADD COLUMN domain_id UUID;
+
+Migration sequence:
+
+1. Add domain_id column as NULLABLE
+2. Insert baseline domain records
+3. Backfill existing entity records with valid domain_id values
+4. Apply NOT NULL constraint
+5. Add FOREIGN KEY constraint referencing domain(domain_id)
+6. Create index on domain_id
+
+-- STEP 2: Insert baseline domain records
+INSERT INTO domain (domain_id, name, description, created_at)
+VALUES (
+    gen_random_uuid(),
+    'bible',
+    'Bible / Scripture domain',
+    now()
+);
+
+-- STEP 3: Backfill existing records
+UPDATE expert_identity
+SET domain_id = (
+    SELECT domain_id
+    FROM domain
+    WHERE name = 'bible'
+)
+WHERE domain_id IS NULL;
+
+ALTER TABLE expert_identity
+ALTER COLUMN domain_id SET NOT NULL;
+
+ALTER TABLE expert_identity
+ADD CONSTRAINT fk_expert_identity_domain
+FOREIGN KEY (domain_id)
+REFERENCES domain(domain_id)
+ON DELETE RESTRICT;
+
+CREATE INDEX idx_expert_identity_domain_id
+ON expert_identity(domain_id);
+
+------------------------------------------------------------
+SECTION 3 — DOMAIN INTEGRITY AND ENFORCEMENT MODEL
+------------------------------------------------------------
+
+Domain enforcement is implemented through separation of:
+
+1. Referential integrity
+2. Query isolation
+
+Referential integrity is enforced through:
+- FOREIGN KEY constraints
+- NOT NULL constraints
+- UNIQUE constraints
+
+These ensure all entities reference valid domains.
+
+Query isolation is enforced using Row-Level Security (RLS).
+
+Application-level filtering is optional and not a primary enforcement mechanism.
+
+Enforcement hierarchy:
+
+- PRIMARY: Row-Level Security (RLS)
+- SECONDARY: database constraints
+- OPTIONAL: application-level filtering
+
+------------------------------------------------------------
+SECTION 4 — RLS IMPLEMENTATION AND ACTIVE DOMAIN CONTEXT
+------------------------------------------------------------
+
+Row-Level Security (RLS) is the primary mechanism for enforcing query isolation.
+
+RLS MUST be enabled:
+
+ALTER TABLE expert_identity
+ENABLE ROW LEVEL SECURITY;
+
+Domain context MUST be set per transaction:
+
+SET LOCAL app.current_domain = '<domain_id>';
+
+If no domain context is set, zero rows MUST be returned.
+
+RLS Policy:
+
+CREATE POLICY expert_identity_domain_isolation
+ON expert_identity
+USING (
+    domain_id = current_setting('app.current_domain', true)::uuid
+);
+
+FORCE ROW LEVEL SECURITY MUST be enabled:
+
+ALTER TABLE expert_identity
+FORCE ROW LEVEL SECURITY;
+
+NOTE:
+Roles with BYPASSRLS or superuser privileges bypass RLS and MUST NOT be used by application connections.
+
+------------------------------------------------------------
+SECTION 5 — CONCLUSION (OPERATIONAL CONTRACT SUMMARY)
+------------------------------------------------------------
+
+TI-EP-002 defines a database-enforced domain isolation architecture composed of:
+
+1. Domain structure layer
+2. Referential integrity layer
+3. Query isolation layer (RLS)
+4. Privilege enforcement layer
+
+Scope Note:
+This specification defines isolation and integrity for domain-scoped tables. It does not yet include:
+(a) access logging for cross-domain attempts
+(b) Domain Participation Contract for controlled cross-domain interactions
+
+System behavior:
+- Entities exist within exactly one domain
+- Queries are scoped by RLS
+- Missing context returns zero rows
+- Integrity enforced through relational constraints
+- Behavior is consistent across all tables where this specification is applied
+
+Implementation guarantee:
+- Domain isolation is enforced at database execution layer
+- Cross-domain access is blocked by RLS policies
+- Integrity enforced via constraints
+- Behavior is independent of application implementation quality where fully applied

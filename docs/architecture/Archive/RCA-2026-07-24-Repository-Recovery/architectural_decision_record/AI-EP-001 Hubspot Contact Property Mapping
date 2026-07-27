@@ -1,0 +1,63 @@
+AI-EP-001 — HubSpot Contact Property Mapping & Platform Portability
+
+Status: Open (Implementation Correction Required)
+
+Date Added: 2026-07-14
+
+Context
+
+During the BTA Audience Engagement Phase 1 implementation review, inspection of the HubSpot Contact schema identified a mismatch between the BTA domain model and the HubSpot CRM data model.
+
+The BTA Audience capability intentionally captures an Organization because the platform serves multiple audience types, including churches, ministries, faith-based organizations, nonprofit organizations, educational institutions, businesses, and other organizations. "Organization" is therefore the canonical BTA domain term.
+
+HubSpot's standard Contact object, however, does not include a Contact property named organization. Instead, HubSpot provides the standard Contact property Company Name (internal property: company).
+
+Architectural Decision
+
+The BTA domain model remains the system of record for business terminology.
+
+The HubSpot integration layer is responsible for translating BTA domain terminology into HubSpot CRM terminology.
+
+BTA Domain
+Organization
+        │
+        ▼
+HubSpot Integration Layer
+organization  →  company
+        │
+        ▼
+HubSpot CRM
+Company Name
+
+No changes will be made to the BTA domain model or Audience capability solely to accommodate vendor-specific CRM terminology.
+
+Architectural Rationale
+
+This preserves the constitutional separation between:
+
+Domain Model (BTA business language)
+Integration Model (vendor translation)
+External Platform (HubSpot implementation)
+
+By isolating vendor-specific mappings within the integration layer, the Audience capability remains portable across CRM providers and future infrastructure environments.
+
+Future Cloud Migration Consideration
+
+This decision becomes increasingly important as BTA transitions from the current Fly.io/Vercel deployment model toward AWS-hosted infrastructure.
+
+Maintaining vendor-specific translations within the integration layer ensures:
+
+AWS migration does not require changes to the Audience domain model.
+Future CRM replacement (HubSpot, Salesforce, Dynamics, custom CRM, etc.) can be accomplished by modifying only the integration layer.
+PostgreSQL remains the governed application persistence layer while HubSpot remains an external CRM service.
+Platform portability is preserved by preventing external vendor terminology from leaking into core application models.
+Impact
+No changes to the Audience frontend.
+No changes to AudienceRequest or AudienceResponse.
+No changes to Audience Service contracts.
+Change limited to hubspot_service.py.
+PostgreSQL architecture unaffected.
+Supports future AWS migration and long-term platform independence.
+Resolution Status
+
+Open — Implement prior to production activation of the Audience capability.
