@@ -29,6 +29,13 @@ class QueryRequest(BaseModel):
 # Query Response Model (Render Contract)
 # ------------------------------------------------------------
 class QueryResponse(BaseModel):
+
+    # Phase 9.1D.2.9 — Intent Reaffirmation
+    # Reader reassurance that their intent has been understood.
+    # Rendered before Scripture to establish reader confidence
+    # before scriptural exploration begins.
+    intent_reaffirmation: Optional[str] = None
+
     verses: List[VerseItem]
     summary: str
 
@@ -44,9 +51,10 @@ class QueryResponse(BaseModel):
     # Phase 9.8B.5 — Escalation Flag (Structural Only)
     escalation_level: Optional[str] = None
 
+
 # ------------------------------------------------------------
 # Results Request Wrapper (WHAT execution endpoint)
 # ------------------------------------------------------------
 class ResultsRequest(BaseModel):
     execution_payload: dict
-    
+        

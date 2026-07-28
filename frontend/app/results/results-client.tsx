@@ -26,6 +26,7 @@ interface VerseItem {
  * We keep this permissive to avoid breaking when backend adds fields.
  */
 type QueryResponse = {
+  intent_reaffirmation?: string | null;
   verses?: VerseItem[];
   context?: string | null;
   context_exploration?: string | null;
@@ -147,8 +148,41 @@ export default function ResultsClient() {
   );
 
   return (
-    <section className="space-y-8">
-      <h2 className="text-2xl font-semibold">Scripture & Reflection</h2>
+  <>
+    {data.intent_reaffirmation && (
+      <div
+        style={{
+          marginTop: "28px",
+          marginBottom: "48px",
+          paddingLeft: "8px",
+          paddingRight: "8px",
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            fontSize: "1.05rem",
+            lineHeight: "1.8",
+            color: "#374151",
+            textAlign: "left",
+          }}
+        >
+          {data.intent_reaffirmation}
+        </p>
+      </div>
+    )}
+
+  <section className="space-y-8">
+  <h2
+    style={{
+      textAlign: "center",
+      fontSize: "2rem",
+      fontWeight: 700,
+      marginBottom: "32px",
+    }}
+  >
+    Scripture & Reflection
+  </h2>
 
       {/* 1) Scripture */}
       <Section
@@ -282,21 +316,6 @@ export default function ResultsClient() {
 {/* --------------------------------------------------------------
    Phase 9.1F — Commentary Hidden (Deferred)
 -------------------------------------------------------------- */}
-{/*
-{wantCommentary && (
-  <Section
-    title="Commentary"
-    blurb="Commentary is an optional future-facing layer that may be provided when requested."
-  >
-{commentary ? (
-  <div className="whitespace-pre-line">{commentary}</div>
-) : (
-  <EmptyText text="Commentary is not available yet. This section will be expanded in a future release." />
-)}
-
-  </Section>
-)}
-*/}
 
           <button
         onClick={() => router.push("/")}
@@ -305,13 +324,10 @@ export default function ResultsClient() {
         Start New Reflection
       </button>
 
-      {/* ## DEV_LOG_START */}
-      {/* console.log("Results payload (render-only):", data); */}
-      {/* ## DEV_LOG_END */}
-
     {!donationDismissed && (
       <DonationPrompt onDismiss={() => setDonationDismissed(true)} />
     )}  
     </section>
+  </>
   );
 } 

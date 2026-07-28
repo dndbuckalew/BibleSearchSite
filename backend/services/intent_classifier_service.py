@@ -1,4 +1,25 @@
+"""
+Intent Classifier Service
+Runtime Boundary Classification Layer
 
+Purpose:
+Provide a governed AI classification service that determines whether a
+user's message should continue through the normal BTA theological
+runtime or cross the constitutional boundary into the crisis
+management workflow.
+
+This service performs classification only.
+
+It does not:
+    • retrieve Scripture
+    • generate responses
+    • perform escalation
+    • terminate processing
+
+Its sole responsibility is to classify runtime intent so the
+orchestrator (QueryService) can determine the appropriate execution
+path.
+"""
 from backend.services.ai_client import call_ai_model
 
 # intent_classifier_service.py
