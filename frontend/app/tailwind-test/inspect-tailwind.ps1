@@ -1,8 +1,16 @@
-# Tailwind Inspector
+# ==========================================
+# Tailwind Diagnostic
+# ==========================================
 
-Write-Host "Current Directory:"
-Get-Location
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$Frontend = Resolve-Path (Join-Path $ScriptDir "..\..")
+
+Set-Location $Frontend
 
 Write-Host ""
-Write-Host "Files in Frontend:"
-Get-ChildItem ../..
+Write-Host "Frontend Root:"
+Write-Host (Get-Location)
+
+Write-Host ""
+Write-Host "Files:"
+Get-ChildItem
