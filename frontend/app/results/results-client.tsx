@@ -148,18 +148,23 @@ export default function ResultsClient() {
   );
 
   return (
-    <section className="space-y-8">
-      <h2 className="text-2xl font-semibold">Scripture & Reflection</h2>
+  <>
+  {data.intent_reaffirmation && (
+    <>
+      <div className="max-w-3xl">
+        <p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+          {data.intent_reaffirmation}
+        </p>
+      </div>
 
-      {/* 0) Intent Reaffirmation */}
-      {data.intent_reaffirmation && (
-        <Section
-          title="Intent Reaffirmation"
-          blurb="Confirming BTA understands what you're seeking."
-        >
-          <p>{data.intent_reaffirmation}</p>
-        </Section>
-      )}
+      <div className="h-24 bg-yellow-200" />
+    </>
+  )}
+
+  <section className="space-y-8">
+    <h2 className="text-2xl font-semibold">
+      Scripture & Reflection
+    </h2>
 
       {/* 1) Scripture */}
       <Section
@@ -324,5 +329,6 @@ export default function ResultsClient() {
       <DonationPrompt onDismiss={() => setDonationDismissed(true)} />
     )}  
     </section>
+  </>
   );
 } 
