@@ -1,0 +1,17 @@
+ED-EP-XXX — Enterprise Canonical Vocabulary / Data Dictionary Review
+
+Purpose
+
+Locate the existing HCGO Enterprise Data Dictionary / Canonical Vocabulary artifact.
+Determine whether it already governs architectural terminology.
+If found, update rather than create a new artifact.
+If not found, determine where it belongs within Enterprise Discovery.
+
+Reason for Tag
+During Version 6 Discovery we identified multiple architectural terms (e.g., Reflection, Exploration, Anchor) that are already used across the codebase. Before introducing new terminology, Discovery should validate whether these terms are already defined in the enterprise vocabulary.
+
+Priority
+
+Deferred
+Must be completed before Enterprise Discovery Baseline.
+Not required to continue current Version 6 conceptual discovery.
