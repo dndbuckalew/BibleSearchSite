@@ -1,86 +1,38 @@
-# flyctl launch added from .gitignore
-**\__pycache__
-**\venv
-**\.env
-**\.DS_Store
-**\*.pyc
-node_modules
-build
-# --- Release V1 Guardrails ---
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+venv/
+.venv/
 
-# Archives
-**\*.zip
+# Environment
+.env
+.env.local
+.env.*.local
 
-# Docs / validation artifacts
-**\*.docx
-**\*.pdf
+# Node / Next.js
+node_modules/
+.next/
+out/
+build/
+coverage/
 
-
-# Legacy / scratch
-**\archive_*
-**\frontend_vite_legacy
-
-# Node
-**\node_modules
+# Logs
+*.log
 
 # OS
-**\.DS_Store
-**\Thumbs.db
-
-# Next.js build output
-**\.next
-**\out
-
-# local env variants
-**\.env.local
-**\.env.*.local
-
-# logs
-**\*.log
+.DS_Store
+Thumbs.db
 
 # VS Code
-**\.vscode
+.vscode/
 
-# flyctl launch added from frontend\.gitignore
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Archives and documentation
+*.zip
+*.docx
+*.pdf
 
-# dependencies
-frontend\node_modules
-frontend\.pnp
-frontend\**\.pnp.*
-frontend\**\.yarn\*
-!frontend\**\.yarn\patches
-!frontend\**\.yarn\plugins
-!frontend\**\.yarn\releases
-!frontend\**\.yarn\versions
-
-# testing
-frontend\coverage
-
-# next.js
-frontend\.next
-frontend\out
-
-# production
-frontend\build
-
-# misc
-frontend\**\.DS_Store
-frontend\**\*.pem
-
-# debug
-frontend\**\npm-debug.log*
-frontend\**\yarn-debug.log*
-frontend\**\yarn-error.log*
-frontend\**\.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-frontend\**\.env*
-
-# vercel
-frontend\**\.vercel
-
-# typescript
-frontend\**\*.tsbuildinfo
-frontend\**\next-env.d.ts
-fly.toml
+# Legacy
+archive_*/
+frontend_vite_legacy/
