@@ -5,3 +5,4 @@ openai>=1.0.0
 pydantic
 python-dotenv
 stripe
+psycopg[binary]
