@@ -9,25 +9,17 @@
 ---
 
 # Purpose
-
 Establish the authoritative architectural inventory of Enterprise Services across HCGO.
-
 The Enterprise Service Catalog faithfully inventories the Enterprise Services that expose approved Enterprise Capabilities while preserving enterprise authority, ownership, stewardship, governance, lifecycle authority, traceability, and enterprise semantics.
-
 The Enterprise Service Catalog is an architectural artifact.
-
 It is not a technology implementation artifact.
 
 ---
 
 # Architecture Objective
-
 Establish the authoritative Enterprise Service Catalog for HCGO.
-
 The Enterprise Service Catalog is the authoritative architectural inventory of Enterprise Services that expose approved Enterprise Capabilities across HCGO.
-
 It faithfully represents Enterprise Capability Architecture without introducing implementation concerns.
-
 Enterprise Services remain independent of APIs, runtime implementation, messaging, protocols, databases, or implementation technologies.
 
 ---
@@ -64,7 +56,6 @@ For every Enterprise Service identify:
 ---
 
 # The Enterprise Service Catalog Shall NOT Identify
-
 The Enterprise Service Catalog shall not identify:
 
 - REST APIs
@@ -84,7 +75,6 @@ Those responsibilities belong to the Technology Implementation phase.
 ---
 
 # Enterprise Service Boundary Preservation
-
 Enterprise Services shall expose Enterprise Capabilities while preserving:
 
 - Capability Boundaries
@@ -98,11 +88,8 @@ Enterprise Services shall never collapse or bypass these enterprise boundaries.
 ---
 
 # Enterprise Principle
-
 Every Enterprise Service shall expose one authoritative Enterprise Capability.
-
 Enterprise Services faithfully expose Enterprise Capability responsibilities.
-
 Enterprise Services shall never redefine:
 
 - Enterprise Authority
@@ -117,31 +104,20 @@ Enterprise Services remain architectural representations of Enterprise Capabilit
 ---
 
 # Enterprise Capability Ownership Preservation
-
 The Enterprise Service Catalog shall identify Enterprise Services.
-
 It shall not redefine Enterprise Capabilities.
-
 Each Enterprise Service shall trace directly to one authoritative Enterprise Capability.
-
 Enterprise Capability ownership, authority, stewardship, governance, lifecycle authority, and enterprise semantics remain vested in the owning Enterprise Capability.
-
 The Enterprise Service Catalog faithfully inventories the Enterprise Services that expose those responsibilities.
 
 ---
 
 # Architectural Rationale
-
 Throughout Constitutional Governance, Enterprise Discovery, Enterprise Analysis, Enterprise Persistence Architecture, and Enterprise Service Architecture, HCGO has consistently distinguished between enterprise responsibilities and the architectural representations of those responsibilities.
-
 Enterprise Capabilities define enterprise responsibilities.
-
 Enterprise Services expose enterprise responsibilities.
-
 The Enterprise Service Catalog inventories Enterprise Services.
-
 The catalog therefore represents Enterprise Service Architecture rather than Enterprise Capability Architecture.
-
 This preserves the constitutional separation between:
 
 - Enterprise Capability
@@ -150,31 +126,20 @@ This preserves the constitutional separation between:
 - Technology Implementation
 
 Each architectural layer has a unique constitutional responsibility.
-
 The Enterprise Capability remains the authoritative enterprise responsibility.
-
 The Enterprise Service remains the architectural exposure of that responsibility.
-
 The Enterprise Service Catalog remains the authoritative architectural inventory of those Enterprise Services.
-
 Technology faithfully implements the Enterprise Service Catalog.
-
 At no point does architectural inventory transfer enterprise authority.
 
 ---
 
 # Constitutional Principle
-
 Architectural inventory never transfers enterprise authority.
-
 Enterprise Capabilities remain the constitutional source of enterprise responsibility.
-
 Enterprise Services faithfully expose those responsibilities.
-
 The Enterprise Service Catalog faithfully inventories those Enterprise Services.
-
 Technology faithfully implements the Enterprise Service Catalog.
-
 Neither architectural representation nor architectural inventory may redefine:
 
 - Enterprise Authority
@@ -187,15 +152,10 @@ Neither architectural representation nor architectural inventory may redefine:
 ---
 
 # Architecture Outcome
-
 The Enterprise Service Catalog becomes the authoritative architectural inventory of Enterprise Services across HCGO.
-
 Every Enterprise Service shall trace directly to one authoritative Enterprise Capability.
-
 Every Enterprise Capability may expose one or more Enterprise Services as approved through Enterprise Architecture.
-
 All Enterprise Service artifacts shall faithfully conform to the Enterprise Service Catalog.
-
 Technology implementations shall faithfully implement the Enterprise Service Catalog without redefining:
 
 - Enterprise Capabilities
@@ -239,17 +199,480 @@ Enterprise Service Catalog
 
 Technology Implementation
 (Implements Enterprise Services)
-
 Each architectural layer faithfully represents the authoritative outcomes established by the previous layer.
-
 Enterprise Capabilities remain the constitutional source of enterprise responsibility.
-
 Enterprise Services remain the architectural exposure of those responsibilities.
-
 The Enterprise Service Catalog remains the authoritative architectural inventory of those Enterprise Services.
-
 Technology faithfully implements the Enterprise Service Catalog.
-
 This preserves the foundational HCGO constitutional principle:
-
 **Architectural inventories faithfully represent architectural artifacts. They never replace the authoritative enterprise responsibilities those artifacts represent.**
+
+# Postgres Table Inventory Aug-10-2026
+
+bta_dev=# SELECT
+bta_dev-#     schemaname AS schema_name,
+bta_dev-#     tablename AS table_name,
+bta_dev-#     tableowner AS owner
+bta_dev-# FROM pg_catalog.pg_tables
+bta_dev-# ORDER BY
+bta_dev-#     CASE
+bta_dev-#         WHEN schemaname = 'public' THEN 1
+bta_dev-#         WHEN schemaname = 'pg_catalog' THEN 2
+bta_dev-#         WHEN schemaname = 'information_schema' THEN 3
+bta_dev-#         ELSE 4
+bta_dev-#     END,
+bta_dev-#     schemaname,
+bta_dev-#     tablename;
+    schema_name     |        table_name        |  owner                                                                                                                                                 
+--------------------+--------------------------+----------
+ public             | bta_book                 | postgres
+ public             | bta_canon                | postgres
+ public             | bta_chapter              | postgres
+ public             | bta_religion             | postgres
+ public             | bta_testament            | postgres
+ public             | bta_translation          | postgres
+ public             | bta_translator           | postgres
+ public             | bta_verse                | postgres
+ public             | bta_verse_text           | postgres
+ public             | ent_country              | postgres
+ public             | ent_language             | postgres
+ public             | ent_script               | postgres
+ public             | ent_state                | postgres
+ public             | hcgo_asset_scope         | postgres
+ public             | hcgo_domain              | postgres
+ public             | hcgo_domain_reference    | postgres
+ public             | hcgo_ingestion_state     | postgres
+ public             | hcgo_knowledge_role      | postgres
+ public             | hcgo_knowledge_type      | postgres
+ public             | hcgo_provenance          | postgres
+ public             | hcgo_publication_state   | postgres
+ public             | hcgo_scope               | postgres
+ public             | hcgo_scope_type          | postgres
+ public             | hcgo_semantic_profile    | postgres
+ public             | kah_asset                | postgres
+ public             | kah_published_knowledge  | postgres
+ pg_catalog         | pg_aggregate             | postgres
+ pg_catalog         | pg_am                    | postgres
+ pg_catalog         | pg_amop                  | postgres
+ pg_catalog         | pg_amproc                | postgres
+ pg_catalog         | pg_attrdef               | postgres
+ pg_catalog         | pg_attribute             | postgres
+ pg_catalog         | pg_auth_members          | postgres
+ pg_catalog         | pg_authid                | postgres
+ pg_catalog         | pg_cast                  | postgres
+ pg_catalog         | pg_class                 | postgres
+ pg_catalog         | pg_collation             | postgres
+ pg_catalog         | pg_constraint            | postgres
+ pg_catalog         | pg_conversion            | postgres
+ pg_catalog         | pg_database              | postgres
+ pg_catalog         | pg_db_role_setting       | postgres
+ pg_catalog         | pg_default_acl           | postgres
+ pg_catalog         | pg_depend                | postgres
+ pg_catalog         | pg_description           | postgres
+ pg_catalog         | pg_enum                  | postgres
+ pg_catalog         | pg_event_trigger         | postgres
+ pg_catalog         | pg_extension             | postgres
+ pg_catalog         | pg_foreign_data_wrapper  | postgres
+ pg_catalog         | pg_foreign_server        | postgres                                                                                                                                               
+ pg_catalog         | pg_foreign_table         | postgres
+ pg_catalog         | pg_index                 | postgres
+ pg_catalog         | pg_inherits              | postgres
+ pg_catalog         | pg_init_privs            | postgres
+ pg_catalog         | pg_language              | postgres
+ pg_catalog         | pg_largeobject           | postgres
+ pg_catalog         | pg_largeobject_metadata  | postgres
+ pg_catalog         | pg_namespace             | postgres
+ pg_catalog         | pg_opclass               | postgres
+ pg_catalog         | pg_operator              | postgres
+ pg_catalog         | pg_opfamily              | postgres
+ pg_catalog         | pg_parameter_acl         | postgres
+ pg_catalog         | pg_partitioned_table     | postgres
+ pg_catalog         | pg_policy                | postgres
+ pg_catalog         | pg_proc                  | postgres
+ pg_catalog         | pg_publication           | postgres
+ pg_catalog         | pg_publication_namespace | postgres
+ pg_catalog         | pg_publication_rel       | postgres
+ pg_catalog         | pg_range                 | postgres
+ pg_catalog         | pg_replication_origin    | postgres
+ pg_catalog         | pg_rewrite               | postgres
+ pg_catalog         | pg_seclabel              | postgres
+ pg_catalog         | pg_sequence              | postgres
+ pg_catalog         | pg_shdepend              | postgres
+ pg_catalog         | pg_shdescription         | postgres
+ pg_catalog         | pg_shseclabel            | postgres
+ pg_catalog         | pg_statistic             | postgres
+ pg_catalog         | pg_statistic_ext         | postgres
+ pg_catalog         | pg_statistic_ext_data    | postgres
+ pg_catalog         | pg_subscription          | postgres
+ pg_catalog         | pg_subscription_rel      | postgres
+ pg_catalog         | pg_tablespace            | postgres
+ pg_catalog         | pg_transform             | postgres
+ pg_catalog         | pg_trigger               | postgres
+ pg_catalog         | pg_ts_config             | postgres
+ pg_catalog         | pg_ts_config_map         | postgres
+ pg_catalog         | pg_ts_dict               | postgres
+ pg_catalog         | pg_ts_parser             | postgres
+ pg_catalog         | pg_ts_template           | postgres
+ pg_catalog         | pg_type                  | postgres
+ pg_catalog         | pg_user_mapping          | postgres
+ information_schema | sql_features             | postgres
+ information_schema | sql_implementation_info  | postgres
+ information_schema | sql_parts                | postgres
+ information_schema | sql_sizing               | postgres
+(94 rows)
+
+# Postgres Primary Key Validation
+       table_name        |   primary_key_column   | ordinal_position                                                                                                                                    
+-------------------------+------------------------+------------------
+ bta_book                | book_id                |                1
+ bta_canon               | canon_id               |                1
+ bta_chapter             | chapter_id             |                1
+ bta_religion            | religion_id            |                1
+ bta_testament           | id                     |                1
+ bta_translation         | translation_id         |                1
+ bta_translator          | translator_id          |                1
+ bta_verse               | verse_id               |                1
+ bta_verse_text          | verse_text_id          |                1
+ ent_country             | country_id             |                1
+ ent_language            | language_id            |                1
+ ent_script              | script_id              |                1
+ ent_state               | state_id               |                1
+ hcgo_asset_scope        | asset_id               |                1
+ hcgo_asset_scope        | scope_id               |                2
+ hcgo_domain             | domain_id              |                1
+ hcgo_domain_reference   | domain_reference_id    |                1
+ hcgo_ingestion_state    | ingestion_state_id     |                1
+ hcgo_knowledge_role     | knowledge_role_id      |                1
+ hcgo_knowledge_type     | knowledge_type_id      |                1
+ hcgo_provenance         | provenance_id          |                1
+ hcgo_publication_state  | publication_state_id   |                1
+ hcgo_scope              | scope_id               |                1
+ hcgo_scope_type         | scope_type_id          |                1
+ hcgo_semantic_profile   | semantic_profile_id    |                1
+ kah_asset               | asset_id               |                1
+ kah_published_knowledge | published_knowledge_id |                1
+(27 rows)
+
+# FK Mapping
+       child_table       |   child_column    |    parent_table     |   parent_column   |         constraint_name                                                                                        
+-------------------------+-------------------+---------------------+-------------------+----------------------------------
+ bta_book                | testament_id      | bta_testament       | id                | fk_bta_book_testament
+ bta_book                | translation_id    | bta_translation     | translation_id    | fk_bta_book_translation
+ bta_canon               | religion_id       | bta_religion        | religion_id       | fk_bta_canon_religion
+ bta_chapter             | book_id           | bta_book            | book_id           | fk_bta_chapter_book
+ bta_translation         | asset_id          | kah_asset           | asset_id          | fk_translation_asset
+ bta_translation         | canon_id          | bta_canon           | canon_id          | fk_translation_canon
+ bta_translation         | country_id        | ent_country         | country_id        | fk_translation_country
+ bta_translation         | language_id       | ent_language        | language_id       | fk_translation_language
+ bta_translation         | translator_id     | bta_translator      | translator_id     | fk_translation_translator
+ bta_translator          | country_id        | ent_country         | country_id        | fk_bta_translator_country
+ bta_translator          | language_id       | ent_language        | language_id       | fk_bta_translator_language
+ bta_verse               | chapter_id        | bta_chapter         | chapter_id        | fk_bta_verse_chapter
+ bta_verse_text          | translation_id    | bta_translation     | translation_id    | fk_bta_verse_text_translation
+ bta_verse_text          | verse_id          | bta_verse           | verse_id          | fk_bta_verse_text_verse
+ ent_state               | country_id        | ent_country         | country_id        | ent_state_country_fk
+ hcgo_asset_scope        | asset_id          | kah_asset           | asset_id          | hcgo_asset_scope_asset_fk
+ hcgo_asset_scope        | scope_id          | hcgo_scope          | scope_id          | hcgo_asset_scope_scope_fk
+ hcgo_domain_reference   | domain_id         | hcgo_domain         | domain_id         | hcgo_domain_reference_domain_fk
+ hcgo_ingestion_state    | asset_id          | kah_asset           | asset_id          | hcgo_ingestion_state_asset_fk
+ hcgo_provenance         | asset_id          | kah_asset           | asset_id          | hcgo_provenance_asset_fk
+ hcgo_publication_state  | asset_id          | kah_asset           | asset_id          | hcgo_publication_state_asset_fk                                                                                
+ hcgo_scope              | parent_scope_id   | hcgo_scope          | scope_id          | hcgo_scope_parent_fk
+ hcgo_scope              | scope_type_id     | hcgo_scope_type     | scope_type_id     | hcgo_scope_type_fk
+ hcgo_semantic_profile   | domain_id         | hcgo_domain         | domain_id         | hcgo_semantic_profile_domain_fk
+ kah_asset               | domain_id         | hcgo_domain         | domain_id         | kah_asset_domain_fk
+ kah_asset               | knowledge_role_id | hcgo_knowledge_role | knowledge_role_id | kah_asset_knowledge_role_fk
+ kah_asset               | knowledge_type_id | hcgo_knowledge_type | knowledge_type_id | kah_asset_knowledge_type_fk
+ kah_published_knowledge | asset_id          | kah_asset           | asset_id          | kah_published_knowledge_asset_fk
+(28 rows)
+
+# Unique Constraints
+       table_name        |               constraint_name               |      unique_columns                                                                                                            
+-------------------------+---------------------------------------------+---------------------------
+ bta_book                | uq_bta_book_translation_code                | translation_id, book_code
+ bta_canon               | bta_canon_canon_code_key                    | canon_code
+ bta_chapter             | uq_bta_chapter                              | book_id, chapter_number
+ bta_religion            | bta_religion_religion_code_key              | religion_code
+ bta_testament           | bta_testament_abbreviation_key              | abbreviation
+ bta_translation         | bta_translation_translation_code_key        | translation_code
+ bta_translator          | bta_translator_translator_code_key          | translator_code
+ bta_verse               | uq_bta_verse                                | chapter_id, verse_number
+ bta_verse_text          | uq_bta_verse_text                           | verse_id, translation_id
+ ent_country             | ent_country_country_code_3_key              | country_code_3
+ ent_country             | ent_country_country_code_key                | country_code
+ ent_language            | ent_language_language_code_3_key            | language_code_3
+ ent_language            | ent_language_language_code_key              | language_code
+ ent_script              | ent_script_script_code_key                  | script_code
+ ent_state               | ent_state_country_code_key                  | country_id, state_code
+ hcgo_domain             | hcgo_domain_domain_code_key                 | domain_code
+ hcgo_domain             | hcgo_domain_domain_name_key                 | domain_name
+ hcgo_domain_reference   | hcgo_domain_reference_url_uq                | domain_id, reference_url
+ hcgo_knowledge_role     | hcgo_knowledge_role_knowledge_role_code_key | knowledge_role_code
+ hcgo_knowledge_type     | hcgo_knowledge_type_knowledge_type_code_key | knowledge_type_code
+ hcgo_scope              | hcgo_scope_code_uq                          | scope_type_id, scope_code                                                                                                      
+ hcgo_scope_type         | hcgo_scope_type_scope_type_code_key         | scope_type_code
+ hcgo_semantic_profile   | hcgo_semantic_profile_profile_code_key      | profile_code
+ kah_asset               | kah_asset_asset_code_key                    | asset_code
+ kah_published_knowledge | kah_published_knowledge_reference_uq        | asset_id, reference_code
+(25 rows)
+
+# Column Definition Inventory
+       table_name        | ordinal_position |      column_name       |          data_type          | is_nullable |                     column_default                      | is_identity                
+-------------------------+------------------+------------------------+-----------------------------+-------------+---------------------------------------------------------+-------------
+ bta_book                |                1 | book_id                | smallint                    | NO          | nextval('bta_book_book_id_seq'::regclass)               | NO
+ bta_book                |                2 | translation_id         | smallint                    | NO          |                                                         | NO
+ bta_book                |                3 | testament_id           | smallint                    | NO          |                                                         | NO
+ bta_book                |                4 | book_code              | character varying           | NO          |                                                         | NO
+ bta_book                |                5 | book_name              | character varying           | NO          |                                                         | NO
+ bta_book                |                6 | canonical_order        | smallint                    | NO          |                                                         | NO
+ bta_book                |                7 | chapter_count          | smallint                    | NO          |                                                         | NO
+ bta_book                |                8 | is_active              | boolean                     | NO          | true                                                    | NO
+ bta_book                |                9 | book_abbreviation      | character varying           | NO          |                                                         | NO
+ bta_canon               |                1 | canon_id               | smallint                    | NO          | nextval('bta_canon_canon_id_seq'::regclass)             | NO
+ bta_canon               |                2 | religion_id            | smallint                    | NO          |                                                         | NO
+ bta_canon               |                3 | canon_code             | character varying           | NO          |                                                         | NO
+ bta_canon               |                4 | canon_name             | character varying           | NO          |                                                         | NO
+ bta_canon               |                5 | total_books            | smallint                    | NO          |                                                         | NO
+ bta_canon               |                6 | description            | text                        | YES         |                                                         | NO
+ bta_canon               |                7 | is_active              | boolean                     | NO          | true                                                    | NO
+ bta_chapter             |                1 | chapter_id             | integer                     | NO          |                                                         | YES
+ bta_chapter             |                2 | book_id                | smallint                    | NO          |                                                         | NO
+ bta_chapter             |                3 | chapter_number         | smallint                    | NO          |                                                         | NO
+ bta_chapter             |                4 | verse_count            | smallint                    | NO          |                                                         | NO
+ bta_chapter             |                5 | is_active              | boolean                     | NO          | true                                                    | NO
+ bta_religion            |                1 | religion_id            | smallint                    | NO          | nextval('bta_religion_religion_id_seq'::regclass)       | NO
+ bta_religion            |                2 | religion_code          | character varying           | NO          |                                                         | NO
+ bta_religion            |                3 | religion_name          | character varying           | NO          |                                                         | NO
+ bta_religion            |                4 | description            | text                        | YES         |                                                         | NO
+ bta_religion            |                5 | is_active              | boolean                     | NO          | true                                                    | NO                         
+ bta_testament           |                1 | id                     | smallint                    | NO          |                                                         | NO
+ bta_testament           |                2 | abbreviation           | character varying           | NO          |                                                         | NO
+ bta_testament           |                3 | name                   | character varying           | NO          |                                                         | NO
+ bta_testament           |                4 | canonical_order        | smallint                    | NO          |                                                         | NO
+ bta_translation         |                1 | translation_id         | smallint                    | NO          | nextval('bta_translation_translation_id_seq'::regclass) | NO
+ bta_translation         |                2 | asset_id               | bigint                      | YES         |                                                         | NO
+ bta_translation         |                3 | translation_code       | character varying           | NO          |                                                         | NO
+ bta_translation         |                4 | translation_name       | character varying           | NO          |                                                         | NO
+ bta_translation         |                5 | abbreviation           | character varying           | YES         |                                                         | NO
+ bta_translation         |                6 | canon_id               | smallint                    | NO          |                                                         | NO
+ bta_translation         |                7 | translator_id          | smallint                    | YES         |                                                         | NO
+ bta_translation         |                8 | language_id            | smallint                    | NO          |                                                         | NO
+ bta_translation         |                9 | country_id             | smallint                    | YES         |                                                         | NO
+ bta_translation         |               10 | translation_year       | smallint                    | YES         |                                                         | NO
+ bta_translation         |               11 | revision               | character varying           | YES         |                                                         | NO
+ bta_translation         |               12 | license_type           | character varying           | YES         |                                                         | NO
+ bta_translation         |               13 | copyright_holder       | character varying           | YES         |                                                         | NO
+ bta_translation         |               14 | source_repository      | character varying           | YES         |                                                         | NO
+ bta_translation         |               15 | source_identifier      | character varying           | YES         |                                                         | NO
+ bta_translation         |               16 | is_public_domain       | boolean                     | NO          | false                                                   | NO
+ bta_translation         |               17 | is_active              | boolean                     | NO          | true                                                    | NO
+ bta_translation         |               18 | description            | text                        | YES         |                                                         | NO
+ bta_translator          |                1 | translator_id          | smallint                    | NO          | nextval('bta_translator_translator_id_seq'::regclass)   | NO
+ bta_translator          |                2 | translator_code        | character varying           | NO          |                                                         | NO
+ bta_translator          |                3 | translator_name        | character varying           | NO          |                                                         | NO
+ bta_translator          |                4 | translator_type        | character varying           | NO          |                                                         | NO
+ bta_translator          |                5 | country_id             | smallint                    | YES         |                                                         | NO                         
+ bta_translator          |                6 | language_id            | smallint                    | YES         |                                                         | NO
+ bta_translator          |                7 | description            | text                        | YES         |                                                         | NO
+ bta_translator          |                8 | is_active              | boolean                     | NO          | true                                                    | NO
+ bta_verse               |                1 | verse_id               | bigint                      | NO          |                                                         | YES
+ bta_verse               |                2 | chapter_id             | integer                     | NO          |                                                         | NO
+ bta_verse               |                3 | verse_number           | smallint                    | NO          |                                                         | NO
+ bta_verse               |                4 | is_active              | boolean                     | NO          | true                                                    | NO
+ bta_verse_text          |                1 | verse_text_id          | bigint                      | NO          |                                                         | YES
+ bta_verse_text          |                2 | verse_id               | bigint                      | NO          |                                                         | NO
+ bta_verse_text          |                3 | translation_id         | smallint                    | NO          |                                                         | NO
+ bta_verse_text          |                4 | verse_text             | text                        | NO          |                                                         | NO
+ bta_verse_text          |                5 | is_active              | boolean                     | NO          | true                                                    | NO
+ ent_country             |                1 | country_id             | smallint                    | NO          | nextval('ent_country_country_id_seq'::regclass)         | NO
+ ent_country             |                2 | country_code           | character                   | NO          |                                                         | NO
+ ent_country             |                3 | country_code_3         | character                   | NO          |                                                         | NO
+ ent_country             |                4 | country_name           | character varying           | NO          |                                                         | NO
+ ent_country             |                5 | is_active              | boolean                     | NO          | true                                                    | NO
+ ent_language            |                1 | language_id            | smallint                    | NO          | nextval('ent_language_language_id_seq'::regclass)       | NO
+ ent_language            |                2 | language_code          | character                   | NO          |                                                         | NO
+ ent_language            |                3 | language_code_3        | character                   | NO          |                                                         | NO
+ ent_language            |                4 | language_name          | character varying           | NO          |                                                         | NO
+ ent_language            |                5 | native_name            | character varying           | YES         |                                                         | NO
+ ent_language            |                6 | is_active              | boolean                     | NO          | true                                                    | NO
+ ent_script              |                1 | script_id              | smallint                    | NO          | nextval('ent_script_script_id_seq'::regclass)           | NO
+ ent_script              |                2 | script_code            | character                   | NO          |                                                         | NO
+ ent_script              |                3 | script_name            | character varying           | NO          |                                                         | NO
+ ent_script              |                4 | unicode_name           | character varying           | YES         |                                                         | NO                         
+ ent_script              |                5 | is_right_to_left       | boolean                     | NO          | false                                                   | NO
+ ent_script              |                6 | is_active              | boolean                     | NO          | true                                                    | NO
+ ent_state               |                1 | state_id               | smallint                    | NO          |                                                         | YES
+ ent_state               |                2 | country_id             | smallint                    | NO          |                                                         | NO
+ ent_state               |                3 | state_code             | character                   | NO          |                                                         | NO
+ ent_state               |                4 | state_name             | character varying           | NO          |                                                         | NO
+ ent_state               |                5 | is_active              | boolean                     | NO          | true                                                    | NO
+ hcgo_asset_scope        |                1 | asset_id               | bigint                      | NO          |                                                         | NO
+ hcgo_asset_scope        |                2 | scope_id               | bigint                      | NO          |                                                         | NO
+ hcgo_asset_scope        |                3 | created_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_domain             |                1 | domain_id              | bigint                      | NO          |                                                         | YES
+ hcgo_domain             |                2 | domain_code            | character                   | NO          |                                                         | NO
+ hcgo_domain             |                3 | domain_name            | character varying           | NO          |                                                         | NO
+ hcgo_domain             |                4 | is_active              | boolean                     | NO          | true                                                    | NO
+ hcgo_domain             |                5 | created_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_domain             |                6 | updated_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_domain_reference   |                1 | domain_reference_id    | bigint                      | NO          |                                                         | YES
+ hcgo_domain_reference   |                2 | domain_id              | bigint                      | NO          |                                                         | NO
+ hcgo_domain_reference   |                3 | reference_name         | character varying           | NO          |                                                         | NO
+ hcgo_domain_reference   |                4 | reference_url          | text                        | NO          |                                                         | NO
+ hcgo_domain_reference   |                5 | description            | text                        | YES         |                                                         | NO
+ hcgo_domain_reference   |                6 | display_order          | smallint                    | YES         |                                                         | NO
+ hcgo_domain_reference   |                7 | is_active              | boolean                     | NO          | true                                                    | NO
+ hcgo_domain_reference   |                8 | created_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_domain_reference   |                9 | updated_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_ingestion_state    |                1 | ingestion_state_id     | bigint                      | NO          |                                                         | YES
+ hcgo_ingestion_state    |                2 | asset_id               | bigint                      | NO          |                                                         | NO                         
+ hcgo_ingestion_state    |                3 | ingestion_status       | character varying           | NO          |                                                         | NO
+ hcgo_ingestion_state    |                4 | started_at             | timestamp with time zone    | YES         |                                                         | NO
+ hcgo_ingestion_state    |                5 | completed_at           | timestamp with time zone    | YES         |                                                         | NO
+ hcgo_ingestion_state    |                6 | validation_status      | character varying           | YES         |                                                         | NO
+ hcgo_ingestion_state    |                7 | failure_reason         | text                        | YES         |                                                         | NO
+ hcgo_ingestion_state    |                8 | created_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_ingestion_state    |                9 | updated_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_knowledge_role     |                1 | knowledge_role_id      | smallint                    | NO          |                                                         | YES
+ hcgo_knowledge_role     |                2 | knowledge_role_code    | character varying           | NO          |                                                         | NO
+ hcgo_knowledge_role     |                3 | knowledge_role_name    | character varying           | NO          |                                                         | NO
+ hcgo_knowledge_role     |                4 | description            | text                        | YES         |                                                         | NO
+ hcgo_knowledge_role     |                5 | is_active              | boolean                     | NO          | true                                                    | NO
+ hcgo_knowledge_role     |                6 | created_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_knowledge_role     |                7 | updated_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_knowledge_type     |                1 | knowledge_type_id      | smallint                    | NO          |                                                         | YES
+ hcgo_knowledge_type     |                2 | knowledge_type_code    | character varying           | NO          |                                                         | NO
+ hcgo_knowledge_type     |                3 | knowledge_type_name    | character varying           | NO          |                                                         | NO
+ hcgo_knowledge_type     |                4 | description            | text                        | YES         |                                                         | NO
+ hcgo_knowledge_type     |                5 | is_active              | boolean                     | NO          | true                                                    | NO
+ hcgo_knowledge_type     |                6 | created_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_knowledge_type     |                7 | updated_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_provenance         |                1 | provenance_id          | bigint                      | NO          |                                                         | YES
+ hcgo_provenance         |                2 | asset_id               | bigint                      | NO          |                                                         | NO
+ hcgo_provenance         |                3 | source_name            | character varying           | NO          |                                                         | NO
+ hcgo_provenance         |                4 | source_uri             | text                        | YES         |                                                         | NO
+ hcgo_provenance         |                5 | source_artifact_name   | character varying           | YES         |                                                         | NO
+ hcgo_provenance         |                6 | source_hash            | character varying           | YES         |                                                         | NO                         
+ hcgo_provenance         |                7 | acquired_at            | timestamp with time zone    | YES         |                                                         | NO
+ hcgo_provenance         |                8 | created_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_provenance         |                9 | updated_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_publication_state  |                1 | publication_state_id   | bigint                      | NO          |                                                         | YES
+ hcgo_publication_state  |                2 | asset_id               | bigint                      | NO          |                                                         | NO
+ hcgo_publication_state  |                3 | publication_status     | character varying           | NO          |                                                         | NO
+ hcgo_publication_state  |                4 | published_at           | timestamp with time zone    | YES         |                                                         | NO
+ hcgo_publication_state  |                5 | unpublished_at         | timestamp with time zone    | YES         |                                                         | NO
+ hcgo_publication_state  |                6 | publication_version    | character varying           | YES         |                                                         | NO
+ hcgo_publication_state  |                7 | failure_reason         | text                        | YES         |                                                         | NO
+ hcgo_publication_state  |                8 | created_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_publication_state  |                9 | updated_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_scope              |                1 | scope_id               | bigint                      | NO          |                                                         | YES
+ hcgo_scope              |                2 | scope_type_id          | smallint                    | NO          |                                                         | NO
+ hcgo_scope              |                3 | parent_scope_id        | bigint                      | YES         |                                                         | NO
+ hcgo_scope              |                4 | scope_code             | character varying           | NO          |                                                         | NO
+ hcgo_scope              |                5 | scope_name             | character varying           | NO          |                                                         | NO
+ hcgo_scope              |                6 | description            | text                        | YES         |                                                         | NO
+ hcgo_scope              |                7 | is_active              | boolean                     | NO          | true                                                    | NO
+ hcgo_scope              |                8 | created_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_scope              |                9 | updated_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_scope_type         |                1 | scope_type_id          | smallint                    | NO          |                                                         | YES
+ hcgo_scope_type         |                2 | scope_type_code        | character varying           | NO          |                                                         | NO
+ hcgo_scope_type         |                3 | scope_type_name        | character varying           | NO          |                                                         | NO
+ hcgo_scope_type         |                4 | description            | text                        | YES         |                                                         | NO
+ hcgo_scope_type         |                5 | is_active              | boolean                     | NO          | true                                                    | NO
+ hcgo_scope_type         |                6 | created_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO                         
+ hcgo_scope_type         |                7 | updated_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_semantic_profile   |                1 | semantic_profile_id    | bigint                      | NO          |                                                         | YES
+ hcgo_semantic_profile   |                2 | domain_id              | bigint                      | NO          |                                                         | NO
+ hcgo_semantic_profile   |                3 | profile_code           | character varying           | NO          |                                                         | NO
+ hcgo_semantic_profile   |                4 | profile_name           | character varying           | NO          |                                                         | NO
+ hcgo_semantic_profile   |                5 | profile_version        | character varying           | NO          |                                                         | NO
+ hcgo_semantic_profile   |                6 | is_active              | boolean                     | NO          | true                                                    | NO
+ hcgo_semantic_profile   |                7 | created_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ hcgo_semantic_profile   |                8 | updated_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ kah_asset               |                1 | asset_id               | bigint                      | NO          | nextval('kah_asset_asset_id_seq'::regclass)             | NO
+ kah_asset               |                3 | asset_type             | character varying           | NO          |                                                         | NO
+ kah_asset               |                4 | asset_code             | character varying           | NO          |                                                         | NO
+ kah_asset               |                5 | asset_name             | character varying           | NO          |                                                         | NO
+ kah_asset               |                6 | language_id            | smallint                    | YES         |                                                         | NO
+ kah_asset               |                7 | country_id             | smallint                    | YES         |                                                         | NO
+ kah_asset               |                8 | is_active              | boolean                     | NO          | true                                                    | NO
+ kah_asset               |                9 | created_at             | timestamp without time zone | NO          | CURRENT_TIMESTAMP                                       | NO
+ kah_asset               |               10 | updated_at             | timestamp without time zone | NO          | CURRENT_TIMESTAMP                                       | NO
+ kah_asset               |               11 | domain_id              | bigint                      | NO          |                                                         | NO
+ kah_asset               |               12 | edition_label          | character varying           | YES         |                                                         | NO
+ kah_asset               |               13 | authoritative_date     | date                        | YES         |                                                         | NO
+ kah_asset               |               14 | knowledge_type_id      | smallint                    | YES         |                                                         | NO
+ kah_asset               |               15 | knowledge_role_id      | smallint                    | YES         |                                                         | NO
+ kah_published_knowledge |                1 | published_knowledge_id | bigint                      | NO          |                                                         | YES
+ kah_published_knowledge |                2 | asset_id               | bigint                      | NO          |                                                         | NO
+ kah_published_knowledge |                3 | source_entity_type     | character varying           | NO          |                                                         | NO
+ kah_published_knowledge |                4 | source_entity_id       | bigint                      | NO          |                                                         | NO                         
+ kah_published_knowledge |                5 | reference_code         | character varying           | NO          |                                                         | NO
+ kah_published_knowledge |                6 | reference_label        | character varying           | YES         |                                                         | NO
+ kah_published_knowledge |                7 | content_text           | text                        | NO          |                                                         | NO
+ kah_published_knowledge |                8 | canonical_order        | bigint                      | YES         |                                                         | NO
+ kah_published_knowledge |                9 | is_active              | boolean                     | NO          | true                                                    | NO
+ kah_published_knowledge |               10 | created_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+ kah_published_knowledge |               11 | updated_at             | timestamp with time zone    | NO          | CURRENT_TIMESTAMP                                       | NO
+(195 rows)
+
+# Explicitly Inventory
+      table_name        |      column_name       | data_type | is_identity | identity_generation |                     column_default                                                                  
+-------------------------+------------------------+-----------+-------------+---------------------+---------------------------------------------------------
+ bta_book                | book_id                | smallint  | NO          |                     | nextval('bta_book_book_id_seq'::regclass)
+ bta_canon               | canon_id               | smallint  | NO          |                     | nextval('bta_canon_canon_id_seq'::regclass)
+ bta_chapter             | chapter_id             | integer   | YES         | ALWAYS              | 
+ bta_religion            | religion_id            | smallint  | NO          |                     | nextval('bta_religion_religion_id_seq'::regclass)
+ bta_translation         | translation_id         | smallint  | NO          |                     | nextval('bta_translation_translation_id_seq'::regclass)
+ bta_translator          | translator_id          | smallint  | NO          |                     | nextval('bta_translator_translator_id_seq'::regclass)
+ bta_verse               | verse_id               | bigint    | YES         | ALWAYS              | 
+ bta_verse_text          | verse_text_id          | bigint    | YES         | ALWAYS              | 
+ ent_country             | country_id             | smallint  | NO          |                     | nextval('ent_country_country_id_seq'::regclass)
+ ent_language            | language_id            | smallint  | NO          |                     | nextval('ent_language_language_id_seq'::regclass)
+ ent_script              | script_id              | smallint  | NO          |                     | nextval('ent_script_script_id_seq'::regclass)
+ ent_state               | state_id               | smallint  | YES         | ALWAYS              | 
+ hcgo_domain             | domain_id              | bigint    | YES         | ALWAYS              | 
+ hcgo_domain_reference   | domain_reference_id    | bigint    | YES         | ALWAYS              | 
+ hcgo_ingestion_state    | ingestion_state_id     | bigint    | YES         | ALWAYS              | 
+ hcgo_knowledge_role     | knowledge_role_id      | smallint  | YES         | ALWAYS              | 
+ hcgo_knowledge_type     | knowledge_type_id      | smallint  | YES         | ALWAYS              | 
+ hcgo_provenance         | provenance_id          | bigint    | YES         | ALWAYS              | 
+ hcgo_publication_state  | publication_state_id   | bigint    | YES         | ALWAYS              | 
+ hcgo_scope              | scope_id               | bigint    | YES         | ALWAYS              | 
+ hcgo_scope_type         | scope_type_id          | smallint  | YES         | ALWAYS              | 
+ hcgo_semantic_profile   | semantic_profile_id    | bigint    | YES         | ALWAYS              | 
+ kah_asset               | asset_id               | bigint    | NO          |                     | nextval('kah_asset_asset_id_seq'::regclass)
+ kah_published_knowledge | published_knowledge_id | bigint    | YES         | ALWAYS              | 
+(24 rows)
+
+# Hub -> Spoke Relationship Valdiation
+schemaname |       table_name        | estimated_rows                                                                                                                                                  
+------------+-------------------------+----------------
+ public     | bta_book                |              0
+ public     | bta_canon               |              0
+ public     | bta_chapter             |              0
+ public     | bta_religion            |              0
+ public     | bta_testament           |              0
+ public     | bta_translation         |              0
+ public     | bta_translator          |              0
+ public     | bta_verse               |              0
+ public     | bta_verse_text          |              0
+ public     | ent_country             |              0
+ public     | ent_language            |              0
+ public     | ent_script              |              0
+ public     | ent_state               |              0
+ public     | hcgo_asset_scope        |              0
+ public     | hcgo_domain             |              1
+ public     | hcgo_domain_reference   |              0
+ public     | hcgo_ingestion_state    |              0
+ public     | hcgo_knowledge_role     |              0
+ public     | hcgo_knowledge_type     |              0
+ public     | hcgo_provenance         |              0
+ public     | hcgo_publication_state  |              0
+ public     | hcgo_scope              |              0
+ public     | hcgo_scope_type         |              0
+ public     | hcgo_semantic_profile   |              0
+ public     | kah_asset               |              0
+ public     | kah_published_knowledge |              0                                                                                                                                                  
+(26 rows)
+
