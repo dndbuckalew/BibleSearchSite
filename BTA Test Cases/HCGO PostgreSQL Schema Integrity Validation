@@ -1,0 +1,372 @@
+HCGO PostgreSQL Schema Integrity Validation
+
+#24 — Auditable Test Evidence
+
+Project
+
+Bible TA / HCGO Version 6
+
+Database
+
+bta_dev
+
+Schema Under Test
+
+public
+
+Database Platform
+
+PostgreSQL 17.10 on x86_64-windows
+
+Validation Date
+
+August 10, 2026
+
+Protocol
+
+Build → Test → Validate → Proceed
+
+Overall Result
+
+PASS
+
+1. Purpose
+
+This document records the executed PostgreSQL validation performed after completion of HCGO/BTA schema build items #1–#23. The purpose of #24 was to prove that the database objects were not merely present, but structurally coherent and capable of operating together through the governed Domain → Knowledge Asset → Scope/Governance → Published Knowledge path. Synthetic validation data was created only inside a PostgreSQL transaction and was rolled back after testing.
+
+2. Validation Scope and Baseline
+
+The database baseline was confirmed before behavioral testing. A complete physical table inventory was captured for audit/reference and inserted into SA-EP-002.
+
+Layer
+
+Schema
+
+Physical Tables
+
+HCGO-managed application layer
+
+public
+
+26
+
+PostgreSQL-managed system layer
+
+pg_catalog
+
+64
+
+SQL metadata layer
+
+information_schema
+
+4
+
+Total
+
+
+94
+
+Environment verification result:
+
+current_database = bta_dev
+current_schema = public
+version = PostgreSQL 17.10 on x86_64-windows, compiled by msvc-19.44.35227, 64-bit
+
+3. Test Summary
+
+Test
+
+Validation Area
+
+Result
+
+Evidence / Finding
+
+#24.1
+
+Full Database Inventory
+
+PASS
+
+94 physical tables identified; 26 HCGO-managed public tables; environment confirmed.
+
+#24.2
+
+Primary Key Integrity
+
+PASS
+
+All 26 application tables represented. 27 PK rows because hcgo_asset_scope uses composite PK (asset_id, scope_id).
+
+#24.3
+
+Foreign Key Integrity
+
+PASS
+
+28 enforced FK relationships identified across BTA, ENT, HCGO and KAH.
+
+#24.4
+
+Unique Constraints
+
+PASS
+
+25 UNIQUE constraints identified, including structural BTA and HCGO/KAH uniqueness rules.
+
+#24.5
+
+Nullability / Defaults
+
+PASS
+
+195 application columns reviewed. Required/optional fields and defaults were structurally consistent.
+
+#24.6
+
+Identity / Sequence Integrity
+
+PASS
+
+24 generated identifiers validated: sequence-backed legacy identifiers and GENERATED ALWAYS AS IDENTITY identifiers.
+
+#24.7
+
+Hub ↔ Spoke Relationships
+
+PASS
+
+Synthetic domain, knowledge classification, asset, scope and governance records inserted successfully inside transaction.
+
+#24.8
+
+End-to-End Retrieval
+
+PASS
+
+One joined query retrieved Domain → Asset → Knowledge Type/Role → Scope → Published Knowledge as a coherent row.
+
+#24.9
+
+Rollback / Clean State
+
+PASS
+
+All synthetic test records removed; original BTAX domain preserved.
+
+4. Detailed Executed Evidence
+
+#24.1 — Full Database Inventory
+
+The public schema contained 26 HCGO/BTA application tables. The complete physical inventory contained 94 tables: 26 public, 64 pg_catalog, and 4 information_schema tables. The PostgreSQL-managed objects were inventoried but were not treated as HCGO-owned schema objects.
+
+The 26 HCGO-managed application tables were:
+
+bta_book
+bta_canon
+bta_chapter
+bta_religion
+bta_testament
+bta_translation
+bta_translator
+bta_verse
+bta_verse_text
+ent_country
+ent_language
+ent_script
+ent_state
+hcgo_asset_scope
+hcgo_domain
+hcgo_domain_reference
+hcgo_ingestion_state
+hcgo_knowledge_role
+hcgo_knowledge_type
+hcgo_provenance
+hcgo_publication_state
+hcgo_scope
+hcgo_scope_type
+hcgo_semantic_profile
+kah_asset
+kah_published_knowledge
+
+#24.2 — Primary Key Integrity
+
+All 26 application tables had primary keys. hcgo_asset_scope correctly used the composite primary key (asset_id, scope_id), producing 27 PK-column rows across 26 tables. bta_testament uses the existing primary key name id; this was documented as an existing schema characteristic, not treated as a defect.
+
+#24.3 — Foreign Key Integrity
+
+Twenty-eight foreign-key relationships were returned and validated. Major relationship paths included:
+
+BTA: bta_religion → bta_canon → bta_translation → bta_book → bta_chapter → bta_verse → bta_verse_text.
+BTA/KAH bridge: bta_translation.asset_id → kah_asset.asset_id.
+KAH/HCGO: kah_asset → hcgo_domain, hcgo_knowledge_type, hcgo_knowledge_role; asset governance through hcgo_asset_scope, hcgo_provenance, hcgo_ingestion_state and hcgo_publication_state; publication through kah_published_knowledge.
+Domain-level capabilities: hcgo_domain → hcgo_domain_reference and hcgo_semantic_profile.
+
+Observation retained for later architectural review: kah_asset.language_id and kah_asset.country_id exist without foreign-key constraints to ent_language and ent_country. No schema change was made during validation.
+
+#24.4 — Unique Constraint Integrity
+
+Twenty-five UNIQUE constraints were identified. Key examples:
+
+bta_book: (translation_id, book_code)
+bta_chapter: (book_id, chapter_number)
+bta_verse: (chapter_id, verse_number)
+bta_verse_text: (verse_id, translation_id)
+hcgo_scope: (scope_type_id, scope_code)
+hcgo_domain_reference: (domain_id, reference_url)
+kah_asset: asset_code
+kah_published_knowledge: (asset_id, reference_code)
+
+No additional uniqueness was imposed on hcgo_provenance, hcgo_ingestion_state, or hcgo_publication_state because their current design may intentionally support multiple historical records per asset.
+
+#24.5 — Nullability and Default Validation
+
+The information_schema column inventory returned 195 application columns. Required identifiers/codes were generally NOT NULL, optional descriptive/metadata fields were nullable, boolean control fields used appropriate defaults, and HCGO timestamp fields used CURRENT_TIMESTAMP where designed.
+
+A gap in kah_asset ordinal positions was investigated. PostgreSQL pg_attribute confirmed attnum 2 as '........pg.dropped.2........' with attisdropped = true. This proved the gap was normal PostgreSQL schema history caused by a previously dropped column, not a missing active column. No corrective action was required.
+
+#24.6 — Identity / Sequence Integrity
+
+Twenty-four automatically generated identifiers were identified. Earlier BTA/ENT/KAH structures use nextval()-backed PostgreSQL sequences, while newer HCGO structures predominantly use GENERATED ALWAYS AS IDENTITY. Both mechanisms were functioning as valid PostgreSQL identifier-generation patterns.
+
+bta_testament.id and the hcgo_asset_scope composite key are intentionally supplied rather than automatically generated and therefore did not appear in the generated-identifier inventory.
+
+#24.7 — Transactional Hub ↔ Spoke Relationship Validation
+
+Behavioral testing was performed inside an explicit PostgreSQL transaction. The permanent BTAX domain (domain_id 1, Bible Therapy Assistant) was preserved and not used as disposable test data.
+
+An initial invalid domain code TEST24 was intentionally rejected because hcgo_domain.domain_code is CHAR(4). The transaction was rolled back after the error, confirming enforcement of the domain-code length rule. A new transaction was then started with valid code T024.
+
+Executed Object / Relationship
+
+Synthetic Evidence
+
+Result
+
+Synthetic Domain
+
+T024 / Schema Validation Test Domain
+
+PASS
+
+Synthetic Knowledge Type
+
+TEST_DOCUMENT / Test Document
+
+PASS
+
+Synthetic Knowledge Role
+
+TEST_PRIMARY / Test Primary
+
+PASS
+
+Knowledge Asset
+
+TEST24_ASSET / Schema Validation Test Asset
+
+PASS
+
+Scope Type
+
+TEST_SCOPE / Test Scope
+
+PASS
+
+Scope
+
+TEST_SCOPE_001 / Schema Validation Test Scope
+
+PASS
+
+Asset ↔ Scope Bridge
+
+asset_id 1 ↔ scope_id 1
+
+PASS
+
+Provenance
+
+1 record for asset_id 1
+
+PASS
+
+Ingestion State
+
+1 record for asset_id 1
+
+PASS
+
+Publication State
+
+1 record for asset_id 1
+
+PASS
+
+Published Knowledge
+
+TEST24-001 / Schema Validation Knowledge Unit
+
+PASS
+
+#24.8 — End-to-End Retrieval
+
+A joined retrieval query traversed the Published Knowledge Hub through the asset, domain, knowledge type, knowledge role, asset scope, scope, and scope type tables. The query returned exactly one coherent row:
+
+Domain: T024 — Schema Validation Test Domain
+Asset: TEST24_ASSET — Schema Validation Test Asset
+Knowledge Type: TEST_DOCUMENT
+Knowledge Role: TEST_PRIMARY
+Scope Type: TEST_SCOPE
+Scope: TEST_SCOPE_001
+Reference: TEST24-001 — Schema Validation Knowledge Unit
+Content: This is temporary published knowledge used only for #24 schema validation.
+
+Result: PASS. This demonstrated the operational Domain → Knowledge Asset → Semantic Classification → Scope → Published Knowledge retrieval path.
+
+#24.9 — Rollback and Clean-State Verification
+
+After all behavioral tests, ROLLBACK was executed. A final verification query confirmed:
+
+test_domains   = 0
+test_assets    = 0
+test_published = 0
+original_btax  = 1
+
+Result: PASS. All synthetic #24 validation records were removed and the original BTAX domain remained intact.
+
+5. Validated Architectural Path
+
+The executed tests provide database-level evidence that the following HCGO path is structurally and behaviorally operational:
+
+Domain
+  ↓
+Knowledge Type / Knowledge Role
+  ↓
+Knowledge Asset
+  ├─ Scope
+  ├─ Provenance
+  ├─ Ingestion State
+  └─ Publication State
+       ↓
+Published Knowledge Hub
+       ↓
+Integrated Retrieval
+
+6. Final Test Determination
+
+#24 — PostgreSQL Schema Integrity Validation: COMPLETE / PASS
+
+Schema build items #1–#23 successfully passed the #24 validation protocol. The database was verified at inventory, constraint, column-definition, identifier-generation, relationship, publication, retrieval, and rollback levels. No synthetic validation data remained after completion.
+
+Build/Test gate satisfied: #1–#23 BUILD → #24 TEST → PASS.
+
+7. Audit Notes
+
+1. Complete physical table inventory is maintained in SA-EP-002.
+2. PostgreSQL-managed pg_catalog and information_schema objects were inventoried but not treated as HCGO-owned schema objects.
+3. No production data was loaded during #24.
+4. No test data was committed.
+5. The pre-existing BTAX domain was preserved.
+6. Validation identified observations for later review without modifying schema during the test phase.
