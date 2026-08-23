@@ -12,6 +12,11 @@ type DecisionResponse = {
   execution_payload?: any;
 };
 
+type Turn = {
+  question: string;
+  response: QueryResponse;
+};
+
 export default function WhyPage() {
   const [queryCount, setQueryCount] = useState(0);
   useEffect(() => {
@@ -25,7 +30,7 @@ export default function WhyPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [loadingMessage, setLoadingMessage] = useState('');
   const [isFinalStage, setIsFinalStage] = useState(false);
-  const [result, setResult] = useState<QueryResponse | null>(null);
+  const [turns, setTurns] = useState<Turn[]>([]);
   const [donationDismissed, setDonationDismissed] = useState(false);
 
   // 🔒 Canonical source of truth for submitted input
@@ -34,7 +39,7 @@ export default function WhyPage() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }, [result, message, loading, loadingMessage]);
+  }, [turns, message, loading, loadingMessage]);
 
   const resizeInput = () => {
     const el = inputRef.current;
@@ -51,7 +56,7 @@ export default function WhyPage() {
   };
 
   const handleNewQuestion = () => {
-    setResult(null);
+    setTurns([]);
     setMessage(null);
     setQuestion('');
     setDonationDismissed(false);
@@ -157,7 +162,7 @@ export default function WhyPage() {
       // --------------------------------------------------
       // Normal Success Path
       // --------------------------------------------------
-      setResult(responseBody);
+      setTurns((prev) => [...prev, { question: trimmed, response: responseBody }]);
       setQuestion('');
       if (inputRef.current) {
         inputRef.current.value = '';
@@ -173,7 +178,7 @@ export default function WhyPage() {
     }
   };
 
-  const isLanding = !result && !message && !loading;
+  const isLanding = turns.length === 0 && !message && !loading;
 
   // Rendered via a plain function call (not `<Composer />`) so it stays part of
   // the same render tree position instead of being treated as a fresh component
@@ -338,10 +343,23 @@ export default function WhyPage() {
 
           {/* Response area — takes up the rest of the page and scrolls independently */}
           <div className="min-h-0 flex-1 space-y-6 overflow-y-auto pr-2">
-            {result && (
-              <div className="animate-fade-slide-in space-y-6">
+            {turns.length > 0 && (
+              <div className="space-y-8">
                 <h2 className="text-2xl font-semibold text-neutral-900 dark:text-neutral-50">Scripture & Reflection</h2>
-                <QueryResultView data={result} />
+
+                {turns.map((turn, i) => (
+                  <div
+                    key={i}
+                    className={`space-y-6 ${i > 0 ? "border-t border-neutral-200 pt-8 dark:border-neutral-800" : ""} ${
+                      i === turns.length - 1 ? "animate-fade-slide-in" : ""
+                    }`}
+                  >
+                    <div className="inline-block rounded-2xl border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-sm font-medium text-blue-700 dark:text-blue-300">
+                      {turn.question}
+                    </div>
+                    <QueryResultView data={turn.response} />
+                  </div>
+                ))}
               </div>
             )}
 
@@ -383,7 +401,7 @@ export default function WhyPage() {
           {/* Composer — pinned to the bottom of the page */}
           <div className="sticky bottom-0 shrink-0 pt-4">{renderComposer()}</div>
 
-          {result && !donationDismissed && (
+          {turns.length > 0 && !donationDismissed && (
             <div className="shrink-0 pt-3">
               <DonationPrompt onDismiss={() => setDonationDismissed(true)} />
             </div>

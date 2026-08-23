@@ -29,7 +29,6 @@ export default function QueryResultView({ data }: { data: QueryResponse }) {
   const contextExploration = data.context_exploration ?? null;
   const reflection = data.reflection ?? null;
 
-  const summaryBlurb = "A brief summary of the theme or idea these verses are pointing to.";
   const contextBlurb = "Understanding the surrounding circumstances helps explain why these verses are being expressed in this moment.";
   const reflectionBlurb = "A gentle prompt to help you reflect on what this means personally.";
 
@@ -64,6 +63,12 @@ export default function QueryResultView({ data }: { data: QueryResponse }) {
 
   return (
     <div className="space-y-8">
+      {summary && (
+        <p className="text-lg leading-relaxed text-neutral-800 dark:text-neutral-100">
+          {summary}
+        </p>
+      )}
+
       <Section
         title={scriptureHeading}
         blurb="These are the verses BTA selected for your request."
@@ -108,27 +113,15 @@ export default function QueryResultView({ data }: { data: QueryResponse }) {
         )}
       </Section>
 
-      {summary ? (
-        <ExpandableSection
-          title="Summary"
-          blurb={summaryBlurb}
-          text={summary}
-        />
-      ) : (
-        <Section title="Summary" blurb={summaryBlurb}>
-          <EmptyText text="Summary is not available for this result." />
-        </Section>
-      )}
-
       {context ? (
         <ExpandableSection
-          title="Context"
+          title="Details"
           blurb={contextBlurb}
           text={contextExploration ? `${context}\n\n${contextExploration}` : context}
         />
       ) : (
-        <Section title="Context" blurb={contextBlurb}>
-          <EmptyText text="Context is not available for this result." />
+        <Section title="Details" blurb={contextBlurb}>
+          <EmptyText text="Details are not available for this result." />
         </Section>
       )}
 

@@ -27,6 +27,7 @@ from backend.core.commentary_registry import get_commentator
 
 # Context Layer (Phase 1 — Free Context)
 from backend.services.context_service import generate_free_context
+from backend.services.summary_rendering_service import render_summary_lead_in
 
 from backend.services.context_exploration_service import (
     generate_context_exploration,
@@ -754,6 +755,9 @@ class QueryService:
                 summary_parts.append(resolution)
 
             final_summary = "\n\n".join(summary_parts).strip()
+
+            if final_summary:
+                final_summary = render_summary_lead_in(question, final_summary)
 
         except Exception as e:
             print("QUERY SERVICE: SUMMARY BUILD FAILED =", str(e))
