@@ -56,98 +56,97 @@ export default function DonationPrompt({ onDismiss }: DonationPromptProps) {
   }
 
   return (
-    <div className="space-y-4 pt-2">
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <div className="text-2xl text-neutral-900">
-            Help sustain this Ministry
-          </div>
-          <div className="text-base text-neutral-800">
-            If this experience has been meaningful, you can help support continued
-            access for others through a simple donation.
-          </div>
-        </div>
+    <div className="space-y-1.5">
+      <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-blue-500/30 bg-blue-500/10 px-4 py-2.5">
+        <span className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+          Help sustain this ministry
+        </span>
 
-        <button
-          type="button"
-          onClick={onDismiss}
-          className="text-sm text-neutral-500 hover:text-neutral-700"
-          aria-label="Dismiss donation prompt"
-        >
-          Dismiss
-        </button>
-      </div>
+        {!handoffUrl && (
+          <div className="flex items-center gap-1.5">
+            {amounts.map((amount) => {
+              const isSelected = selectedAmount === amount;
 
-      <div className="flex flex-wrap gap-2">
-        {amounts.map((amount) => {
-          const isSelected = selectedAmount === amount;
+              return (
+                <button
+                  key={amount}
+                  type="button"
+                  onClick={() => {
+                    setHandoffUrl(null);
+                    setSelectedAmount(selectedAmount === amount ? null : amount);
+                  }}
+                  className={`rounded-full border px-2.5 py-1 text-xs ${
+                    isSelected
+                      ? "border-blue-500 bg-blue-600 text-white"
+                      : "border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
+                  }`}
+                >
+                  ${amount}
+                </button>
+              );
+            })}
 
-          return (
             <button
-              key={amount}
               type="button"
               onClick={() => {
                 setHandoffUrl(null);
-                setSelectedAmount(selectedAmount === amount ? null : amount);
+                setSelectedAmount(selectedAmount === "other" ? null : "other");
               }}
-              className={`rounded border px-4 py-2 text-sm ${
-                isSelected
-                  ? "border-neutral-800 bg-neutral-800 text-white"
-                  : "border-neutral-800 bg-white text-neutral-800 hover:bg-neutral-100"
+              className={`rounded-full border px-2.5 py-1 text-xs ${
+                selectedAmount === "other"
+                  ? "border-blue-500 bg-blue-600 text-white"
+                  : "border-neutral-300 bg-white text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
               }`}
             >
-              ${amount}
+              Other
             </button>
-          );
-        })}
+          </div>
+        )}
 
-        <button
-          type="button"
-          onClick={() => {
-            setHandoffUrl(null);
-            setSelectedAmount(selectedAmount === "other" ? null : "other");
-          }}
-          className={`rounded border px-4 py-2 text-sm ${
-            selectedAmount === "other"
-              ? "border-neutral-800 bg-neutral-800 text-white"
-              : "border-neutral-800 bg-white text-neutral-800 hover:bg-neutral-100"
-          }`}
-        >
-          Other
-        </button>
-      </div>
+        <div className="ml-auto flex items-center gap-3">
+          {handoffUrl ? (
+            <a
+              href={handoffUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-blue-600 px-3 py-1 text-xs font-medium text-white hover:bg-blue-500"
+            >
+              Continue to Secure Donation
+            </a>
+          ) : (
+            <button
+              type="button"
+              onClick={handleDonate}
+              disabled={!selectedAmount || isLoading}
+              className="rounded-full bg-blue-600 px-3 py-1 text-xs font-medium text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:opacity-50 dark:disabled:bg-neutral-700"
+            >
+              {isLoading ? "Starting…" : "Donate"}
+            </button>
+          )}
 
-      {handoffUrl && (
-        <div>
-          <a
-            href={handoffUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded border border-neutral-800 px-4 py-2 text-base font-medium text-neutral-800 bg-white inline-block"
-          >
-            Continue to Secure Donation
-          </a>
-        </div>
-      )}
-
-      {error && (
-        <div className="text-sm text-neutral-700">
-          {error}
-        </div>
-      )}
-
-      {!handoffUrl && (
-        <div>
           <button
             type="button"
-            onClick={handleDonate}
-            disabled={!selectedAmount || isLoading}
-            className="rounded border border-neutral-800 px-4 py-2 text-base font-medium text-neutral-800 bg-white disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={onDismiss}
+            aria-label="Dismiss donation prompt"
+            className="text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300"
           >
-            {isLoading ? "Starting Donation..." : "Continue to Donate"}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-4 w-4"
+            >
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
           </button>
         </div>
-      )}
+      </div>
+
+      {error && <div className="px-1 text-xs text-red-600 dark:text-red-400">{error}</div>}
     </div>
   );
 }

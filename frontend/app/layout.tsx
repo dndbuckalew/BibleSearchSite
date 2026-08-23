@@ -1,5 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import ThemeToggle from "./components/ThemeToggle";
+
+const THEME_INIT_SCRIPT = `
+  try {
+    if (localStorage.getItem('bta-theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+    }
+  } catch (e) {}
+`;
 
 export const metadata: Metadata = {
   title: "Bible Therapy Assistant™ (BTA) — Version 4.5",
@@ -15,77 +24,53 @@ export default function RootLayout({
   const currentYear = new Date().getFullYear();
 
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-neutral-50 text-neutral-800 flex flex-col">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* A raw synchronous script (not next/script) — it must execute as the browser
+            parses the HTML, before first paint, or the theme flashes on every load.
+            next/script's "beforeInteractive" strategy queues through Next's own runtime
+            and does not run early enough for this. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
+      <body className="min-h-screen bg-white text-neutral-900 flex flex-col dark:bg-neutral-800 dark:text-neutral-100">
+        <h1 className="sr-only">Bible Therapy Assistant</h1>
+
         {/* Version 2 Banner */}
-        <div className="w-full bg-amber-100 border-b border-amber-300 text-amber-900 text-sm px-4 py-2 text-center">
-          <strong>Version 4.5:</strong> This system is designed to support thoughtful reflection on Scripture. Content may continue to evolve and should not be considered authoritative guidance.
+        <div className="relative w-full bg-blue-50 border-b border-blue-200 text-blue-700 text-xs px-4 py-1.5 text-center dark:bg-blue-950/50 dark:border-blue-900/60 dark:text-blue-300">
+          v4.5 — For reflection and study, not authoritative guidance.
+          <div className="absolute right-3 top-1/2 -translate-y-1/2">
+            <ThemeToggle />
+          </div>
         </div>
 
-        {/* Header */}
-        <header className="border-b bg-white">
-          <div className="max-w-4xl mx-auto px-4 py-4">
-            <h1 className="text-2xl font-semibold">
-              Bible Therapy Assistant
-            </h1>
-
-            <div className="mt-2 space-y-2">
-              <p className="text-sm text-neutral-700">
-                Helping Christians, missionaries, and spiritually searching individuals
-                engage Scripture through deeper understanding, reflection, and the
-                meaningful “why” behind God’s Word.
-              </p>
-
-              <p className="text-sm text-neutral-600">
-                Unlike traditional Bible search apps or concordances, BTA uses carefully
-                guided AI assistance to help people explore Scripture through connected
-                meaning, continuity, and thoughtful reflection while keeping God’s Word
-                at the center of the experience.
-              </p>
-            </div>
-          </div>
-        </header>
-
         {/* Main Content */}
-        <main className="flex-1 max-w-4xl mx-auto px-4 py-8">
+        <main className="flex flex-1 flex-col w-full max-w-4xl mx-auto px-4 py-8">
           {children}
         </main>
 
         {/* Footer / Guardrails */}
-        <footer className="border-t bg-white mt-12">
-          <div className="max-w-4xl mx-auto px-4 py-6 text-sm text-neutral-600 space-y-2">
+        <footer className="border-t border-neutral-200 bg-neutral-50 mt-8 dark:border-neutral-800 dark:bg-neutral-900/60">
+          <div className="max-w-4xl mx-auto px-4 py-4 text-xs text-neutral-500 space-y-1.5">
             <div>
-              This application provides Scripture (KJV) and contextual reflection
-              for educational and spiritual exploration. It is <strong>not</strong> medical advice, counseling, crisis
-              support, or authoritative theological instruction.
+              Scripture (KJV) with contextual reflection for study — not medical
+              advice, counseling, crisis support, or authoritative theological
+              instruction.
             </div>
 
-            <div className="pt-3">
-              Questions, feedback, ministry inquiries, church partnerships, or
-              suggestions? Contact us at{" "}
+            <div>
+              Questions or feedback?{" "}
               <a
                 href="mailto:info@bibleta.com"
-                className="text-lg font-semibold underline text-blue-600 hover:text-blue-800"
+                className="underline text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
               >
                 info@bibleta.com
               </a>
             </div>
 
-            <div className="text-xs text-neutral-500 pt-2 space-y-1">
-              <div>
-                <strong>Bible Therapy Assistant™</strong>
-              </div>
-              <div>
-                A product of TAD Concepts LLC
-              </div>
-              <div>
-                © {currentYear} TAD Concepts LLC. All rights reserved.
-              </div>
-               <div>
-                <strong>Patent Pending</strong>
-              </div>
-              <div>Powered by OpenAI</div>
-            
+            <div>
+              <strong className="text-neutral-600 dark:text-neutral-400">Bible Therapy Assistant™</strong> · A product of TAD
+              Concepts LLC · © {currentYear} · Patent Pending · Powered by
+              OpenAI
             </div>
           </div>
         </footer>
