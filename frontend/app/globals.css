@@ -10,6 +10,14 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  /* Keep the existing text hierarchy readable at every viewport size.
+     Rem bounds preserve browser text preferences and zoom. */
+  --text-xs: clamp(0.9375rem, 0.875rem + 0.15625vw, 1rem);
+  --text-xs--line-height: 1.5;
+  --text-sm: clamp(1rem, 0.9375rem + 0.15625vw, 1.125rem);
+  --text-sm--line-height: 1.6;
+  --text-base: clamp(1rem, 0.875rem + 0.3125vw, 1.25rem);
+  --text-base--line-height: 1.6;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +31,80 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  font-size: var(--text-base);
+  line-height: 1.6;
+}
+
+/* Wrap dynamic reader text and long links without hiding overflow. */
+.bta-content,
+body > header,
+body > footer {
+  overflow-wrap: anywhere;
+}
+
+.bta-content :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  min-width: 0;
+  max-width: 100%;
+  font-size: var(--text-base);
+  min-height: 44px;
+}
+
+.bta-content :is(button, a),
+body > header nav a {
+  min-height: 44px;
+}
+
+.bta-content button {
+  max-width: 100%;
+  white-space: normal;
+}
+
+.bta-content :is(button, a, input, select, textarea):focus-visible,
+body > header nav a:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
+}
+
+/* UX-015: standard actions and page navigation follow Back to Home. */
+.bta-button {
+  @apply inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded border-0 bg-transparent px-3 py-2 text-[18px] font-normal text-blue-700;
+  cursor: pointer;
+}
+
+.bta-button:hover:not(:disabled) {
+  @apply text-blue-900 underline;
+}
+
+.bta-button:active:not(:disabled) {
+  @apply bg-blue-50 text-blue-900 underline;
+}
+
+.bta-button:disabled {
+  @apply cursor-not-allowed opacity-50;
+}
+
+.bta-button:focus-visible,
+.bta-crm-button:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
+}
+
+/* The CRM submission action retains its approved blue appearance. */
+.bta-crm-button {
+  @apply w-full rounded-lg border-0 p-3 font-semibold text-white;
+  background-color: #2563eb;
+  cursor: pointer;
+}
+
+.bta-crm-button:hover:not(:disabled) {
+  @apply bg-blue-700;
+}
+
+.bta-crm-button:active:not(:disabled) {
+  @apply bg-blue-800;
+}
+
+.bta-crm-button:disabled {
+  @apply cursor-wait opacity-60;
+  background-color: #2563eb;
 }

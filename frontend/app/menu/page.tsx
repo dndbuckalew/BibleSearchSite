@@ -1,4 +1,5 @@
 import Link from "next/link";
+import WorkspaceHome from "../components/WorkspaceHome";
 
 export default function MenuPage() {
   return (
@@ -9,6 +10,7 @@ export default function MenuPage() {
         padding: "2rem 1.5rem",
       }}
     >
+      <WorkspaceHome />
       <h1
         style={{
           fontSize: "2rem",

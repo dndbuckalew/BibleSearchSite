@@ -52,7 +52,7 @@ export default function LoginPage() {
 
         <button
           onClick={handleLogin}
-          className="w-full rounded-md border border-neutral-400 bg-neutral-50 px-4 py-3 text-sm font-medium hover:bg-neutral-100"
+          className="bta-button w-full"
         >
           Enter
         </button>

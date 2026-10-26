@@ -1,8 +1,10 @@
 import AudiencePrompt from "../components/audience/AudiencePrompt";
+import WorkspaceHome from "../components/WorkspaceHome";
 
 export default function StayConnectedPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
+      <WorkspaceHome />
       <h2 className="text-3xl font-bold text-center mb-4">
         Stay Connected
       </h2>

@@ -9,10 +9,11 @@ export default function DesktopNavigation() {
       style={{
         display: "flex",
         flexDirection: "row",
+        flexWrap: "wrap",
         justifyContent: "center",
         alignItems: "center",
         width: "100%",
-        gap: "32px",
+        gap: "0.5rem clamp(0.5rem, 2vw, 2rem)",
         marginTop: "16px",
       }}
     >
@@ -22,32 +23,12 @@ export default function DesktopNavigation() {
           <Link
             key={item.href}
             href={item.href}
-            className="text-neutral-700 hover:text-blue-600 transition-colors"
+            className="min-h-11 content-center rounded px-2 py-2 text-neutral-700 hover:text-blue-600 transition-colors"
             style={{
               textAlign: "center",
             }}
           >
-            {item.label === "Stay Connected" ? (
-              <>
-                <span style={{ display: "block", lineHeight: "1.0" }}>
-                  Stay
-                </span>
-                <span style={{ display: "block", lineHeight: "1.0" }}>
-                  Connected
-                </span>
-              </>
-            ) : item.label === "About Us" ? (
-              <>
-                <span style={{ display: "block", lineHeight: "1.0" }}>
-                  About
-                </span>
-                <span style={{ display: "block", lineHeight: "1.0" }}>
-                  Us
-                </span>
-              </>
-            ) : (
-              item.label
-            )}
+            {item.label}
           </Link>
         ))}
     </nav>

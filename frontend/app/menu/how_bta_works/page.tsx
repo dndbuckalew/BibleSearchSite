@@ -1,3 +1,5 @@
+import WorkspaceHome from "../../components/WorkspaceHome";
+
 export default function HowBtaWorksPage() {
   return (
     <main
@@ -7,6 +9,7 @@ export default function HowBtaWorksPage() {
         padding: "2rem 1.5rem",
       }}
     >
+      <WorkspaceHome />
       <h1
         style={{
           fontSize: "2rem",
