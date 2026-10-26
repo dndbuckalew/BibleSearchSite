@@ -21,9 +21,8 @@ export const primaryNavigation: NavigationItem[] = [
     href: "/about",
     display: true,
   },
-  {
-    label: "Menu",
-    href: "/menu",
-    display: true,
-  },
+];
+
+export const supportingDocumentsNavigation: NavigationItem[] = [
+  { label: "How BTA Works", href: "/menu/how_bta_works", display: true },
 ];

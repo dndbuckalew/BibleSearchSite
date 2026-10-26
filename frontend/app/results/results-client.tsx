@@ -4,8 +4,11 @@
 
 import { useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import DonationPrompt from "../components/donation/DonationPrompt";
+import ResultsDonationInvitation from "../components/donation/ResultsDonationInvitation";
 import ExpandableSection from "../components/ExpandableSection";
+import ListeningControls, { listeningStatus } from "../components/ListeningControls";
+import { referenceForSpeech } from "../lib/resultsReader";
+import { useResultsReader } from "../lib/useResultsReader";
 
 /**
  * Phase 9.7 — Results is render-only:
@@ -49,12 +52,40 @@ function safeParsePayload(raw: string): { ok: true; data: QueryResponse } | { ok
   }
 }
 
+  // --- Section helpers (Phase 9.7: never render blank containers) ---
+const Section = ({
+    title,
+    blurb,
+    children,
+    listening,
+  }: {
+    title: string;
+    blurb: string;
+    children: React.ReactNode;
+    listening?: React.ReactNode;
+  }) => (
+    <div className="space-y-2">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+        <h3 className="text-xl font-medium">{title}</h3>
+        {listening}
+      </div>
+      <div className="text-sm text-neutral-600">{blurb}</div>
+      {children}
+    </div>
+  );
+
+const EmptyText = ({ text }: { text: string }) => (
+  <div className="text-sm text-neutral-600 italic">{text}</div>
+  );
+
+
 export default function ResultsClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   // Read once per navigation (no refresh model)
   const rawPayload = searchParams.get("payload");
+  const reader = useResultsReader(rawPayload);
 
   const parsed = useMemo(() => {
     if (!rawPayload) return { ok: false as const, error: "No results were provided for this page." };
@@ -65,10 +96,23 @@ export default function ResultsClient() {
 
   // Optional: allow local UI dismiss of an error banner (no side effects)
   const [dismissed, setDismissed] = useState(false);
+  const backToHome = (
+    <button
+      type="button"
+      onClick={() => { reader.stop(); router.push("/"); }}
+      className="bta-button mb-4"
+    >
+      <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m3 10 9-7 9 7M5 9v12h14V9M9 21v-8h6v8" />
+      </svg>
+      Back to Home
+    </button>
+  );
  
   if (!parsed.ok) {
     return (
       <section className="space-y-6">
+        {backToHome}
         <h2 className="text-2xl font-semibold">Scripture & Reflection</h2>
 
         {!dismissed && (
@@ -76,16 +120,16 @@ export default function ResultsClient() {
             <div className="text-sm text-neutral-700">
               {parsed.error} You can return and ask again.
             </div>
-            <div className="mt-3 flex gap-2">
+            <div className="mt-3 flex flex-wrap gap-2">
               <button
-                onClick={() => router.push("/")}
-                className="rounded-md border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-800 bg-neutral-50 hover:bg-neutral-100"
+                onClick={() => { reader.stop(); router.push("/"); }}
+                className="bta-button"
               >
                 Back to Reflection
               </button>
               <button
                 onClick={() => setDismissed(true)}
-                className="rounded-md border border-neutral-300 px-4 py-2 text-sm text-neutral-700 bg-white hover:bg-neutral-50"
+                className="bta-button"
               >
                 Dismiss
               </button>
@@ -98,8 +142,8 @@ export default function ResultsClient() {
         </div>
 
         <button
-          onClick={() => router.push("/")}
-          className="mt-2 rounded border px-4 py-2"
+          onClick={() => { reader.stop(); router.push("/"); }}
+          className="bta-button mt-2"
         >
           Start New Reflection
         </button>
@@ -126,29 +170,31 @@ export default function ResultsClient() {
   const verseCount = distinctReferences.size;
   const scriptureHeading = verseCount === 1 ? "Scripture (KJV)" : "Scriptures (KJV)";
 
-  // --- Section helpers (Phase 9.7: never render blank containers) ---
-  const Section = ({
-    title,
-    blurb,
-    children,
-  }: {
-    title: string;
-    blurb: string;
-    children: React.ReactNode;
-  }) => (
-    <div className="space-y-2">
-      <h3 className="text-xl font-medium">{title}</h3>
-      <div className="text-sm text-neutral-600">{blurb}</div>
-      {children}
-    </div>
+  // Use response content, never page text: controls and unrelated UI cannot enter speech.
+  // Match the displayed testament grouping, including its order within each group.
+  const scriptureText = [
+    ot.length ? ['Old Testament', ...ot.map(v => `${referenceForSpeech(v.reference)}. ${v.text}`)].join('\n\n') : '',
+    nt.length ? ['New Testament', ...nt.map(v => `${referenceForSpeech(v.reference)}. ${v.text}`)].join('\n\n') : '',
+    unknown.length ? ['Scripture', ...unknown.map(v => `${referenceForSpeech(v.reference)}. ${v.text}`)].join('\n\n') : '',
+  ].filter(Boolean).join('\n\n');
+  const contextText = context ? [context, contextExploration].filter(Boolean).join('\n\n') : '';
+  const introduction = data.intent_reaffirmation ?? '';
+  const entireText = [
+    introduction,
+    scriptureText ? `${scriptureHeading}.\n${scriptureText}` : '',
+    summary?.trim() ? `Summary.\n${summary}` : '',
+    contextText.trim() ? `Context.\n${contextText}` : '',
+    reflection?.trim() ? `Reflection.\n${reflection}` : '',
+  ].filter(Boolean).join('\n\n\n');
+  const controls = (selection: string, label: string, text: string) => (
+    <ListeningControls reader={reader} selection={selection} label={label} text={text} />
   );
 
-  const EmptyText = ({ text }: { text: string }) => (
-  <div className="text-sm text-neutral-600 italic">{text}</div>
-  );
+
 
   return (
   <>
+    {backToHome}
     {data.intent_reaffirmation && (
       <div
         style={{
@@ -169,6 +215,7 @@ export default function ResultsClient() {
         >
           {data.intent_reaffirmation}
         </p>
+        <div className="mt-2 flex justify-end">{controls("introduction", "Introduction", introduction)}</div>
       </div>
     )}
 
@@ -176,7 +223,7 @@ export default function ResultsClient() {
   <h2
     style={{
       textAlign: "center",
-      fontSize: "2rem",
+      fontSize: "clamp(1.5rem, 1.25rem + 1vw, 2rem)",
       fontWeight: 700,
       marginBottom: "32px",
     }}
@@ -184,9 +231,19 @@ export default function ResultsClient() {
     Scripture & Reflection
   </h2>
 
+      <div className="space-y-2">
+        {controls("entire", "Entire Response", entireText)}
+        <p role="status" aria-live="polite" className={reader.state.selection ? "sr-only" : "text-sm text-neutral-600"}>
+          {reader.state.available === false ? 'Listening is unavailable in this browser. You can continue reading the response.'
+            : reader.state.message || listeningStatus(reader.state.phase, reader.state.selection,
+              reader.state.selection === 'scripture' ? scriptureHeading : reader.state.selection ? reader.state.selection.charAt(0).toUpperCase() + reader.state.selection.slice(1) : '')}
+        </p>
+      </div>
+
       {/* 1) Scripture */}
       <Section
         title={scriptureHeading}
+        listening={controls("scripture", scriptureHeading, scriptureText)}
         blurb="These are the verses BTA selected for your request."
       >
         {verses.length === 0 ? (
@@ -232,6 +289,7 @@ export default function ResultsClient() {
       
       <Section
         title="Summary"
+        listening={controls("summary", "Summary", summary ?? "")}
         blurb="A brief summary of the theme or idea these verses are pointing to."
       >
         {summary ? (
@@ -269,6 +327,7 @@ export default function ResultsClient() {
 
       <Section
         title="Context"
+        listening={controls("context", "Context", contextText)}
         blurb="Understanding the surrounding circumstances helps explain why these verses are being expressed in this moment."
       >
        {context ? (
@@ -301,6 +360,7 @@ export default function ResultsClient() {
       {/* 4) Reflection */}
       <Section
         title="Reflection"
+        listening={controls("reflection", "Reflection", reflection ?? "")}
         blurb="A gentle prompt to help you reflect on what this means personally."
       >        
         {reflection ? (
@@ -318,14 +378,14 @@ export default function ResultsClient() {
 -------------------------------------------------------------- */}
 
           <button
-        onClick={() => router.push("/")}
-        className="mt-6 rounded border px-4 py-2"
+        onClick={() => { reader.stop(); router.push("/"); }}
+        className="bta-button mt-6"
       >
         Start New Reflection
       </button>
 
     {!donationDismissed && (
-      <DonationPrompt onDismiss={() => setDonationDismissed(true)} />
+      <ResultsDonationInvitation onDismiss={() => setDonationDismissed(true)} />
     )}  
     </section>
   </>

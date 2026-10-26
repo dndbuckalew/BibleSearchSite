@@ -7,14 +7,14 @@ export default function MobileNavigation() {
       aria-label="Mobile Navigation"
       className="w-full border-t border-gray-200 bg-white"
     >
-      <div className="flex flex-col items-center py-3 gap-3">
+      <div className="grid grid-cols-2 gap-2 py-3">
         {primaryNavigation
           .filter((item) => item.display !== false)
           .map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="text-neutral-700 hover:text-blue-600 transition-colors text-lg"
+              className="flex min-h-11 items-center justify-center rounded px-3 py-2 text-center text-base text-neutral-700 hover:text-blue-600 transition-colors"
             >
               {item.label}
             </Link>

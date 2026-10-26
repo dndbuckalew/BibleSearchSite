@@ -119,13 +119,13 @@ export default function AudiencePrompt() {
   } 
 
   return (
-    <section className="w-full rounded-2xl border border-neutral-200 bg-white p-8 shadow-sm">
+    <section className="w-full rounded-2xl border border-neutral-200 bg-white p-4 sm:p-8 shadow-sm">
       <div className="mb-6">
         <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">
           Stay Connected
         </p>
 
-        <h2 className="mt-2 text-3xl font-semibold text-neutral-900">
+        <h2 className="mt-2 text-2xl sm:text-3xl font-semibold text-neutral-900">
           Connect with Bible Therapy Assistant™
         </h2>
 
@@ -135,69 +135,74 @@ export default function AudiencePrompt() {
         </p>
       </div>
 
-      {message && (
-        <div className="mb-5 rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700">
-          {message}
-        </div>
-      )}
+      <div role="status" aria-live="polite" aria-atomic="true" className={message ? "mb-5 rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700" : "sr-only"}>
+        {submitting ? "Submitting..." : message}
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid min-w-0 gap-5 md:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-neutral-800">
+            <label htmlFor="stay-connected-first-name" className="block text-sm font-medium text-neutral-800">
               First Name
             </label>
 
             <input
+              id="stay-connected-first-name"
+              autoComplete="given-name"
               type="text"
               value={formData.firstName}
               onChange={(e) =>
                 updateField("firstName", e.target.value)
               }
-              className="mt-1 w-full rounded-lg border border-neutral-300 px-4 py-3"
+              className="mt-1 min-w-0 w-full rounded-lg border border-neutral-300 px-4 py-3"
               placeholder="First name"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-800">
+            <label htmlFor="stay-connected-last-name" className="block text-sm font-medium text-neutral-800">
               Last Name
             </label>
 
             <input
+              id="stay-connected-last-name"
+              autoComplete="family-name"
               type="text"
               value={formData.lastName}
               onChange={(e) =>
                 updateField("lastName", e.target.value)
               }
-              className="mt-1 w-full rounded-lg border border-neutral-300 px-4 py-3"
+              className="mt-1 min-w-0 w-full rounded-lg border border-neutral-300 px-4 py-3"
               placeholder="Last name"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-800">
+          <label htmlFor="stay-connected-email" className="block text-sm font-medium text-neutral-800">
             Email Address
           </label>
 
           <input
+            id="stay-connected-email"
+            autoComplete="email"
             type="email"
             value={formData.email}
             onChange={(e) =>
               updateField("email", e.target.value)
             }
-            className="mt-1 w-full rounded-lg border border-neutral-300 px-4 py-3"
+            className="mt-1 min-w-0 w-full rounded-lg border border-neutral-300 px-4 py-3"
             placeholder="you@example.com"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-800">
+          <label htmlFor="stay-connected-contact-type" className="block text-sm font-medium text-neutral-800">
             Contact Type
           </label>
 
           <select
+            id="stay-connected-contact-type"
             value={formData.contactType}
             onChange={(e) =>
               updateField(
@@ -205,7 +210,7 @@ export default function AudiencePrompt() {
                 e.target.value as ContactType
               )
             }
-            className="mt-1 w-full rounded-lg border border-neutral-300 bg-white px-4 py-3"
+            className="mt-1 min-w-0 w-full rounded-lg border border-neutral-300 bg-white px-4 py-3"
           >
             <option value="">
               Select contact type
@@ -220,41 +225,53 @@ export default function AudiencePrompt() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-800">
+          <label htmlFor="stay-connected-organization" className="block text-sm font-medium text-neutral-800">
             Organization
           </label>
 
           <input
+            id="stay-connected-organization"
+            autoComplete="organization"
             type="text"
             value={formData.organization}
             onChange={(e) =>
               updateField("organization", e.target.value)
             }
-            className="mt-1 w-full rounded-lg border border-neutral-300 px-4 py-3"
+            className="mt-1 min-w-0 w-full rounded-lg border border-neutral-300 px-4 py-3"
             placeholder="Church, ministry, business, or organization"
           />
         </div>
 
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid min-w-0 gap-5 md:grid-cols-2">
+          <div>
+          <label htmlFor="stay-connected-city" className="block text-sm font-medium text-neutral-800">City</label>
           <input
+            id="stay-connected-city"
+            autoComplete="address-level2"
             type="text"
             value={formData.city}
             onChange={(e) =>
               updateField("city", e.target.value)
             }
-            className="rounded-lg border border-neutral-300 px-4 py-3"
+            className="mt-1 min-w-0 w-full rounded-lg border border-neutral-300 px-4 py-3"
             placeholder="City"
           />
+          </div>
 
+          <div>
+          <label htmlFor="stay-connected-state" className="block text-sm font-medium text-neutral-800">State</label>
           <input
+            id="stay-connected-state"
+            autoComplete="address-level1"
             type="text"
             value={formData.state}
             onChange={(e) =>
               updateField("state", e.target.value)
             }
-            className="rounded-lg border border-neutral-300 px-4 py-3"
+            className="mt-1 min-w-0 w-full rounded-lg border border-neutral-300 px-4 py-3"
             placeholder="State"
           />
+          </div>
         </div>
 
         <label className="flex items-start gap-3 rounded-lg border border-neutral-200 bg-neutral-50 p-4 text-sm">
@@ -264,7 +281,7 @@ export default function AudiencePrompt() {
             onChange={(e) =>
               updateField("consent", e.target.checked)
             }
-            className="mt-1"
+            className="mt-1 shrink-0"
           />
 
           <span>
@@ -276,16 +293,7 @@ export default function AudiencePrompt() {
         <button
           type="submit"
           disabled={submitting}
-          style={{
-            width: "100%",
-            padding: "12px",
-            backgroundColor: "#2563eb",
-            color: "#ffffff",
-            borderRadius: "8px",
-            border: "none",
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
+          className="bta-crm-button"
         >
           {submitting ? "Submitting..." : "Keep Me Connected"}
         </button>

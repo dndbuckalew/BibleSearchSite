@@ -29,13 +29,13 @@ export default function RootLayout({
       <body className="min-h-screen bg-neutral-50 text-neutral-800 flex flex-col">
 
         <header className="border-b bg-white">
-          <div className="max-w-4xl mx-auto px-6 py-4">
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 w-full min-w-0 max-w-4xl mx-auto px-4 py-3 sm:px-6 sm:py-4">
             <Header />
             <Navigation />
           </div>
         </header>
 
-        <main className="flex-1 w-full max-w-4xl mx-auto px-4 py-8">
+        <main className="bta-content flex-1 w-full min-w-0 max-w-4xl mx-auto px-4 py-6 sm:py-8">
           {children}
         </main>
 
