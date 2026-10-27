@@ -40,12 +40,14 @@ Completed:
 - Exported home, results, donation and Stay Connected HTML inspected: no donation anchor or dialog; donation export contains the Next redirect instruction to `/` and no donation page content.
 - `git diff --check`: passes. Entire backend unchanged against production baseline, including webhook implementation. Stay Connected, scripture-query and TTS/STT implementation files unchanged.
 
-Browser smoke-test attempt and limitations:
-- A local static server was started for the existing production export. Browser discovery found Chrome windows but no browser automation connection. Selecting Chrome through computer use failed with `Computer Use app approval timed out`; no page was opened or interacted with. Browser smoke tests are therefore NOT completed.
-- Desktop/mobile visual layout, live scripture queries, client navigation/history, static-host direct-link redirection with query strings, request monitoring, live Stay Connected, and TTS/STT audio/permissions remain unverified in a browser. Component rendering tests establish that donation containers and invitations return no markup; they do not establish visual layout on devices.
-- Existing reader tests pass and query, navigation, speech and Stay Connected implementations remain unchanged, but this is not a live end-to-end result.
+Browser validation (Product Owner reported, October 27, 2026):
+- Desktop preview at commit `943b04c` passed: donation absent from menu and Scripture results; `/donation?donations=true` redirected home; John 3:16 rendered successfully; TTS and STT worked; Stay Connected submission reached HubSpot in approximately 30 seconds.
+- These are manual Product Owner results, not automated browser results. Automation previously failed with `Computer Use app approval timed out`.
+- Mobile preview validation could not be completed because of phone sign-in access. Mobile is UNVERIFIED, not passed. The Product Owner explicitly accepts proceeding with this limitation.
+- Browser/version, desktop viewport, network request monitoring, plain `/donation`, history/refresh combinations, detailed spacing inspection and individual speech transport controls were not separately reported; no additional passes are inferred.
+- Exported HTML/component tests supplement manual validation and do not replace browser testing.
 - Production callback/webhook operational validation was not run. Backend and callback source are unchanged.
-- Android validation is outside this website release scope and is not a release blocker.
+- Android validation remains outside this website release scope and is not a release blocker.
 
 Final diff review against `33b17f6`:
 - Exactly seven intended release files: the five frontend implementation/configuration files listed above, the focused test, and this report.
@@ -53,26 +55,16 @@ Final diff review against `33b17f6`:
 - `frontend/next-env.d.ts` matches the preserved backup byte-for-byte, is ignored, and is excluded from the release commit.
 - Production main was rechecked and remains `33b17f642e12c6e84dbc8735a90e470be0d4e158`.
 
-## Required browser check before merge
+## Browser merge gate and accepted limitation
 
-Browser smoke testing is REQUIRED before merge and remains outstanding. Exported HTML and component tests do not replace it. The Product Owner may perform this manually and record the tested commit, viewport/browser, results and any failures in PR #6.
+The required desktop browser smoke check is recorded above at `943b04c`. Mobile remains unverified because of phone sign-in access; the Product Owner accepts proceeding with that limitation. This documentation-only update changes no application code from the tested commit. Readiness for merge remains subject to passing required GitHub checks and explicit Product Owner merge approval.
 
 PR: https://github.com/dndbuckalew/BibleSearchSite/pull/6
 
-Preview URL from the Vercel bot on PR #6: https://bible-search-site-git-bta-d4e968-donbtadconcepts-5145s-projects.vercel.app
-
-Vercel reported the preview for `c41f0fa` ready. A later documentation commit may trigger an automatic preview refresh; confirm the latest head is Ready in the PR before testing. This is a branch preview, not the production URL. Browser accessibility/authentication and runtime behavior of this URL have not been verified by automation.
-
-Manual checklist (desktop and mobile/narrow viewport):
-- Open the preview home page, menu, and results after a Scripture query. Confirm no Donate links/buttons, invitations, donation dialog, empty donation section or orphan spacing appears.
-- Open `/donation` and `/donation?donations=true` directly, refresh, and use browser Back/Forward. Confirm return home without donation UI, payment tab or external checkout navigation. With Network Preserve log enabled, confirm no `/donation/create` request during these actions or normal navigation.
-- Submit a Scripture question; confirm results render and Home/About/supporting-document navigation works. Record service errors rather than treating them as a pass.
-- Exercise relevant Listen/Pause/Resume/Stop and microphone input controls where supported. Record browser permissions, speech support and any untested device/audio behavior.
-- Open Stay Connected; verify its form and navigation remain usable. Avoid submitting a real subscription merely for smoke testing; record actual submission as untested if not exercised.
-- Record pass/fail for every item in the PR. Do not initiate a real-money transaction. Any browser failures must be resolved or explicitly reviewed before merge approval.
+Preview: https://bible-search-site-git-bta-d4e968-donbtadconcepts-5145s-projects.vercel.app
 
 ## Production control
 
-The Product Owner authorized committing the seven intended release files, pushing `BTA-V6.5.1a-Release` to the production repository and opening a PR against `main`. No merge, deployment, infrastructure change, Play upload or real-money transaction is authorized or performed. Product Owner approval is required before merge and production rollout. The patch is ready for review, but not cleared for merge: the required browser smoke check above must pass and be recorded before merge approval. Browser smoke-test success is not claimed. PR #6 is already open; its original seven-file release commit was pushed using existing authenticated Git access. Vercel automatically generated a preview from the pushed branch; no manual or production deployment was initiated.
+The Product Owner authorized committing the seven intended release files, pushing `BTA-V6.5.1a-Release` to the production repository and opening a PR against `main`. No merge, deployment, infrastructure change, Play upload or real-money transaction is authorized or performed. Product Owner approval is required before merge and production rollout. Desktop manual validation passed as reported above; the mobile limitation is explicitly accepted. The patch is ready for Product Owner merge approval once required GitHub checks pass. No mobile pass is claimed. PR #6 is already open; its original seven-file release commit was pushed using existing authenticated Git access. Vercel automatically generated a preview from the pushed branch; no manual or production deployment was initiated.
 
 Stripe troubleshooting remains paused. The historical `POST /donation/create` HTTP 503 remains unresolved and has not been investigated or repaired by this release. Secrets, Price configuration, webhook destinations, Fly.io settings, payment persistence, AJT and HCGO architecture remain unchanged.
