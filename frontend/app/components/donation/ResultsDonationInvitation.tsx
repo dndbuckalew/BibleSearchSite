@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { DONATIONS_ENABLED } from "../../platform/capabilities";
 
 type ResultsDonationInvitationProps = {
   onDismiss: () => void;
@@ -9,6 +10,8 @@ type ResultsDonationInvitationProps = {
 export default function ResultsDonationInvitation({
   onDismiss,
 }: ResultsDonationInvitationProps) {
+  if (!DONATIONS_ENABLED) return null;
+
   return (
     <section aria-label="Support this ministry" className="space-y-3 pt-2">
       <div className="flex items-start justify-between gap-3">

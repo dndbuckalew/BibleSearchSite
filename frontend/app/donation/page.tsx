@@ -1,8 +1,11 @@
+import { DONATIONS_ENABLED } from "../platform/capabilities";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import DonationPrompt from "../components/donation/DonationPrompt";
 import WorkspaceHome from "../components/WorkspaceHome";
 
 export default function DonationPage() {
+  if (!DONATIONS_ENABLED) redirect("/");
   return (
     <article className="mx-auto w-full min-w-0 max-w-2xl space-y-8 break-words text-base leading-relaxed">
       <WorkspaceHome />
