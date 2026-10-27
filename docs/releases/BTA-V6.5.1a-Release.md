@@ -1,6 +1,6 @@
 # BTA V6.5.1a-Release
 
-Prepared October 27, 2026 for Product Owner review. Donation disablement only; BTA remains free.
+Website donation disablement complete based on Product Owner production smoke testing. Donation disablement only; BTA remains free.
 
 ## Baseline and preservation
 
@@ -40,7 +40,7 @@ Completed:
 - Exported home, results, donation and Stay Connected HTML inspected: no donation anchor or dialog; donation export contains the Next redirect instruction to `/` and no donation page content.
 - `git diff --check`: passes. Entire backend unchanged against production baseline, including webhook implementation. Stay Connected, scripture-query and TTS/STT implementation files unchanged.
 
-Browser validation (Product Owner reported, October 27, 2026):
+Preview validation (Product Owner reported, October 27, 2026):
 - Desktop preview at commit `943b04c` passed: donation absent from menu and Scripture results; `/donation?donations=true` redirected home; John 3:16 rendered successfully; TTS and STT worked; Stay Connected submission reached HubSpot in approximately 30 seconds.
 - These are manual Product Owner results, not automated browser results. Automation previously failed with `Computer Use app approval timed out`.
 - Mobile preview validation could not be completed because of phone sign-in access. Mobile is UNVERIFIED, not passed. The Product Owner explicitly accepts proceeding with this limitation.
@@ -53,18 +53,29 @@ Final diff review against `33b17f6`:
 - Exactly seven intended release files: the five frontend implementation/configuration files listed above, the focused test, and this report.
 - No backend, dependencies, unrelated application source, package metadata, or production configuration changes.
 - `frontend/next-env.d.ts` matches the preserved backup byte-for-byte, is ignored, and is excluded from the release commit.
-- Production main was rechecked and remains `33b17f642e12c6e84dbc8735a90e470be0d4e158`.
+- At pre-merge review, production main was `33b17f642e12c6e84dbc8735a90e470be0d4e158`; the merged state is recorded below.
 
-## Browser merge gate and accepted limitation
+## Production validation and release closeout
 
-The required desktop browser smoke check is recorded above at `943b04c`. Mobile remains unverified because of phone sign-in access; the Product Owner accepts proceeding with that limitation. This documentation-only update changes no application code from the tested commit. Readiness for merge remains subject to passing required GitHub checks and explicit Product Owner merge approval.
+PR #6: https://github.com/dndbuckalew/BibleSearchSite/pull/6
 
-PR: https://github.com/dndbuckalew/BibleSearchSite/pull/6
+Repository/API inspection confirms PR #6 is merged into production `main` at merge commit `7849a70a9ae1e4160fc7f04b42510a3c607021af`. Production main was fetched and matches that commit. These facts establish repository merge status; the runtime evidence below is separately reported by the Product Owner.
 
-Preview: https://bible-search-site-git-bta-d4e968-donbtadconcepts-5145s-projects.vercel.app
+Product Owner production smoke testing at https://www.bibleta.com:
+- Donations are hidden on laptop and phone.
+- Laptop Scripture query rendered correctly, with donations absent.
+- Phone typed Scripture query rendered correctly.
+- Phone microphone query rendered correctly.
+- Phone speaker playback successfully read the results.
 
-## Production control
+Observed limitation: an initial phone query using microphone input displayed ?ran into an issue while processing your request. Please try again?. Subsequent typed and microphone queries succeeded. This was a transient observed failure that did not recur during retesting. Its cause was not established; it was not diagnosed or fixed as part of this work.
 
-The Product Owner authorized committing the seven intended release files, pushing `BTA-V6.5.1a-Release` to the production repository and opening a PR against `main`. No merge, deployment, infrastructure change, Play upload or real-money transaction is authorized or performed. Product Owner approval is required before merge and production rollout. Desktop manual validation passed as reported above; the mobile limitation is explicitly accepted. The patch is ready for Product Owner merge approval once required GitHub checks pass. No mobile pass is claimed. PR #6 is already open; its original seven-file release commit was pushed using existing authenticated Git access. Vercel automatically generated a preview from the pushed branch; no manual or production deployment was initiated.
+These are Product Owner manual production results, not agent-run browser checks. Mobile preview testing remains historically unverified because of phone sign-in access; the production phone checks above are distinct subsequent evidence. The preview-only donation query-string redirect, TTS/STT and HubSpot receipt in approximately 30 seconds remain preview evidence and are not represented as separately verified production results. No deployment ID, production test timestamp, browser version, network capture or additional check is inferred.
+
+Release closeout: website donation disablement is complete based on Product Owner production smoke testing, with the transient observed failure recorded above. Android wrapper work remains a separate workstream. Backend webhook operational checks were not performed; webhook source and payment implementation remain preserved.
+
+## Documentation closeout control
+
+This closeout updates only this report and posts the authorized concise validation comment to merged PR #6. Documentation changes are submitted from a separate branch through a PR against production `main`, with no direct main commit. No application code, payment configuration, secrets or infrastructure changes are included. No new production deployment is initiated, and the documentation PR is not merged by the agent. The existing ignored local `frontend/next-env.d.ts` is excluded.
 
 Stripe troubleshooting remains paused. The historical `POST /donation/create` HTTP 503 remains unresolved and has not been investigated or repaired by this release. Secrets, Price configuration, webhook destinations, Fly.io settings, payment persistence, AJT and HCGO architecture remain unchanged.
