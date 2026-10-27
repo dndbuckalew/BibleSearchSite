@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type MouseEvent } from "react";
+import { DONATIONS_ENABLED } from "../../platform/capabilities";
 import { createDonationIdempotencyKey } from "./idempotency";
 
 const controlClass = "bta-button disabled:cursor-wait";
@@ -20,13 +21,16 @@ export default function DonationPrompt({ children }: { children?: React.ReactNod
 
   const [needsRecovery, setNeedsRecovery] = useState(false);
 
-  useEffect(() => () => {
-    requestController.current?.abort();
-    pendingTab.current?.close();
+  useEffect(() => {
+    if (!DONATIONS_ENABLED) return;
+    return () => {
+      requestController.current?.abort();
+      pendingTab.current?.close();
+    };
   }, []);
 
   function showConfirmation(event: MouseEvent<HTMLButtonElement>) {
-    if (busy.current) return;
+    if (!DONATIONS_ENABLED || busy.current) return;
     trigger.current = event.currentTarget;
     dialog.current?.showModal();
   }
@@ -36,7 +40,7 @@ export default function DonationPrompt({ children }: { children?: React.ReactNod
   }
 
   async function continueToStripe() {
-    if (busy.current) return;
+    if (!DONATIONS_ENABLED || busy.current) return;
     busy.current = true;
     setLoading(true);
     setError(null);
@@ -95,6 +99,8 @@ export default function DonationPrompt({ children }: { children?: React.ReactNod
       setLoading(false);
     }
   }
+
+  if (!DONATIONS_ENABLED) return null;
 
   const button = <button type="button" onClick={showConfirmation} disabled={loading} aria-busy={loading} className={controlClass}>Donate Securely</button>;
   return (

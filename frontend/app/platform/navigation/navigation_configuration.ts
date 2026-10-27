@@ -1,3 +1,4 @@
+import { DONATIONS_ENABLED } from "../capabilities";
 import type { NavigationItem } from "./navigation_types";
 
 export const primaryNavigation: NavigationItem[] = [
@@ -14,7 +15,7 @@ export const primaryNavigation: NavigationItem[] = [
   {
     label: "Donate",
     href: "/donation",
-    display: true,
+    display: DONATIONS_ENABLED,
   },
   {
     label: "About Us",
