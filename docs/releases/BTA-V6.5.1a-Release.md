@@ -53,8 +53,26 @@ Final diff review against `33b17f6`:
 - `frontend/next-env.d.ts` matches the preserved backup byte-for-byte, is ignored, and is excluded from the release commit.
 - Production main was rechecked and remains `33b17f642e12c6e84dbc8735a90e470be0d4e158`.
 
+## Required browser check before merge
+
+Browser smoke testing is REQUIRED before merge and remains outstanding. Exported HTML and component tests do not replace it. The Product Owner may perform this manually and record the tested commit, viewport/browser, results and any failures in PR #6.
+
+PR: https://github.com/dndbuckalew/BibleSearchSite/pull/6
+
+Preview URL from the Vercel bot on PR #6: https://bible-search-site-git-bta-d4e968-donbtadconcepts-5145s-projects.vercel.app
+
+Vercel reported the preview for `c41f0fa` ready. A later documentation commit may trigger an automatic preview refresh; confirm the latest head is Ready in the PR before testing. This is a branch preview, not the production URL. Browser accessibility/authentication and runtime behavior of this URL have not been verified by automation.
+
+Manual checklist (desktop and mobile/narrow viewport):
+- Open the preview home page, menu, and results after a Scripture query. Confirm no Donate links/buttons, invitations, donation dialog, empty donation section or orphan spacing appears.
+- Open `/donation` and `/donation?donations=true` directly, refresh, and use browser Back/Forward. Confirm return home without donation UI, payment tab or external checkout navigation. With Network Preserve log enabled, confirm no `/donation/create` request during these actions or normal navigation.
+- Submit a Scripture question; confirm results render and Home/About/supporting-document navigation works. Record service errors rather than treating them as a pass.
+- Exercise relevant Listen/Pause/Resume/Stop and microphone input controls where supported. Record browser permissions, speech support and any untested device/audio behavior.
+- Open Stay Connected; verify its form and navigation remain usable. Avoid submitting a real subscription merely for smoke testing; record actual submission as untested if not exercised.
+- Record pass/fail for every item in the PR. Do not initiate a real-money transaction. Any browser failures must be resolved or explicitly reviewed before merge approval.
+
 ## Production control
 
-The Product Owner authorized committing the seven intended release files, pushing `BTA-V6.5.1a-Release` to the production repository and opening a PR against `main`. No merge, deployment, infrastructure change, Play upload or real-money transaction is authorized or performed. Product Owner approval is required before merge and production rollout. The patch is ready for review with the browser validation limitations above; browser smoke-test success is not claimed.
+The Product Owner authorized committing the seven intended release files, pushing `BTA-V6.5.1a-Release` to the production repository and opening a PR against `main`. No merge, deployment, infrastructure change, Play upload or real-money transaction is authorized or performed. Product Owner approval is required before merge and production rollout. The patch is ready for review, but not cleared for merge: the required browser smoke check above must pass and be recorded before merge approval. Browser smoke-test success is not claimed. PR #6 is already open; its original seven-file release commit was pushed using existing authenticated Git access. Vercel automatically generated a preview from the pushed branch; no manual or production deployment was initiated.
 
 Stripe troubleshooting remains paused. The historical `POST /donation/create` HTTP 503 remains unresolved and has not been investigated or repaired by this release. Secrets, Price configuration, webhook destinations, Fly.io settings, payment persistence, AJT and HCGO architecture remain unchanged.
