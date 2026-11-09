@@ -108,8 +108,7 @@ export class ResultsReader {
     this.update({ selection: null, phase: 'idle', message: '' });
   };
   listen = (selection: string, text: string) => {
-    const voice = this.availableVoices.find(voice => voiceId(voice) === this.state.voiceId) ?? null;
-    this.begin(selection, text, voice, voice?.lang || this.language);
+    this.begin(selection, text, null, this.language);
   };
   restart = () => {
     if (!this.state.selection || !this.sessionText) return;
