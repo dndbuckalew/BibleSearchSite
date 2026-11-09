@@ -77,19 +77,26 @@ test('switching or stopping cancels the entire prior queue and ignores all stale
   const state = reader.getSnapshot();old.forEach(u => { u.onstart();u.onend();u.onerror(); });assert.equal(reader.getSnapshot(), state);
   reader.stop();assert.equal(calls.at(-1), 'cancel');assert.equal(reader.getSnapshot().selection, null);
 });
-test('female English preference retains Google US English and does not force male voices', () => {
+test('ranked voice metadata does not override browser-controlled voice selection on Listen', () => {
   const { reader, utterances } = setup();
   reader.setVoices([voice('Microsoft David - English (United States)', 'en-US', true), voice('Google US English'), voice('Microsoft Zira - English (United States)')]);
   assert.equal(reader.getSnapshot().voices[0].name, 'Google US English');
-  reader.listen('reflection', 'Original words.');assert.equal(utterances[0].voice.name, 'Google US English');reader.stop();
+  reader.chooseVoice(reader.getSnapshot().voices[1].id);
+  reader.listen('reflection', 'Original words.');assert.equal(Object.hasOwn(utterances[0], 'voice'), false);reader.stop();
   reader.setVoices([voice('Microsoft David - English (United States)', 'en-US', true), voice('Microsoft Zira - English (United States)')]);assert.equal(reader.getSnapshot().voices[0].name, 'Microsoft Zira');
   reader.setVoices([voice('Google UK English Male', 'en-GB'), voice('Google UK English Female', 'en-GB')]);assert.equal(reader.getSnapshot().voices[0].name, 'Google UK English Female');
 });
-test('voice, language, rate and pitch remain consistent through all chunks and Restart', () => {
+test('browser-controlled voice, language, rate and pitch remain consistent through all chunks and Restart', () => {
   const { reader, utterances } = setup();const selected = voice('Google US English');
-  reader.setVoices([selected]);reader.listen('entire', 'Original response. '.repeat(100));
+  const text = 'Original response. '.repeat(100);
+  reader.setVoices([selected]);reader.listen('entire', text);
+  const original = utterances.map(u => u.text);
+  assert(original.length > 1);
   reader.setVoices([voice('Microsoft Zira - English (United States)')]);reader.restart();
-  assert(utterances.every(u => u.voice === selected && u.lang === 'en-US' && u.rate === 0.92 && u.pitch === 1));
+  assert.equal(utterances.length, original.length * 2);
+  assert.deepEqual(utterances.slice(original.length).map(u => u.text), original);
+  assert.equal(normalize(original.join(' ')), normalize(text));
+  assert(utterances.every(u => !Object.hasOwn(u, 'voice') && u.lang === 'en' && u.rate === 0.92 && u.pitch === 1));
 });
 test('unavailable/empty synthesis and synchronous or asynchronous errors fail gracefully without auto retry', () => {
   const { reader, engine, utterances } = setup();reader.listen('empty', ' ');assert.equal(utterances.length, 0);
@@ -97,10 +104,11 @@ test('unavailable/empty synthesis and synchronous or asynchronous errors fail gr
   reader.connect(engine, text => ({ text }), 'en');reader.listen('entire', 'Text');utterances[0].onerror();assert.match(reader.getSnapshot().message, /could not play/);
   engine.speak = () => { throw Error('blocked'); };reader.listen('entire', 'Text');assert.equal(reader.getSnapshot().phase, 'idle');assert.match(reader.getSnapshot().message, /could not play/);
 });
-test('missing preferred voices fall back to available English or browser language without playback on discovery', () => {
+test('available or missing voices preserve browser-controlled selection and connected language without playback on discovery', () => {
   const { reader, utterances, calls } = setup();reader.setVoices([voice('UK English', 'en-GB')]);assert.equal(calls.length, 0);
-  reader.listen('reflection', 'Text');assert.equal(utterances[0].lang, 'en-GB');reader.stop();reader.setVoices([]);
-  reader.listen('reflection', 'Text');assert.equal(utterances.at(-1).voice, undefined);assert.equal(utterances.at(-1).lang, 'en');
+  reader.listen('reflection', 'Text');assert.equal(Object.hasOwn(utterances[0], 'voice'), false);assert.equal(utterances[0].lang, 'en');reader.stop();
+  const count = calls.length;reader.setVoices([]);assert.equal(calls.length, count);
+  reader.listen('reflection', 'Text');assert.equal(Object.hasOwn(utterances.at(-1), 'voice'), false);assert.equal(utterances.at(-1).lang, 'en');
 });
 test('reference pronunciation preserves recognized notation meaning and leaves complex references intact', () => {
   assert.equal(referenceForSpeech('John 3:16'), 'John, chapter 3, verse 16');
