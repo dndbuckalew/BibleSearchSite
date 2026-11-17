@@ -769,6 +769,7 @@ class QueryService:
         # Phase 9.1D.2.3.4 — Summary Expression Builder Integration
         # ----------------------------------------------------------
 
+        expansion: List[str] = []
         try:
             theme_result = self._build_theme_interaction_result(
                 req=req,
@@ -837,4 +838,3 @@ class QueryService:
             want_commentary=want_commentary,
             escalation_level=escalation_level,
         )
-        

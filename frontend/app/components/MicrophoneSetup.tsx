@@ -92,9 +92,12 @@ export default function MicrophoneSetup({ issue }: { issue: string | null }) {
           <option value="Edge">Microsoft Edge</option>
           <option value="Firefox">Mozilla Firefox</option>
         </select>
+        <p className="mt-2">This selection changes the setup instructions only. It does not switch the browser or speech-recognition service.</p>
         <h3 className={heading}>Microphone Setup Instructions</h3>
         <div aria-live="polite" aria-atomic="true">
-          {steps.length ? <ol className="mt-2 list-decimal space-y-2 pl-5">{steps.map(step => <li key={step}>{step}</li>)}</ol> : <p className="mt-2">Choose your browser above to see its instructions.</p>}
+          {issue === 'network'
+            ? <p className="mt-2">Microphone permission alone does not confirm that your browser&apos;s speech-recognition service is available. See the connection guidance below.</p>
+            : steps.length ? <ol className="mt-2 list-decimal space-y-2 pl-5">{steps.map(step => <li key={step}>{step}</li>)}</ol> : <p className="mt-2">Choose your browser above to see its instructions.</p>}
         </div>
         <p className="mt-2">Menu names may vary with your browser or device version.</p>
         <h3 className={heading}>Still Having Trouble?</h3>
@@ -103,12 +106,12 @@ export default function MicrophoneSetup({ issue }: { issue: string | null }) {
           <p>Try opening BTA at <a className="underline focus-visible:outline-2" href="https://www.bibleta.com/" target="_blank" rel="noopener noreferrer">www.bibleta.com</a> and using the microphone again.</p>
         </div> : <div className="mt-2 space-y-2">
           <p>{issue === 'unsupported' ? 'Voice input is unavailable in this browser. You can try BTA in another browser, or type your question instead.'
-            : issue === 'network' ? 'Voice input could not connect. Check your internet connection and try again. You can type your question instead.'
+            : issue === 'network' ? `${environment.browser === 'Edge' ? 'Microsoft Edge' : 'Your browser'} could not connect to its speech-recognition service. This can happen even when microphone access is allowed. You can type your question instead, or use dictation in another browser where it works. Try Again starts a new attempt only when you select it.`
             : issue === 'audio-capture' ? 'Your browser could not access a microphone. Check that it is connected and selected in your device’s sound settings. Close other apps that may be using it.'
             : issue === 'no-speech' ? 'No speech was detected. Check that your microphone is not muted and try speaking again.'
             : issue === 'service-not-allowed' ? 'Your browser reported that voice input is not allowed. Check browser and device permissions. Voice input may still be unavailable in this browser.'
             : 'Check microphone access in your browser and device settings. Voice input may still be unavailable even when access is allowed.'}</p>
-          <p>{deviceGuidance(environment.os, environment.browser)}</p>
+          {issue !== 'network' && <p>{deviceGuidance(environment.os, environment.browser)}</p>}
         </div>}
         <h3 className={heading}>Check Your Microphone</h3>
         <div className="mt-2 space-y-2">

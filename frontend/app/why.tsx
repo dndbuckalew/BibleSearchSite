@@ -44,12 +44,23 @@ export default function WhyPage() {
 
   // 🔒 Canonical source of truth for submitted input
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const submissionInFlight = useRef(false);
+  const navigationRecoveryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (navigationRecoveryTimer.current !== null) {
+      clearTimeout(navigationRecoveryTimer.current);
+      navigationRecoveryTimer.current = null;
+    }
+  }, []);
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
+    if (submissionInFlight.current) return;
 
     const trimmed = inputRef.current?.value.trim() ?? '';
     if (!trimmed) return;
+    submissionInFlight.current = true;
     speech.cancel();
 
     setLoading(true);
@@ -73,6 +84,7 @@ export default function WhyPage() {
 
     setMessage(null);
 
+    let navigating = false;
     try {
       // --------------------------------------------------
       // HEART: /api/query
@@ -146,13 +158,22 @@ export default function WhyPage() {
         'Preparing your response for display...'
       );
 
-      setTimeout(() => {
-        router.push(
-          `/results?payload=${encodeURIComponent(
-            JSON.stringify(responseBody)
-          )}`
-        );
-      }, 250);
+      // App Router push returns before the transition commits. Recover if this
+      // page stays mounted; successful navigation disposes the watchdog above.
+      const recoveryTimer = setTimeout(() => {
+        if (navigationRecoveryTimer.current !== recoveryTimer) return;
+        navigationRecoveryTimer.current = null;
+        submissionInFlight.current = false;
+        setLoading(false);
+        setMessage('The results page did not open. Please try again.');
+      }, 15_000);
+      navigationRecoveryTimer.current = recoveryTimer;
+      router.push(
+        `/results?payload=${encodeURIComponent(
+          JSON.stringify(responseBody)
+        )}`
+      );
+      navigating = true;
 
     } catch (err: any) {
       // Network-level failure only
@@ -160,7 +181,14 @@ export default function WhyPage() {
         'We ran into an issue while processing your request. Please try again.'
       );
     } finally {
-      setLoading(false);
+      if (!navigating) {
+        if (navigationRecoveryTimer.current !== null) {
+          clearTimeout(navigationRecoveryTimer.current);
+          navigationRecoveryTimer.current = null;
+        }
+        submissionInFlight.current = false;
+        setLoading(false);
+      }
     }
   };
 
@@ -263,8 +291,10 @@ export default function WhyPage() {
           <div id="question-speech-status" role="status" aria-live="polite">
             {speech.needsSetup ? (
               <>
-                <h3 className="font-medium">Microphone is unavailable</h3>
-                <p>BTA cannot access your microphone right now. Select Microphone Setup for help, or type your question instead.</p>
+                <h3 className="font-medium">{speech.issue === 'network' ? 'Voice input could not connect' : 'Microphone is unavailable'}</h3>
+                <p>{speech.issue === 'network'
+                  ? speech.status
+                  : 'BTA cannot access your microphone right now. Select Microphone Setup for help, or type your question instead.'}</p>
               </>
             ) : speech.status}
           </div>
