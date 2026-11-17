@@ -31,13 +31,6 @@ import os
 print("===================================")
 print("OPENAI KEY LOADED:", os.getenv("OPENAI_API_KEY") is not None)
 
-key = os.getenv("OPENAI_API_KEY")
-
-if key:
-    print("OPENAI KEY PREFIX:", key[:10])
-else:
-    print("OPENAI KEY PREFIX: None")
-
 print("===================================")
 
 # ------------------------------------------------------------------

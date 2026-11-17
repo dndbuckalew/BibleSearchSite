@@ -23,7 +23,10 @@ Design goals:
 """
 
 from typing import Dict, List, Set
+import logging
 import re
+
+logger = logging.getLogger(__name__)
 
 # ============================================================
 # SIGNAL DEFINITIONS (Phase 9.1E — Step 4.1)
@@ -537,7 +540,6 @@ def resolve_concepts_dynamic(query: str) -> List[str]:
     3. Apply normalization + fuzzy matching
     4. Always return safe, validated concepts
     """
-    print("DYNAMIC RESOLVER CALLED:", query)
 
     if not query:
         return []
@@ -601,7 +603,6 @@ def resolve_scripture_with_llm(query: str) -> List[str]:
     """
     Phase 10B — LLM-driven scripture resolution
     """
-    print("LLM SCRIPTURE FUNCTION CALLED:", query)
 
     try:
         from backend.services.ai_client import call_ai_model
@@ -631,7 +632,6 @@ Proverbs 14:29, Ephesians 5:18, Galatians 5:22
 """
 
         response = call_ai_model(prompt)
-        print("LLM SCRIPTURE RAW RESPONSE:", response)
 
         if not response:
             return []
@@ -650,8 +650,8 @@ Proverbs 14:29, Ephesians 5:18, Galatians 5:22
         parts = [p.strip() for p in cleaned.split(",") if p.strip()]
         return parts
 
-    except Exception as e:
-        print("LLM SCRIPTURE ERROR:", str(e))
+    except Exception:
+        logger.warning("Scripture reference selection failed.")
         return []
 
 def map_query_to_concepts_llm(query: str) -> List[str]:
@@ -666,7 +666,6 @@ def map_query_to_concepts_llm(query: str) -> List[str]:
     - MUST NOT return explanations
     - MUST be validated against CONCEPT_REGISTRY
     """
-    print("LLM FUNCTION CALLED:", query)
 
     try:
         # ------------------------------------------------------------
@@ -696,7 +695,6 @@ def map_query_to_concepts_llm(query: str) -> List[str]:
         from backend.services.ai_summary_service import call_openai_model
 
         response = call_openai_model(prompt)
-        print("LLM SCRIPTURE RAW RESPONSE:", response)
 
         # ------------------------------------------------------------
         # SAFE PARSE (robust)

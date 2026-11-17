@@ -110,7 +110,15 @@ export function useQuestionSpeech(appendText: (text: string) => void) {
       current.current = recognition;
       recognition.continuous = true;
       recognition.interimResults = false;
-      recognition.lang = document.documentElement.lang || navigator.language || 'en-US';
+      const preferredLanguage = navigator.language || 'en-US';
+      const pageLanguage = document.documentElement.lang || preferredLanguage;
+      // Windows Edge can report a native network error for bare "en", while
+      // regional English tags work. Preserve explicit locales and other browsers.
+      const regionalEnglishRequired = /Windows NT/.test(navigator.userAgent)
+        && /Edg\//.test(navigator.userAgent) && /^en$/i.test(pageLanguage);
+      recognition.lang = regionalEnglishRequired
+        ? (/^en-/i.test(preferredLanguage) ? preferredLanguage : 'en-US')
+        : pageLanguage;
       recognition.onstart = () => {
         if (current.current !== recognition) return;
         started = true;
