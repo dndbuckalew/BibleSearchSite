@@ -1,0 +1,479 @@
+{
+  "manifest_version": "0.1",
+  "work_item": "BTA-V6.5.3.1-DATASET-IMPORT-01",
+  "purpose": "dev-staging-input",
+  "edition": {
+    "code": "KJV",
+    "display_name": "King James Version · pinned Open Bibles text",
+    "language_tag": "en",
+    "script_code": "Latn",
+    "text_revision": null
+  },
+  "artifact": {
+    "source_record_id": "KJV-01",
+    "format": "OSIS",
+    "filename": "open-bibles-kjv-8b33065.osis.xml",
+    "source_url": "https://raw.githubusercontent.com/seven1m/open-bibles/8b330654ade69f7c96268c761da18dc83a1f49b7/eng-kjv.osis.xml",
+    "source_revision": "8b330654ade69f7c96268c761da18dc83a1f49b7",
+    "sha256": "eeeae647fc28360ce47f9c0d5cc3b397b7fdd9913fe53dc9f44eb6deee50e253",
+    "file_bytes": 10096487,
+    "acquired_on": "2026-11-18",
+    "local_path": "C:\\projects\\TAD CONCEPTS\\Bibical Study Using AI\\Architecture Docs\\open-bibles-kjv-8b33065.osis.xml"
+  },
+  "book_mapping": {
+    "profile_id": "KJV-OSIS-8b33065",
+    "profile_version": "Draft 1",
+    "status": "proposed-mappings-for-dev-validation",
+    "included": [
+      {
+        "source_book_code": "Gen",
+        "book_code": "GEN",
+        "book_name": "Genesis",
+        "source_order": 1
+      },
+      {
+        "source_book_code": "Exod",
+        "book_code": "EXO",
+        "book_name": "Exodus",
+        "source_order": 2
+      },
+      {
+        "source_book_code": "Lev",
+        "book_code": "LEV",
+        "book_name": "Leviticus",
+        "source_order": 3
+      },
+      {
+        "source_book_code": "Num",
+        "book_code": "NUM",
+        "book_name": "Numbers",
+        "source_order": 4
+      },
+      {
+        "source_book_code": "Deut",
+        "book_code": "DEU",
+        "book_name": "Deuteronomy",
+        "source_order": 5
+      },
+      {
+        "source_book_code": "Josh",
+        "book_code": "JOS",
+        "book_name": "Joshua",
+        "source_order": 6
+      },
+      {
+        "source_book_code": "Judg",
+        "book_code": "JDG",
+        "book_name": "Judges",
+        "source_order": 7
+      },
+      {
+        "source_book_code": "Ruth",
+        "book_code": "RUT",
+        "book_name": "Ruth",
+        "source_order": 8
+      },
+      {
+        "source_book_code": "1Sam",
+        "book_code": "1SA",
+        "book_name": "1 Samuel",
+        "source_order": 9
+      },
+      {
+        "source_book_code": "2Sam",
+        "book_code": "2SA",
+        "book_name": "2 Samuel",
+        "source_order": 10
+      },
+      {
+        "source_book_code": "1Kgs",
+        "book_code": "1KI",
+        "book_name": "1 Kings",
+        "source_order": 11
+      },
+      {
+        "source_book_code": "2Kgs",
+        "book_code": "2KI",
+        "book_name": "2 Kings",
+        "source_order": 12
+      },
+      {
+        "source_book_code": "1Chr",
+        "book_code": "1CH",
+        "book_name": "1 Chronicles",
+        "source_order": 13
+      },
+      {
+        "source_book_code": "2Chr",
+        "book_code": "2CH",
+        "book_name": "2 Chronicles",
+        "source_order": 14
+      },
+      {
+        "source_book_code": "Ezra",
+        "book_code": "EZR",
+        "book_name": "Ezra",
+        "source_order": 15
+      },
+      {
+        "source_book_code": "Neh",
+        "book_code": "NEH",
+        "book_name": "Nehemiah",
+        "source_order": 16
+      },
+      {
+        "source_book_code": "Esth",
+        "book_code": "EST",
+        "book_name": "Esther",
+        "source_order": 17
+      },
+      {
+        "source_book_code": "Job",
+        "book_code": "JOB",
+        "book_name": "Job",
+        "source_order": 18
+      },
+      {
+        "source_book_code": "Ps",
+        "book_code": "PSA",
+        "book_name": "Psalms",
+        "source_order": 19
+      },
+      {
+        "source_book_code": "Prov",
+        "book_code": "PRO",
+        "book_name": "Proverbs",
+        "source_order": 20
+      },
+      {
+        "source_book_code": "Eccl",
+        "book_code": "ECC",
+        "book_name": "Ecclesiastes",
+        "source_order": 21
+      },
+      {
+        "source_book_code": "Song",
+        "book_code": "SNG",
+        "book_name": "Song of Solomon",
+        "source_order": 22
+      },
+      {
+        "source_book_code": "Isa",
+        "book_code": "ISA",
+        "book_name": "Isaiah",
+        "source_order": 23
+      },
+      {
+        "source_book_code": "Jer",
+        "book_code": "JER",
+        "book_name": "Jeremiah",
+        "source_order": 24
+      },
+      {
+        "source_book_code": "Lam",
+        "book_code": "LAM",
+        "book_name": "Lamentations",
+        "source_order": 25
+      },
+      {
+        "source_book_code": "Ezek",
+        "book_code": "EZK",
+        "book_name": "Ezekiel",
+        "source_order": 26
+      },
+      {
+        "source_book_code": "Dan",
+        "book_code": "DAN",
+        "book_name": "Daniel",
+        "source_order": 27
+      },
+      {
+        "source_book_code": "Hos",
+        "book_code": "HOS",
+        "book_name": "Hosea",
+        "source_order": 28
+      },
+      {
+        "source_book_code": "Joel",
+        "book_code": "JOL",
+        "book_name": "Joel",
+        "source_order": 29
+      },
+      {
+        "source_book_code": "Amos",
+        "book_code": "AMO",
+        "book_name": "Amos",
+        "source_order": 30
+      },
+      {
+        "source_book_code": "Obad",
+        "book_code": "OBA",
+        "book_name": "Obadiah",
+        "source_order": 31
+      },
+      {
+        "source_book_code": "Jonah",
+        "book_code": "JON",
+        "book_name": "Jonah",
+        "source_order": 32
+      },
+      {
+        "source_book_code": "Mic",
+        "book_code": "MIC",
+        "book_name": "Micah",
+        "source_order": 33
+      },
+      {
+        "source_book_code": "Nah",
+        "book_code": "NAM",
+        "book_name": "Nahum",
+        "source_order": 34
+      },
+      {
+        "source_book_code": "Hab",
+        "book_code": "HAB",
+        "book_name": "Habakkuk",
+        "source_order": 35
+      },
+      {
+        "source_book_code": "Zeph",
+        "book_code": "ZEP",
+        "book_name": "Zephaniah",
+        "source_order": 36
+      },
+      {
+        "source_book_code": "Hag",
+        "book_code": "HAG",
+        "book_name": "Haggai",
+        "source_order": 37
+      },
+      {
+        "source_book_code": "Zech",
+        "book_code": "ZEC",
+        "book_name": "Zechariah",
+        "source_order": 38
+      },
+      {
+        "source_book_code": "Mal",
+        "book_code": "MAL",
+        "book_name": "Malachi",
+        "source_order": 39
+      },
+      {
+        "source_book_code": "Matt",
+        "book_code": "MAT",
+        "book_name": "Matthew",
+        "source_order": 55
+      },
+      {
+        "source_book_code": "Mark",
+        "book_code": "MRK",
+        "book_name": "Mark",
+        "source_order": 56
+      },
+      {
+        "source_book_code": "Luke",
+        "book_code": "LUK",
+        "book_name": "Luke",
+        "source_order": 57
+      },
+      {
+        "source_book_code": "John",
+        "book_code": "JHN",
+        "book_name": "John",
+        "source_order": 58
+      },
+      {
+        "source_book_code": "Acts",
+        "book_code": "ACT",
+        "book_name": "Acts",
+        "source_order": 59
+      },
+      {
+        "source_book_code": "Rom",
+        "book_code": "ROM",
+        "book_name": "Romans",
+        "source_order": 60
+      },
+      {
+        "source_book_code": "1Cor",
+        "book_code": "1CO",
+        "book_name": "1 Corinthians",
+        "source_order": 61
+      },
+      {
+        "source_book_code": "2Cor",
+        "book_code": "2CO",
+        "book_name": "2 Corinthians",
+        "source_order": 62
+      },
+      {
+        "source_book_code": "Gal",
+        "book_code": "GAL",
+        "book_name": "Galatians",
+        "source_order": 63
+      },
+      {
+        "source_book_code": "Eph",
+        "book_code": "EPH",
+        "book_name": "Ephesians",
+        "source_order": 64
+      },
+      {
+        "source_book_code": "Phil",
+        "book_code": "PHP",
+        "book_name": "Philippians",
+        "source_order": 65
+      },
+      {
+        "source_book_code": "Col",
+        "book_code": "COL",
+        "book_name": "Colossians",
+        "source_order": 66
+      },
+      {
+        "source_book_code": "1Thess",
+        "book_code": "1TH",
+        "book_name": "1 Thessalonians",
+        "source_order": 67
+      },
+      {
+        "source_book_code": "2Thess",
+        "book_code": "2TH",
+        "book_name": "2 Thessalonians",
+        "source_order": 68
+      },
+      {
+        "source_book_code": "1Tim",
+        "book_code": "1TI",
+        "book_name": "1 Timothy",
+        "source_order": 69
+      },
+      {
+        "source_book_code": "2Tim",
+        "book_code": "2TI",
+        "book_name": "2 Timothy",
+        "source_order": 70
+      },
+      {
+        "source_book_code": "Titus",
+        "book_code": "TIT",
+        "book_name": "Titus",
+        "source_order": 71
+      },
+      {
+        "source_book_code": "Phlm",
+        "book_code": "PHM",
+        "book_name": "Philemon",
+        "source_order": 72
+      },
+      {
+        "source_book_code": "Heb",
+        "book_code": "HEB",
+        "book_name": "Hebrews",
+        "source_order": 73
+      },
+      {
+        "source_book_code": "Jas",
+        "book_code": "JAS",
+        "book_name": "James",
+        "source_order": 74
+      },
+      {
+        "source_book_code": "1Pet",
+        "book_code": "1PE",
+        "book_name": "1 Peter",
+        "source_order": 75
+      },
+      {
+        "source_book_code": "2Pet",
+        "book_code": "2PE",
+        "book_name": "2 Peter",
+        "source_order": 76
+      },
+      {
+        "source_book_code": "1John",
+        "book_code": "1JN",
+        "book_name": "1 John",
+        "source_order": 77
+      },
+      {
+        "source_book_code": "2John",
+        "book_code": "2JN",
+        "book_name": "2 John",
+        "source_order": 78
+      },
+      {
+        "source_book_code": "3John",
+        "book_code": "3JN",
+        "book_name": "3 John",
+        "source_order": 79
+      },
+      {
+        "source_book_code": "Jude",
+        "book_code": "JUD",
+        "book_name": "Jude",
+        "source_order": 80
+      },
+      {
+        "source_book_code": "Rev",
+        "book_code": "REV",
+        "book_name": "Revelation",
+        "source_order": 81
+      }
+    ],
+    "excluded": [
+      "Tob",
+      "Jdt",
+      "EsthGr",
+      "Wis",
+      "Sir",
+      "Bar",
+      "EpJer",
+      "PrAzar",
+      "Sus",
+      "Bel",
+      "1Macc",
+      "2Macc",
+      "1Esd",
+      "PrMan",
+      "2Esd"
+    ],
+    "unknown_code_action": "reject-batch"
+  },
+  "approved_book_scope": {
+    "description": "Same 66 books as hosted KJV",
+    "approved_on": "2026-11-19"
+  },
+  "expected": {
+    "source": {
+      "books": 81,
+      "chapters": 1362,
+      "verse_ids": 36820
+    },
+    "serving": {
+      "books": 66,
+      "chapters": 1189,
+      "verse_ids": 31102
+    },
+    "excluded": {
+      "books": 15,
+      "verse_ids": 5718
+    }
+  },
+  "verse_extraction": {
+    "rule_set": "osis-verse-milestones",
+    "address": "@osisID",
+    "span": "Text between matching sID and eID milestones; preserve wording, punctuation and inline text order",
+    "versification_code": null
+  },
+  "publication": {
+    "serving_approval": false,
+    "remaining_checks": [
+      "Verified verse-address convention and importer output",
+      "Full candidate parity",
+      "Territorial and usage rights review",
+      "Runtime placement and PO-approved dev directive"
+    ]
+  }
+}
