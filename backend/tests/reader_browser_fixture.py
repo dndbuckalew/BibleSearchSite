@@ -6,7 +6,7 @@ from unittest.mock import patch
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.tests.test_reader_dev import ReaderContractTests, asv_response
+from backend.tests.test_reader_dev import ReaderContractTests, bes_response
 from backend.api import query, results
 from backend.services import ai_reflection_service, scripture_retrieval
 
@@ -28,10 +28,10 @@ def reflection(_):
 
 
 def scripture_get(_url, **kwargs):
-    if kwargs.get("params") != {"translation": "asv"}:
+    if kwargs.get("params") != {"translation": "bes"}:
         raise AssertionError("Unexpected hosted Scripture request")
-    provider_calls.append("asv")
-    return asv_response("asv")
+    provider_calls.append("bes")
+    return bes_response("bes")
 
 
 def local_verses(reference):

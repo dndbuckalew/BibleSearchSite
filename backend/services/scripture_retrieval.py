@@ -1,4 +1,4 @@
-"""Development retrieval from the verified local OSIS or the opt-in ASV adapter."""
+"""Development retrieval from the verified local OSIS or the opt-in BES adapter."""
 from functools import lru_cache
 import os
 from pathlib import Path
@@ -76,12 +76,12 @@ def local_verses(reference):
 def external_verses(reference):
     try:
         response = requests.get(f"https://bible-api.com/{requests.utils.quote(reference, safe='')}",
-                                params={"translation": "asv"}, timeout=10)
+                                params={"translation": "bes"}, timeout=10)
         if response.status_code == 404:
             raise ScriptureError("missing_passage")
         response.raise_for_status()
         data = response.json()
-        if data.get("translation_id") != "asv":
+        if data.get("translation_id") != "bes":
             raise ScriptureError("edition_unverified")
         verses = [
             VerseItem(reference=f"{row['book_name']} {row['chapter']}:{row['verse']}",

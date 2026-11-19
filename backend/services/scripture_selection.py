@@ -10,14 +10,14 @@ from fastapi import HTTPException
 LOCAL = {"option_id": "local-kjv", "edition_id": "kjv", "source_id": "local",
          "edition_label": "King James Version (KJV)", "source_label": "Local KJV dataset",
          "dataset_revision": "8b330654ade69f7c96268c761da18dc83a1f49b7"}
-EXTERNAL = {"option_id": "test-asv", "edition_id": "asv", "source_id": "bible-api",
-            "edition_label": "American Standard Version (1901)", "source_label": "Bible-API.com",
+EXTERNAL = {"option_id": "test-bes", "edition_id": "bes", "source_id": "bible-api",
+            "edition_label": "La Biblia en Español Sencillo (BES)", "source_label": "Bible-API.com",
             "dataset_revision": None}
 PROCESS_KEY = secrets.token_bytes(32)
 
 
 def catalog():
-    options = [LOCAL, EXTERNAL] if os.getenv("BTA_ENABLE_ASV_TEST") == "1" else [LOCAL]
+    options = [LOCAL, EXTERNAL] if os.getenv("BTA_ENABLE_BES_TEST") == "1" else [LOCAL]
     return {"default": LOCAL["option_id"], "options": options}
 
 

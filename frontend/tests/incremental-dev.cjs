@@ -69,12 +69,12 @@ async function attempt(name, path, executable) {
     await field.fill("John 3:16");
     await post("/reset");
     await selection.click();
-    await page.getByRole("radio", { name: /American Standard Version/ }).check();
+    await page.getByRole("radio", { name: /La Biblia en Español Sencillo/ }).check();
     await page.getByRole("button", { name: "Apply", exact: true }).click();
     await submit.click();
-    await page.getByRole("heading", { name: "Scripture · American Standard Version (1901)" }).waitFor();
+    await page.getByRole("heading", { name: "Scripture · La Biblia en Español Sencillo (BES)" }).waitFor();
     assert.equal((await status()).provider_fixture_calls, 1);
-    await page.getByText(/believeth on him/).waitFor();
+    await page.getByText(/amó Dios al mundo/).waitFor();
     await post("/release?failure=true");
     await page.getByText("Reflection couldn’t be prepared.", { exact: true }).waitFor();
     await page.getByText("Source: Bible-API.com", { exact: true }).waitFor();
