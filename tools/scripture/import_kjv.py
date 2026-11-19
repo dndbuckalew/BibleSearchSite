@@ -158,19 +158,11 @@ def parse_osis(source, included, excluded):
     return handler.rows, counts
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("source", type=Path, help="Pinned local OSIS file")
-    parser.add_argument("output", type=Path, help="New staging CSV file")
-    parser.add_argument("--batch-id", required=True, type=int)
-    args = parser.parse_args()
-    if args.batch_id < 1:
-        parser.error("batch ID must be positive")
-
+def load_pinned_kjv(source):
     manifest_path = Path(__file__).with_name("kjv-manifest.json")
     manifest = json.loads(verified_bytes(manifest_path, MANIFEST_SHA256))
     artifact = manifest["artifact"]
-    raw = verified_bytes(args.source, artifact["sha256"], artifact["file_bytes"])
+    raw = verified_bytes(source, artifact["sha256"], artifact["file_bytes"])
     mapping = manifest["book_mapping"]
     included = {
         row["source_book_code"]: Book(row["book_code"], row["book_name"], row["source_order"])
@@ -183,13 +175,28 @@ def main():
     if counts != manifest["expected"]:
         raise ValueError(f"Unexpected source inventory: {counts}")
 
+    return manifest, rows, counts
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("source", type=Path, help="Pinned local OSIS file")
+    parser.add_argument("output", type=Path, help="New staging CSV file")
+    parser.add_argument("--batch-id", required=True, type=int)
+    args = parser.parse_args()
+    if args.batch_id < 1:
+        parser.error("batch ID must be positive")
+
+    manifest, rows, counts = load_pinned_kjv(args.source)
+    artifact = manifest['artifact']
+
     with args.output.open("x", encoding="utf-8", newline="") as output:
         writer = csv.writer(output, lineterminator="\n")
         writer.writerows((args.batch_id, number, *astuple(row)) for number, row in enumerate(rows, 1))
     print(json.dumps({
         "manifest_sha256": MANIFEST_SHA256,
         "source_sha256": artifact["sha256"],
-        "source_bytes": len(raw),
+        "source_bytes": artifact["file_bytes"],
         "inventory": counts,
     }, indent=2))
 

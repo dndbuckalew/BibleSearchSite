@@ -12,6 +12,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 BASELINE = "72ac927f7672eda93c53a238eb80cc20ddc39c85"
+ACCEPTED_CLEANUP = "c07929136719fd2686fb27c881ed8e211fa464ea"
 CANARY = "OFFLINE_PRIVATE_CANARY"
 
 # Imports create clients but cannot send requests; never read a real credential.
@@ -21,8 +22,8 @@ with patch.dict(os.environ, {"OPENAI_API_KEY": "offline-fixture"}), redirect_std
     from backend.services import ai_client, ai_reflection_service
 
 
-def baseline_source(path):
-    return subprocess.check_output(["git", "show", f"{BASELINE}:{path}"], cwd=ROOT).decode("utf-8")
+def baseline_source(path, revision=BASELINE):
+    return subprocess.check_output(["git", "show", f"{revision}:{path}"], cwd=ROOT).decode("utf-8")
 
 
 def baseline_conductor():
@@ -189,7 +190,13 @@ class CleanupTests(unittest.TestCase):
 
         for path in ["backend/core/vocabulary/nql_scripture_vocabulary.py", "backend/main.py", "backend/api/results.py", "backend/services/query_service.py"]:
             before = Normalize().visit(ast.parse(baseline_source(path)))
-            after = Normalize().visit(ast.parse((ROOT / path).read_text(encoding="utf-8")))
+            # Results and orchestration were intentionally changed by V6.5.3.
+            # Keep the historical scope assertion anchored to the accepted cleanup.
+            if path in {"backend/api/results.py", "backend/services/query_service.py"}:
+                source = baseline_source(path, ACCEPTED_CLEANUP)
+            else:
+                source = (ROOT / path).read_text(encoding="utf-8")
+            after = Normalize().visit(ast.parse(source))
             self.assertEqual(ast.dump(before), ast.dump(after), path)
 
 

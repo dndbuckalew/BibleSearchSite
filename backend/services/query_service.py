@@ -617,7 +617,28 @@ class QueryService:
     # --------------------------------------------------------------
     # Main Execution
     # --------------------------------------------------------------
-    def process_query(self, req: Union[QueryRequest, dict]) -> QueryResponse:
+    def process_query(self, req: Union[QueryRequest, dict], selection=None) -> QueryResponse:
+        stages = self.result_stages(req, selection)
+        while True:
+            try:
+                next(stages)
+            except StopIteration as finished:
+                return finished.value
+
+    def result_stages(self, req: Union[QueryRequest, dict], selection=None):
+        from backend.services.scripture_retrieval import ScriptureError, retrieve
+
+        scripture_issues = []
+
+        def fetch(reference, translation):
+            if selection is None:
+                return self.fetch_scripture_items(reference, translation)
+            try:
+                return retrieve(reference, selection)
+            except ScriptureError as error:
+                scripture_issues.append({"reference": reference, "code": error.code})
+                return []
+
         if isinstance(req, dict):
             req = QueryRequest(**req)
 
@@ -660,10 +681,12 @@ class QueryService:
             )
 
         if explicit_scripture:
-            topics = self._extract_topics(question)
+            topics = [question] if selection is not None and re.fullmatch(
+                r"[1-3]?\s*[A-Za-z][A-Za-z .]+\s*\d+(?::\d+(?:\s*[-–]\s*(?:\d+:)?\d+)?)?", question
+            ) else self._extract_topics(question)
 
             for topic in topics:
-                fetched = self.fetch_scripture_items(topic, req.translation or "kjv")
+                fetched = fetch(topic, req.translation or "kjv")
                 if fetched:
                     verse_items.extend(fetched)
         
@@ -678,7 +701,7 @@ class QueryService:
                 refs = resolve_nql_topics(query_for_resolution)   
 
             for ref in refs:
-                fetched = self.fetch_scripture_items(ref, req.translation or "kjv")
+                fetched = fetch(ref, req.translation or "kjv")
                 if fetched:
                     verse_items.extend(fetched)
 
@@ -686,7 +709,10 @@ class QueryService:
         explicit_scripture = len(verse_items) > 0
         
         if not verse_items:
-            
+            if scripture_issues:
+                code = next((issue["code"] for issue in scripture_issues if issue["code"] != "missing_passage"),
+                            "missing_passage")
+                raise HTTPException(422 if code == "missing_passage" else 503, {"code": code})
             raise HTTPException(
                 status_code=422,
                 detail="I want to make sure I reflect what you’re really seeking. Could you share a little more about what’s behind this question?"
@@ -696,6 +722,8 @@ class QueryService:
             key=lambda v: (v.testament != "OT", v.book_order or 999)
         )
 
+        yield ("scripture", {"verses": [verse.model_dump() for verse in verse_items],
+                             "scripture_provenance": selection, "scripture_issues": scripture_issues})
         structural_scope = self._detect_structural_scope(verse_items)
 
         commentary_text: Optional[str] = None
@@ -770,6 +798,7 @@ class QueryService:
         # ----------------------------------------------------------
 
         expansion: List[str] = []
+        theme_result = None
         try:
             theme_result = self._build_theme_interaction_result(
                 req=req,
@@ -809,15 +838,15 @@ class QueryService:
             final_summary = ""
 
         # --------------------------------------------------------------
-        # Phase 9.1F — Reflection Build (Hands Layer)
-        # --------------------------------------------------------------
-        reflection = ""
-        if 'theme_result' in locals() and theme_result:
+        def build_reflection():
+            if theme_result:
+                from backend.services.ai_reflection_service import generate_ai_reflection
+                return generate_ai_reflection(theme_result)
+            return ""
 
-            from backend.services.ai_reflection_service import generate_ai_reflection
-            reflection = generate_ai_reflection(theme_result)
-
-        # --------------------------------------------------------------
+        reflection = build_reflection() if selection is None else ""
+        yield ("summary", {"summary": final_summary, "intent_reaffirmation": intent_reaffirmation,
+                           "commentary": commentary_text, "want_commentary": want_commentary})
         # Phase 1 — Free Context Build (Safe Additive Layer)
         # --------------------------------------------------------------
         context = generate_free_context(verse_items)
@@ -827,8 +856,15 @@ class QueryService:
             supporting_movements=expansion,
         )
 
+        yield ("context", {"context": context, "context_exploration": context_exploration})
+        # --------------------------------------------------------------
+        if selection is not None:
+            reflection = build_reflection()
+        yield ("reflection", {"reflection": reflection})
         return QueryResponse(
             intent_reaffirmation=intent_reaffirmation,
+            scripture_provenance=selection,
+            scripture_issues=scripture_issues,
             verses=verse_items,
             summary=final_summary,
             context=context,
