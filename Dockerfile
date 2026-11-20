@@ -26,6 +26,7 @@ FROM runtime AS scripture
 ARG SCRIPTURE_BUNDLE_SHA256
 ENV BTA_SCRIPTURE_SQLITE_PATH=/app/data/scripture.sqlite
 ENV BTA_SCRIPTURE_SQLITE_SHA256=${SCRIPTURE_BUNDLE_SHA256}
+RUN install -d -m 0755 /app/data
 COPY --from=scripture_bundle --chmod=0444 /scripture.sqlite /app/data/scripture.sqlite
 RUN python -c "from backend.services.scripture_retrieval import sqlite_connection; conn=sqlite_connection(); assert conn.execute('PRAGMA quick_check').fetchone() == ('ok',); assert set(conn.execute('SELECT edition FROM snapshot')) == {('kjv',), ('bes',)}; conn.close()"
 
