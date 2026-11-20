@@ -21,14 +21,14 @@ EXPOSE 8080
 
 CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080"]
 
-# The deployment workflow supplies the verified SQLite file in the build context.
+# Supply a named scripture_bundle context containing only the verified SQLite file.
 FROM runtime AS scripture
 ARG SCRIPTURE_BUNDLE_SHA256
 ENV BTA_SCRIPTURE_SQLITE_PATH=/app/data/scripture.sqlite
 ENV BTA_SCRIPTURE_SQLITE_SHA256=${SCRIPTURE_BUNDLE_SHA256}
 RUN install -d -m 0755 /app/data
-COPY --chmod=0444 scripture.sqlite /app/data/scripture.sqlite
-RUN python -c "from backend.services.scripture_retrieval import sqlite_connection; conn=sqlite_connection(); assert conn.execute('PRAGMA quick_check').fetchone() == ('ok',); assert conn.execute('SELECT COUNT(DISTINCT edition) FROM snapshot').fetchone() == (15,); conn.close()"
+COPY --from=scripture_bundle --chmod=0444 /scripture.sqlite /app/data/scripture.sqlite
+RUN python -c "from backend.services.scripture_retrieval import sqlite_connection; conn=sqlite_connection(); assert conn.execute('PRAGMA quick_check').fetchone() == ('ok',); assert set(conn.execute('SELECT edition FROM snapshot')) == {('kjv',), ('bes',)}; conn.close()"
 
 # Existing builds continue to select this target unless scripture is requested.
 FROM runtime AS app
