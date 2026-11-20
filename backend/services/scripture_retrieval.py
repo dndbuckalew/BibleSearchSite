@@ -1,11 +1,13 @@
-"""Development retrieval from the verified local OSIS or the opt-in BSB adapter."""
+"""Read pinned local Scripture or the opt-in hosted BSB comparison."""
+from contextlib import closing
 from functools import lru_cache
+from hashlib import file_digest
 import os
 from pathlib import Path
 import re
 import unicodedata
 
-import psycopg
+import sqlite3
 
 import requests
 
@@ -38,49 +40,53 @@ def normalize(book):
     return re.sub(r"[^a-z0-9]", "", unicodedata.normalize("NFKD", book.casefold()))
 
 
-def postgres_connection():
-    return psycopg.connect(host="127.0.0.1", port=55441, dbname="postgres",
-                           user="bta_scripture_test", connect_timeout=3)
+@lru_cache(maxsize=8)
+def verify_bundle(path, checksum, stamp):
+    with path.open("rb") as data:
+        if file_digest(data, "sha256").hexdigest() != checksum:
+            raise ScriptureError("source_unavailable")
 
 
-def postgres_chapters(selection, book, first_chapter, end_chapter):
+def sqlite_connection():
+    filename = os.getenv("BTA_SCRIPTURE_SQLITE_PATH")
+    checksum = os.getenv("BTA_SCRIPTURE_SQLITE_SHA256", "").lower()
+    if not filename or not re.fullmatch(r"[0-9a-f]{64}", checksum):
+        raise ScriptureError("source_unavailable")
+    path = Path(filename).resolve()
+    stat = path.stat()
+    verify_bundle(path, checksum, (stat.st_mtime_ns, stat.st_size, stat.st_ino))
+    return sqlite3.connect(path.as_uri() + "?mode=ro", uri=True)
+
+
+def sqlite_chapters(selection, book, first_chapter, end_chapter):
+    identity = (selection["edition_id"], selection["dataset_revision"])
     try:
-        with postgres_connection() as connection, connection.cursor() as cursor:
-            cursor.execute(
-                """SELECT s.snapshot_id
-                   FROM bta_scripture.snapshot s
-                   JOIN bta_scripture.edition e USING (edition_id)
-                   JOIN bta_scripture.import_batch b USING (batch_id)
-                   WHERE e.edition_code = %s AND b.source_revision = %s""",
-                (selection["edition_id"], selection["dataset_revision"]),
-            )
-            matches = cursor.fetchall()
-            if len(matches) != 1:
+        with closing(sqlite_connection()) as connection:
+            if connection.execute(
+                "SELECT 1 FROM snapshot WHERE edition=? AND revision=?", identity
+            ).fetchone() is None:
                 raise ScriptureError("source_unavailable")
-            snapshot = matches[0][0]
-            cursor.execute("SELECT DISTINCT book_code, book_name, source_book_code FROM bta_scripture.snapshot_book")
-            aliases = {}
-            for code, name, source in cursor:
-                for alias in (code, name, source):
-                    aliases.setdefault(normalize(alias), set()).add(code)
-            codes = aliases.get(normalize(book), set())
+            codes = connection.execute(
+                "SELECT book_code FROM alias WHERE alias_key=?", (normalize(book),)
+            ).fetchall()
             if len(codes) != 1:
                 raise ScriptureError("missing_passage")
-            code = next(iter(codes))
-            cursor.execute(
-                """SELECT source_reference, book_code, book_name, book_order, chapter_number,
-                          verse_order, verse_label, verse_text
-                   FROM bta_scripture_api.passage_render_v1
-                   WHERE snapshot_id = %s AND book_code = %s AND chapter_number BETWEEN %s AND %s
+            code = codes[0][0]
+            rows = connection.execute(
+                """SELECT source_reference,source_book_code,source_chapter_label,
+                          source_verse_label,book_code,book_name,book_order,chapter_number,
+                          verse_order,verse_label,verse_text
+                   FROM verse WHERE edition=? AND revision=? AND book_code=?
+                       AND chapter_number BETWEEN ? AND ?
                    ORDER BY chapter_number, verse_order""",
-                (snapshot, code, first_chapter, end_chapter),
+                (*identity, code, first_chapter, end_chapter),
             )
             chapters = {}
-            for ref, code, name, order, chapter, position, label, verse_text in cursor:
-                row = Verse(ref, code, str(chapter), label, code, name, order, chapter, position, label, verse_text)
-                chapters.setdefault((code, chapter), []).append(row)
+            for values in rows:
+                verse = Verse(*values)
+                chapters.setdefault((code, verse.chapter_number), []).append(verse)
             return code, chapters
-    except psycopg.Error as exc:
+    except (OSError, sqlite3.Error) as exc:
         raise ScriptureError("source_unavailable") from exc
 
 
@@ -93,8 +99,8 @@ def local_verses(reference, selection=LOCAL):
     first, last = int(verse or 1), int(last_verse or verse or 0)
     if first_chapter < 1 or first < 1 or end_chapter < first_chapter:
         raise ScriptureError("missing_passage")
-    if os.getenv("BTA_DEV_SCRIPTURE_POSTGRES") == "1":
-        code, chapters = postgres_chapters(selection, book, first_chapter, end_chapter)
+    if os.getenv("BTA_SCRIPTURE_SQLITE_PATH"):
+        code, chapters = sqlite_chapters(selection, book, first_chapter, end_chapter)
     else:
         if selection != LOCAL:
             raise ScriptureError("source_unavailable")

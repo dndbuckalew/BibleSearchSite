@@ -21,7 +21,7 @@ PROCESS_KEY = secrets.token_bytes(32)
 
 def catalog():
     options = [LOCAL]
-    if os.getenv("BTA_DEV_SCRIPTURE_POSTGRES") == "1":
+    if os.getenv("BTA_SCRIPTURE_SQLITE_PATH"):
         options.append(BES)
     if os.getenv("BTA_ENABLE_BSB_TEST") == "1":
         options.append(EXTERNAL)

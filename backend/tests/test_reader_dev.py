@@ -1,5 +1,6 @@
 """Offline application-path tests for edition binding and staged delivery."""
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 import json
 import os
 from threading import Event
@@ -67,9 +68,13 @@ class ReaderContractTests(unittest.TestCase):
             self.assertEqual(json.loads(events[-1])["code"], "missing_passage")
         remote.assert_not_called()
 
-    @unittest.skipUnless(os.getenv("BTA_DEV_SCRIPTURE_POSTGRES") == "1", "Disposable PostgreSQL required")
-    def test_postgres_editions_and_bound_exploration(self):
+    @unittest.skipUnless(os.getenv("BTA_SCRIPTURE_SQLITE_PATH"), "Verified SQLite bundle required")
+    def test_sqlite_editions_and_bound_exploration(self):
         from backend.services.scripture_selection import BES as BES_SELECTION
+
+        with closing(scripture_retrieval.sqlite_connection()) as connection:
+            with self.assertRaisesRegex(scripture_retrieval.sqlite3.OperationalError, "readonly"):
+                connection.execute("CREATE TABLE write_probe (id INTEGER)")
 
         with patch.object(scripture_retrieval.requests, "get", side_effect=AssertionError) as remote:
             for option, source, wording, reference in (
@@ -92,10 +97,15 @@ class ReaderContractTests(unittest.TestCase):
             self.assertEqual(json.loads(missing[0])["code"], "missing_passage")
             with self.assertRaisesRegex(scripture_retrieval.ScriptureError, "source_unavailable"):
                 scripture_retrieval.retrieve("John 3:16", {**BES_SELECTION, "dataset_revision": "missing"})
-            with patch.object(scripture_retrieval, "postgres_connection",
-                              side_effect=scripture_retrieval.psycopg.OperationalError):
+            with patch.dict(os.environ, {"BTA_SCRIPTURE_SQLITE_SHA256": "0" * 64}):
                 unavailable = list(stream_results(verify(accept(scripture_option="local-bes"))))
                 self.assertEqual(json.loads(unavailable[0])["code"], "source_unavailable")
+            with patch.object(query_service, "resolve_scripture_with_llm", return_value=["Isaiah 41:10", "Psalm 23:4"]):
+                for option, edition in (("local-kjv", "kjv"), ("local-bes", "bes")):
+                    payload = accept("What does God say about fear?", scripture_option=option)
+                    result = get_results(ResultsRequest(execution_payload=payload))
+                    self.assertEqual(result.scripture_provenance["edition_id"], edition)
+                    self.assertEqual([(v.chapter, v.verse) for v in result.verses], [(23, 4), (41, 10)])
         remote.assert_not_called()
 
     def test_external_verification_and_retained_selection(self):
@@ -124,7 +134,7 @@ class ReaderContractTests(unittest.TestCase):
             accept(scripture_option="test-bsb")
 
     def test_missing_snapshot(self):
-        with patch.dict(os.environ, {"BTA_DEV_KJV_OSIS": "", "BTA_DEV_SCRIPTURE_POSTGRES": "0"}):
+        with patch.dict(os.environ, {"BTA_DEV_KJV_OSIS": "", "BTA_SCRIPTURE_SQLITE_PATH": ""}):
             events = list(stream_results(verify(accept())))
         self.assertEqual(json.loads(events[0])["code"], "source_unavailable")
 

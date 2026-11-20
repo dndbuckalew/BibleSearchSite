@@ -110,7 +110,7 @@ async function attempt(name, path, executable) {
     assert.equal(questions.length, previous + 1);
     assert.equal((await status()).provider_fixture_calls, 0);
     await page.getByRole("button", { name: "Edit question" }).click();
-    if (process.env.BTA_DEV_SCRIPTURE_POSTGRES === "1") {
+    if (process.env.BTA_SCRIPTURE_SQLITE_PATH) {
       await post("/reset");
       await selection.click();
       await page.getByRole("radio", { name: /La Biblia en Español Sencillo/ }).check();
