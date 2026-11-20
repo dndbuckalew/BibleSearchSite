@@ -28,6 +28,12 @@ async function attempt(name, path, executable) {
     const questions = [];
     page.on("pageerror", error => errors.push(error.message));
     page.on("request", request => { if (request.url().endsWith("/api/query")) questions.push(request.postDataJSON().question); });
+    let releaseCatalog;
+    const delayedCatalog = new Promise(resolve => { releaseCatalog = resolve; });
+    await page.route("**/api/scripture/options", async route => {
+      await delayedCatalog;
+      await route.continue();
+    });
     await page.goto(host);
     assert.equal(new URL(page.url()).origin, host);
     const field = page.getByRole("textbox", { name: "Your question" });
@@ -35,6 +41,12 @@ async function attempt(name, path, executable) {
     const selection = page.getByRole("button", { name: "Versions", exact: true });
     await selection.click();
     await page.getByRole("dialog", { name: "Versions" }).waitFor();
+    assert.equal(await page.getByRole("radio").count(), 0);
+    releaseCatalog();
+    const defaultVersion = page.getByRole("radio", { name: "King James Version (KJV) (default)", exact: true });
+    await defaultVersion.waitFor();
+    assert.equal(await defaultVersion.isChecked(), true);
+
     await page.getByRole("button", { name: "Apply", exact: true }).click();
     assert.equal(await selection.evaluate(node => document.activeElement === node), true);
     assert.equal(await field.inputValue(), "日本語 العربية\nJohn 3:16");

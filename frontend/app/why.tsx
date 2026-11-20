@@ -48,6 +48,7 @@ export default function WhyPage() {
   const options = catalog?.options ?? [];
   const [selection, setSelection] = useState<string>();
   const [draft, setDraft] = useState<string>();
+  const visibleSelection = draft ?? selection ?? catalog?.default;
   const [result, setResult] = useState<ActiveResult>();
   const [original, setOriginal] = useState<{ result: ActiveResult; execution: Execution; reference: number }>();
   const [restoreFocus, setRestoreFocus] = useState<number>();
@@ -59,7 +60,6 @@ export default function WhyPage() {
     const controller = new AbortController();
     scriptureOptions(controller.signal).then(data => {
       setCatalog(data);
-      setSelection(data.default);
     }).catch(() => {});
     const abandon = () => {
       active.current?.abort();
@@ -296,15 +296,15 @@ export default function WhyPage() {
           <h3 id="translation-title" className="mb-4 text-xl font-semibold">Versions</h3>
           {options.length ? options.map(option => (
             <label key={option.option_id} className="mb-3 flex items-center gap-2">
-              <input type="radio" name="scripture-option" checked={draft === option.option_id}
+              <input type="radio" name="scripture-option" checked={visibleSelection === option.option_id}
                 onChange={() => setDraft(option.option_id)} />
-              {option.edition_label}{option.option_id === catalog?.default ? " (default)" : ""} · {option.source_label}
+              {option.edition_label}{option.option_id === catalog?.default ? " (default)" : ""}
             </label>
           )) : <p>Translation options are unavailable. The default is local KJV.</p>}
           <div className="mt-4 flex flex-wrap gap-2">
             <button type="button" className="bta-button" onClick={() => dialog.current?.close()}>Cancel</button>
-            <button type="button" className="bta-button" disabled={!draft}
-              onClick={() => { setSelection(draft); dialog.current?.close(); }}>Apply</button>
+            <button type="button" className="bta-button" disabled={!visibleSelection}
+              onClick={() => { setSelection(visibleSelection); dialog.current?.close(); }}>Apply</button>
           </div>
         </dialog>
 
