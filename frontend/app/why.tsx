@@ -1,18 +1,21 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import { runReflection } from './lib/btaApi';
+import { resultEvents, runReflection, scriptureOptions } from './lib/btaApi';
+import type { Execution, ScriptureOption } from './lib/btaApi';
+import IncrementalReader, { sectionNames } from './components/IncrementalReader';
+import type { ActiveResult } from './components/IncrementalReader';
 import { getQueryCount } from "./lib/btaApi";
 import DonationPrompt from "./components/donation/DonationPrompt";
 import AudiencePrompt from "./components/audience/AudiencePrompt";
+import { prepareScriptureQuestion } from './lib/prepareScriptureQuestion';
 import { useQuestionSpeech } from './lib/useQuestionSpeech';
 import MicrophoneSetup from './components/MicrophoneSetup';
 
 type DecisionResponse = {
   decision: 'PROCEED' | 'REDIRECT' | 'STOP';
   message?: string;
-  execution_payload?: any;
+  execution_payload?: Execution;
 };
 
 export default function WhyPage() {
@@ -23,15 +26,12 @@ export default function WhyPage() {
     setQueryCount(count);
   }
 }, []);
-  const router = useRouter();
   const [question, setQuestion] = useState('');
   const speech = useQuestionSpeech((text) => {
     setQuestion((previous) => previous + (previous && !/\s$/.test(previous) ? ' ' : '') + text);
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [loadingMessage, setLoadingMessage] = useState('');
-  const [isFinalStage, setIsFinalStage] = useState(false);
   const [dictateTooltipDismissed, setDictateTooltipDismissed] = useState(false);
 
   useEffect(() => {
@@ -42,155 +42,184 @@ export default function WhyPage() {
     return () => document.removeEventListener('keydown', dismissTooltip);
   }, []);
 
-  // 🔒 Canonical source of truth for submitted input
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const submissionInFlight = useRef(false);
-  const navigationRecoveryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const selectionButton = useRef<HTMLButtonElement>(null);
+  const [catalog, setCatalog] = useState<{ default: string; options: ScriptureOption[] }>();
+  const options = catalog?.options ?? [];
+  const [selection, setSelection] = useState<string>();
+  const [draft, setDraft] = useState<string>();
+  const visibleSelection = draft ?? selection ?? catalog?.default;
+  const [result, setResult] = useState<ActiveResult>();
+  const [original, setOriginal] = useState<{ result: ActiveResult; execution: Execution; reference: number }>();
+  const [restoreFocus, setRestoreFocus] = useState<number>();
+  const execution = useRef<Execution | undefined>(undefined);
+  const active = useRef<AbortController | undefined>(undefined);
+  const nextId = useRef(0);
 
-  useEffect(() => () => {
-    if (navigationRecoveryTimer.current !== null) {
-      clearTimeout(navigationRecoveryTimer.current);
-      navigationRecoveryTimer.current = null;
-    }
+  useEffect(() => {
+    const controller = new AbortController();
+    scriptureOptions(controller.signal).then(data => {
+      setCatalog(data);
+    }).catch(() => {});
+    const abandon = () => {
+      active.current?.abort();
+      active.current = undefined;
+    };
+    window.addEventListener('pagehide', abandon);
+    return () => {
+      controller.abort();
+      abandon();
+      window.removeEventListener('pagehide', abandon);
+    };
   }, []);
 
-  const handleSubmit = async (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (submissionInFlight.current) return;
+  useEffect(() => {
+    const field = inputRef.current;
+    if (field) {
+      field.style.height = 'auto';
+      field.style.height = field.scrollHeight + 2 + 'px';
+    }
+  }, [question, result]);
 
-    const trimmed = inputRef.current?.value.trim() ?? '';
-    if (!trimmed) return;
-    submissionInFlight.current = true;
-    speech.cancel();
+  const abandon = () => {
+    active.current?.abort();
+    active.current = undefined;
+    setLoading(false);
+  };
 
+  const edit = () => {
+    abandon();
+    setOriginal(undefined);
+    setResult(undefined);
+    setRestoreFocus(undefined);
+    requestAnimationFrame(() => inputRef.current?.focus());
+  };
+
+  const start = async (text: string, parent?: Execution, retry?: Execution) => {
+    if (active.current || !text.trim()) return;
+    const controller = new AbortController();
+    active.current = controller;
+    const { signal } = controller;
+    const id = ++nextId.current;
     setLoading(true);
-    setLoadingMessage(
-      'Searching Scripture and preparing your response...'
-    );
-
-    setTimeout(() => {
-      setLoadingMessage(
-        'Looking at surrounding passages and deeper context...'
-      );
-    }, 5000);
-
-    setTimeout(() => {
-      setLoadingMessage(
-        'Building reflection and preparing insight from the passages found'
-      );
-
-      setIsFinalStage(true);
-    }, 12500);
-
     setMessage(null);
-
-    let navigating = false;
+    setRestoreFocus(undefined);
+    if (!retry) execution.current = undefined;
+    speech.cancel();
+    const current = () => active.current === controller && !signal.aborted;
+    let view: ActiveResult = {
+      id, question: text, status: 'pending', data: {}, ready: [], failed: [],
+      announcement: 'Preparing your response…',
+    };
+    const publish = (changes: Partial<ActiveResult>) => {
+      view = { ...view, ...changes };
+      if (current()) setResult(view);
+    };
     try {
-      // --------------------------------------------------
-      // HEART: /api/query
-      // --------------------------------------------------
-      const decisionResult: DecisionResponse = await runReflection({
-        question: trimmed,
-        want_commentary: true,
+      let accepted = retry;
+      if (!accepted) {
+        const prepared = prepareScriptureQuestion(text);
+        if (prepared.needsChapterAndVerse) {
+          publish({ status: 'failed', failed: ['scripture'], announcement:
+            'Enter the chapter and verse with a colon, for example John 3:16.' });
+          return;
+        }
+        const decision: DecisionResponse = await runReflection({
+          question: prepared.lookup, scripture_option: parent ? undefined : selection,
+          parent_execution: parent, want_commentary: true, signal,
+        });
+        if (!current()) return;
+        if (decision.decision !== 'PROCEED' || !decision.execution_payload) {
+          const notice = decision.message ?? 'Could you share a little more about what you’re seeking?';
+          if (parent) publish({ status: 'failed', announcement: notice });
+          else setMessage(notice);
+          return;
+        }
+        accepted = decision.execution_payload;
+      }
+      execution.current = accepted;
+      publish({});
+      for await (const event of resultEvents(accepted, signal)) {
+        if (!current()) return;
+        if (event.event === 'section') {
+          if (!sectionNames.includes(event.section) || view.ready.includes(event.section) || view.failed.includes(event.section)) continue;
+          const label = event.section.charAt(0).toUpperCase() + event.section.slice(1);
+          publish({
+            data: { ...view.data, ...event.data },
+            ready: event.success ? [...view.ready, event.section] : view.ready,
+            failed: event.success ? view.failed : [...view.failed, event.section],
+            announcement: event.success ? label + ' is ready.' : label + ' couldn’t be fully prepared.',
+          });
+        } else if (event.event === 'failure') {
+          const notice = event.code === 'missing_passage'
+            ? 'This passage was not found in the selected Scripture edition. Edit your question to try another reference.'
+            : event.code === 'source_unavailable' || event.code === 'edition_unverified'
+              ? accepted.resolved_scripture.source_label + ' is temporarily unavailable. Try again.'
+              : 'The response could not be completed. Sections already available are still readable.';
+          publish({ status: view.ready.length ? 'partial' : 'failed', code: event.code,
+            failed: [...view.failed, event.section], announcement: notice });
+          break;
+        } else if (event.event === 'complete') {
+          const complete = event.success && sectionNames.every(section => view.ready.includes(section));
+          publish({ status: complete ? 'complete' : 'partial', escalation: event.escalation,
+            announcement: event.escalation ? 'Support information is available.'
+              : complete ? 'Response complete. Scripture references are ready to explore.'
+              : 'The response is incomplete. Sections already available are still readable.' });
+          break;
+        }
+      }
+      if (view.status === 'pending') publish({
+        status: 'interrupted', announcement: 'Response interrupted. Sections already available are still readable.',
       });
-
-      if (
-        decisionResult.decision === 'REDIRECT' ||
-        decisionResult.decision === 'STOP'
-      ) {
-        setMessage(
-          decisionResult.message ??
-            'That question may need a little more clarity. Could you share more about what you’re reflecting on?'
-        );
-        setLoading(false);
-        return;
+    } catch {
+      if (current()) {
+        const notice = 'Response interrupted. Sections already available are still readable.';
+        if (execution.current || parent) publish({ status: 'interrupted', announcement: notice });
+        else setMessage('We ran into an issue while processing your request. Please try again.');
       }
-
-      if (!decisionResult.execution_payload) {
-        setMessage(
-          'Something unexpected occurred while preparing your reflection. Please try again.'
-        );
-        setLoading(false);
-        return;
-      }
-
-      // --------------------------------------------------
-      // HANDS: /api/results
-      // --------------------------------------------------
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/results`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            execution_payload: decisionResult.execution_payload,
-          }),
-        }
-      );
-
-      const responseBody = await res.json();
-
-      // --------------------------------------------------
-      // Structured 422 clarification (WHY gate)
-      // --------------------------------------------------
-      if (res.status === 422 && typeof responseBody?.detail === 'string') {
-        setMessage(responseBody.detail);
-        setLoading(false);
-        return;
-      }
-
-      // --------------------------------------------------
-      // True system-level failure (not structured application response)
-      // --------------------------------------------------
-      if (!res.ok) {
-        setMessage(
-          'We ran into an issue while processing your request. Please try again.'
-        );
-        setLoading(false);
-        return;
-      }
-
-      // --------------------------------------------------
-      // Normal Success Path
-      // --------------------------------------------------
-      
-      setLoadingMessage(
-        'Preparing your response for display...'
-      );
-
-      // App Router push returns before the transition commits. Recover if this
-      // page stays mounted; successful navigation disposes the watchdog above.
-      const recoveryTimer = setTimeout(() => {
-        if (navigationRecoveryTimer.current !== recoveryTimer) return;
-        navigationRecoveryTimer.current = null;
-        submissionInFlight.current = false;
-        setLoading(false);
-        setMessage('The results page did not open. Please try again.');
-      }, 15_000);
-      navigationRecoveryTimer.current = recoveryTimer;
-      router.push(
-        `/results?payload=${encodeURIComponent(
-          JSON.stringify(responseBody)
-        )}`
-      );
-      navigating = true;
-
-    } catch (err: any) {
-      // Network-level failure only
-      setMessage(
-        'We ran into an issue while processing your request. Please try again.'
-      );
     } finally {
-      if (!navigating) {
-        if (navigationRecoveryTimer.current !== null) {
-          clearTimeout(navigationRecoveryTimer.current);
-          navigationRecoveryTimer.current = null;
-        }
-        submissionInFlight.current = false;
+      if (current()) {
+        active.current = undefined;
         setLoading(false);
       }
     }
   };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    void start(question);
+  };
+
+  if (result) return <IncrementalReader result={result} restoreFocus={restoreFocus} onEdit={edit}
+    onStop={() => {
+      abandon();
+      setResult({ ...result, status: 'interrupted',
+        announcement: 'Response interrupted. Sections already available are still readable.' });
+    }}
+    onRetry={() => { if (execution.current) void start(result.question, undefined, execution.current); }}
+    onExplore={(reference, index) => {
+      if (!execution.current || active.current) return;
+      const parent = execution.current;
+      if (!original) setOriginal({ result, execution: parent, reference: index });
+      void start(reference, parent);
+    }}
+    onReturn={original ? () => {
+      abandon();
+      execution.current = original.execution;
+      setRestoreFocus(original.reference);
+      setResult(original.result);
+      setOriginal(undefined);
+    } : undefined}
+  />;
+
+  const versionActions = (
+    <>
+      <button type="button" className="bta-button" onClick={() => dialog.current?.close()}>Cancel</button>
+      <button type="button" className="bta-button" disabled={!visibleSelection}
+        onClick={() => { setSelection(visibleSelection); dialog.current?.close(); }}>Apply</button>
+    </>
+  );
 
   return (
     <section
@@ -204,10 +233,12 @@ export default function WhyPage() {
 <form onSubmit={handleSubmit} className="space-y-4 w-full">
   
         <div className="relative">
-        <input
+        <textarea
           id="nql-question"
           ref={inputRef}
-          type="text"
+          rows={1}
+          dir="auto"
+          aria-label="Your question"
           value={question}
           onChange={(e) => {
             speech.cancel();
@@ -215,10 +246,10 @@ export default function WhyPage() {
           }}
           aria-describedby="question-speech-status"
           placeholder="e.g., Genesis 1:1, hope in suffering, why faith matters"
-          className="w-full rounded-md border border-neutral-400 pl-4 pr-32 py-3 text-base text-neutral-900 bg-white shadow-sm placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-300"
+          className="block w-full resize-none rounded-md border border-neutral-400 pl-4 pr-32 py-3 text-base text-neutral-900 bg-white shadow-sm placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-300"
           disabled={loading}
         />
-        <div className="absolute right-1 top-1/2 flex -translate-y-1/2 items-center">
+        <div className="absolute right-1 top-1 flex items-center">
         {question.length > 0 && (
         <button
           type="button"
@@ -264,15 +295,30 @@ export default function WhyPage() {
         </button>
         </div>
         </div>
-        <div className="w-full text-center">
-          <button
-            type="submit"
-            disabled={loading}
-            className="bta-button"
-          >
-            {loading ? "Exploring Scripture..." : "Explore Scripture"}
+        <div className="grid grid-cols-2 items-center gap-2">
+          <button type="submit" disabled={loading || !question.trim()} className="bta-button justify-self-end">
+            {loading ? "Exploring Scripture…" : "Explore Scripture"}
+          </button>
+          <button type="button" aria-haspopup="dialog" ref={selectionButton}
+            className="bta-button justify-self-end"
+            onClick={() => { setDraft(selection); dialog.current?.showModal(); }}>
+            Versions
           </button>
         </div>
+        <dialog ref={dialog} aria-labelledby="translation-title"
+          onClose={() => selectionButton.current?.focus()}
+          className="m-auto w-[min(92vw,32rem)] rounded-lg bg-white p-6 text-neutral-900 shadow-xl backdrop:bg-black/40">
+          <h3 id="translation-title" className="mb-4 text-xl font-semibold">Versions</h3>
+          <div className="mb-4 flex flex-wrap gap-2">{versionActions}</div>
+          {options.length ? options.map(option => (
+            <label key={option.option_id} className="mb-3 flex items-center gap-2">
+              <input type="radio" name="scripture-option" checked={visibleSelection === option.option_id}
+                onChange={() => setDraft(option.option_id)} />
+              {option.edition_label}{option.option_id === catalog?.default ? " (default)" : ""}
+            </label>
+          )) : <p>Translation options are unavailable. The default is local KJV.</p>}
+          <div className="mt-4 flex flex-wrap gap-2">{versionActions}</div>
+        </dialog>
 
         <div className={`relative text-sm text-neutral-600 ${speech.needsSetup ? 'pr-12' : ''}`}>
           {speech.needsSetup && (
@@ -328,23 +374,11 @@ export default function WhyPage() {
             <p className="text-xs text-neutral-500">
               You can clarify your question by adding more detail to your initial
               question, then clicking{' '}
-              <span className="font-medium">Reflect →</span> again.
+              <span className="font-medium">Explore Scripture</span> again.
             </p>
           </>
         )}
         </div>
-
-        <div role="status" aria-live="polite" aria-atomic="true" className={loading && loadingMessage ? "rounded-md border border-neutral-200 bg-neutral-50 px-3 py-2" : "sr-only"}>
-        {loading && loadingMessage && (
-            <p className="text-sm text-neutral-700 italic">
-              {loadingMessage}
-              {isFinalStage && (
-                <span aria-hidden="true" className="inline-block animate-pulse">...</span>
-              )}
-            </p>
-        )}
-        </div>
-
 
       </form>
 

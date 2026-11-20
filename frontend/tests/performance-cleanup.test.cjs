@@ -4,13 +4,19 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
+const { execFileSync } = require('node:child_process');
 const ts = require('typescript');
 const React = require('react');
 const { renderToStaticMarkup } = require('react-dom/server');
 const app = path.join(__dirname, '../app');
 
 function load(file, mocks, globals = {}) {
-  const output = ts.transpileModule(fs.readFileSync(path.join(app, file), 'utf8'), {
+  // These watchdog tests exercise the accepted release's App Router handoff.
+  // The incremental reader has a separate browser suite.
+  const source = file === 'why.tsx'
+    ? execFileSync('git', ['show', 'c07929136719fd2686fb27c881ed8e211fa464ea:frontend/app/why.tsx'], { cwd: app, encoding: 'utf8' })
+    : fs.readFileSync(path.join(app, file), 'utf8');
+  const output = ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2020, esModuleInterop: true },
   }).outputText;
   const exports = {};

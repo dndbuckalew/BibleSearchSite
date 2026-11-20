@@ -20,7 +20,9 @@ class VerseItem(BaseModel):
 # ------------------------------------------------------------
 class QueryRequest(BaseModel):
     question: str
-    translation: Optional[str] = "kjv"
+    translation: Optional[str] = None
+    scripture_option: Optional[str] = None
+    parent_execution: Optional[dict] = None
     persona: Optional[str] = None
     want_commentary: bool = False
 
@@ -36,6 +38,8 @@ class QueryResponse(BaseModel):
     # before scriptural exploration begins.
     intent_reaffirmation: Optional[str] = None
 
+    scripture_provenance: Optional[dict] = None
+    scripture_issues: list[dict] = []
     verses: List[VerseItem]
     summary: str
 

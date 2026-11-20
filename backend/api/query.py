@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, HTTPException, Response
+from backend.services.scripture_selection import bind, catalog, resolve, verify
 
 from backend.models.query_decision import QueryDecision
 from backend.models.query_models import QueryRequest
@@ -56,6 +57,11 @@ def options_query():
 # ------------------------------------------------------------
 # WHY gate
 # ------------------------------------------------------------
+@router.get("/api/scripture/options")
+def scripture_options():
+    return catalog()
+
+
 @router.post("/api/query", response_model=QueryDecision)
 def handle_query(req: QueryRequest):
     question = (req.question or "").strip()
@@ -85,14 +91,22 @@ def handle_query(req: QueryRequest):
     intent = infer_intent(question)
 
     if intent in ("DISPLAY", "REFLECT"):
+        if req.parent_execution is not None:
+            parent = verify(req.parent_execution)
+            selection = parent["resolved_scripture"]
+            if req.scripture_option is not None and selection["option_id"] != req.scripture_option:
+                raise HTTPException(422, "The passage selection conflicts with the original request.")
+        else:
+            selection = resolve(req.scripture_option, req.translation)
         return QueryDecision(
             decision="PROCEED",
-            execution_payload={
+            execution_payload=bind({
                 "question": req.question,
-                "translation": req.translation,
+                "translation": selection["edition_id"],
                 "persona": req.persona,
                 "want_commentary": req.want_commentary,
-            },
+                "resolved_scripture": selection,
+            }),
             why_anchor=why_anchor,
             crisis_detected=crisis_detected,
             crisis_type=crisis_type,
