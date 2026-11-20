@@ -44,7 +44,8 @@ export default function WhyPage() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const selectionButton = useRef<HTMLButtonElement>(null);
-  const [options, setOptions] = useState<ScriptureOption[]>([]);
+  const [catalog, setCatalog] = useState<{ default: string; options: ScriptureOption[] }>();
+  const options = catalog?.options ?? [];
   const [selection, setSelection] = useState<string>();
   const [draft, setDraft] = useState<string>();
   const [result, setResult] = useState<ActiveResult>();
@@ -57,7 +58,7 @@ export default function WhyPage() {
   useEffect(() => {
     const controller = new AbortController();
     scriptureOptions(controller.signal).then(data => {
-      setOptions(data.options);
+      setCatalog(data);
       setSelection(data.default);
     }).catch(() => {});
     const abandon = () => {
@@ -297,7 +298,7 @@ export default function WhyPage() {
             <label key={option.option_id} className="mb-3 flex items-center gap-2">
               <input type="radio" name="scripture-option" checked={draft === option.option_id}
                 onChange={() => setDraft(option.option_id)} />
-              {option.edition_label} · {option.source_label}
+              {option.edition_label}{option.option_id === catalog?.default ? " (default)" : ""} · {option.source_label}
             </label>
           )) : <p>Translation options are unavailable. The default is local KJV.</p>}
           <div className="mt-4 flex flex-wrap gap-2">
