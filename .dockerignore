@@ -1,38 +1,14 @@
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-venv/
-.venv/
-
-# Environment
-.env
-.env.local
-.env.*.local
-
-# Node / Next.js
-node_modules/
-.next/
-out/
-build/
-coverage/
-
-# Logs
-*.log
-
-# OS
-.DS_Store
-Thumbs.db
-
-# VS Code
-.vscode/
-
-# Archives and documentation
-*.zip
-*.docx
-*.pdf
-
-# Legacy
-archive_*/
-frontend_vite_legacy/
+**
+!Dockerfile
+!build_version.txt
+!backend/
+!backend/**
+!tools/
+!tools/scripture/
+!tools/scripture/import_kjv.py
+!tools/scripture/kjv-manifest.json
+**/.env
+**/.env.*
+**/__pycache__
+**/*.py[cod]
+**/*.log

@@ -55,8 +55,8 @@ class ReaderContractTests(unittest.TestCase):
                                 return_value="Reflection fixture."))
 
     def test_real_local_default_explicit_and_missing(self):
-        if not os.getenv("BTA_DEV_KJV_OSIS"):
-            self.skipTest("Set BTA_DEV_KJV_OSIS to run the pinned KJV integration test")
+        if not (os.getenv("BTA_SCRIPTURE_SQLITE_PATH") or os.getenv("BTA_DEV_KJV_OSIS")):
+            self.skipTest("Configure a verified local Scripture source")
         with patch.object(scripture_retrieval.requests, "get", side_effect=AssertionError) as remote:
             for options in ({}, {"translation": "KJV"}, {"scripture_option": "local-kjv"}):
                 request = ResultsRequest(execution_payload=accept(**options))
