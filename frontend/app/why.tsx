@@ -287,13 +287,13 @@ export default function WhyPage() {
           <button type="button" aria-haspopup="dialog" ref={selectionButton}
             className="bta-button justify-self-end"
             onClick={() => { setDraft(selection); dialog.current?.showModal(); }}>
-            Translation Selection
+            Versions
           </button>
         </div>
         <dialog ref={dialog} aria-labelledby="translation-title"
           onClose={() => selectionButton.current?.focus()}
           className="m-auto w-[min(92vw,32rem)] rounded-lg bg-white p-6 text-neutral-900 shadow-xl backdrop:bg-black/40">
-          <h3 id="translation-title" className="mb-4 text-xl font-semibold">Translation Selection</h3>
+          <h3 id="translation-title" className="mb-4 text-xl font-semibold">Versions</h3>
           {options.length ? options.map(option => (
             <label key={option.option_id} className="mb-3 flex items-center gap-2">
               <input type="radio" name="scripture-option" checked={draft === option.option_id}

@@ -32,9 +32,9 @@ async function attempt(name, path, executable) {
     assert.equal(new URL(page.url()).origin, host);
     const field = page.getByRole("textbox", { name: "Your question" });
     await field.fill("日本語 العربية\nJohn 3:16");
-    const selection = page.getByRole("button", { name: "Translation Selection", exact: true });
+    const selection = page.getByRole("button", { name: "Versions", exact: true });
     await selection.click();
-    await page.getByRole("dialog", { name: "Translation Selection" }).waitFor();
+    await page.getByRole("dialog", { name: "Versions" }).waitFor();
     await page.getByRole("button", { name: "Apply", exact: true }).click();
     assert.equal(await selection.evaluate(node => document.activeElement === node), true);
     assert.equal(await field.inputValue(), "日本語 العربية\nJohn 3:16");
