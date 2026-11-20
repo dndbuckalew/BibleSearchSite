@@ -648,7 +648,11 @@ class QueryService:
         
         verse_items: List[VerseItem] = []
 
-        explicit_scripture = self._is_explicit_verse(question)
+        local_reference = selection is not None and re.fullmatch(
+            r"[1-3]?\s*[^\W\d_][^\W\d_ .]*(?:[ .]+[^\W\d_]+)*\s*\d+(?::\d+(?:\s*[-–]\s*(?:\d+:)?\d+)?)?",
+            question,
+        )
+        explicit_scripture = bool(local_reference) or self._is_explicit_verse(question)
         if len(question) < 3:
             raise HTTPException(
                 status_code=400,
@@ -681,9 +685,7 @@ class QueryService:
             )
 
         if explicit_scripture:
-            topics = [question] if selection is not None and re.fullmatch(
-                r"[1-3]?\s*[^\W\d_][^\W\d_ .]*(?:[ .]+[^\W\d_]+)*\s*\s*\d+(?::\d+(?:\s*[-–]\s*(?:\d+:)?\d+)?)?", question
-            ) else self._extract_topics(question)
+            topics = [question] if local_reference else self._extract_topics(question)
 
             for topic in topics:
                 fetched = fetch(topic, req.translation or "kjv")

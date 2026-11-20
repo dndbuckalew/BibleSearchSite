@@ -12,7 +12,17 @@ jobs:
     concurrency: deploy-group    # optional: ensure only one action runs at a time
     steps:
       - uses: actions/checkout@v4
+      - name: Fetch and verify the Stage-tested Scripture catalog
+        env:
+          BTA_SCRIPTURE_BUNDLE_URL: ${{ secrets.BTA_SCRIPTURE_BUNDLE_URL }}
+          SCRIPTURE_BUNDLE_SHA256: edd8495fd4a9db18e28f95665621e964d1fb49992073292aa744b0e148008c0f
+        run: |
+          set -euo pipefail
+          : "${BTA_SCRIPTURE_BUNDLE_URL:?Scripture catalog download URL is required}"
+          curl --fail --silent --location --proto '=https' --proto-redir '=https' --retry 3 --max-time 600 --output scripture.sqlite "$BTA_SCRIPTURE_BUNDLE_URL"
+          printf '%s  scripture.sqlite\n' "$SCRIPTURE_BUNDLE_SHA256" | sha256sum --check
+          echo "SCRIPTURE_BUNDLE_SHA256=$SCRIPTURE_BUNDLE_SHA256" >> "$GITHUB_ENV"
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only
+      - run: flyctl deploy --remote-only --build-target scripture --build-arg "SCRIPTURE_BUNDLE_SHA256=$SCRIPTURE_BUNDLE_SHA256"
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

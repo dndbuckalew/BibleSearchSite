@@ -8,6 +8,7 @@ import type { ActiveResult } from './components/IncrementalReader';
 import { getQueryCount } from "./lib/btaApi";
 import DonationPrompt from "./components/donation/DonationPrompt";
 import AudiencePrompt from "./components/audience/AudiencePrompt";
+import { prepareScriptureQuestion } from './lib/prepareScriptureQuestion';
 import { useQuestionSpeech } from './lib/useQuestionSpeech';
 import MicrophoneSetup from './components/MicrophoneSetup';
 
@@ -118,8 +119,14 @@ export default function WhyPage() {
     try {
       let accepted = retry;
       if (!accepted) {
+        const prepared = prepareScriptureQuestion(text);
+        if (prepared.needsChapterAndVerse) {
+          publish({ status: 'failed', failed: ['scripture'], announcement:
+            'Enter the chapter and verse with a colon, for example John 3:16.' });
+          return;
+        }
         const decision: DecisionResponse = await runReflection({
-          question: text, scripture_option: parent ? undefined : selection,
+          question: prepared.lookup, scripture_option: parent ? undefined : selection,
           parent_execution: parent, want_commentary: true, signal,
         });
         if (!current()) return;
@@ -181,7 +188,7 @@ export default function WhyPage() {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    void start(question.trim());
+    void start(question);
   };
 
   if (result) return <IncrementalReader result={result} restoreFocus={restoreFocus} onEdit={edit}
@@ -205,6 +212,14 @@ export default function WhyPage() {
       setOriginal(undefined);
     } : undefined}
   />;
+
+  const versionActions = (
+    <>
+      <button type="button" className="bta-button" onClick={() => dialog.current?.close()}>Cancel</button>
+      <button type="button" className="bta-button" disabled={!visibleSelection}
+        onClick={() => { setSelection(visibleSelection); dialog.current?.close(); }}>Apply</button>
+    </>
+  );
 
   return (
     <section
@@ -294,6 +309,7 @@ export default function WhyPage() {
           onClose={() => selectionButton.current?.focus()}
           className="m-auto w-[min(92vw,32rem)] rounded-lg bg-white p-6 text-neutral-900 shadow-xl backdrop:bg-black/40">
           <h3 id="translation-title" className="mb-4 text-xl font-semibold">Versions</h3>
+          <div className="mb-4 flex flex-wrap gap-2">{versionActions}</div>
           {options.length ? options.map(option => (
             <label key={option.option_id} className="mb-3 flex items-center gap-2">
               <input type="radio" name="scripture-option" checked={visibleSelection === option.option_id}
@@ -301,11 +317,7 @@ export default function WhyPage() {
               {option.edition_label}{option.option_id === catalog?.default ? " (default)" : ""}
             </label>
           )) : <p>Translation options are unavailable. The default is local KJV.</p>}
-          <div className="mt-4 flex flex-wrap gap-2">
-            <button type="button" className="bta-button" onClick={() => dialog.current?.close()}>Cancel</button>
-            <button type="button" className="bta-button" disabled={!visibleSelection}
-              onClick={() => { setSelection(visibleSelection); dialog.current?.close(); }}>Apply</button>
-          </div>
+          <div className="mt-4 flex flex-wrap gap-2">{versionActions}</div>
         </dialog>
 
         <div className={`relative text-sm text-neutral-600 ${speech.needsSetup ? 'pr-12' : ''}`}>

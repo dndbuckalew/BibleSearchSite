@@ -1,5 +1,6 @@
 **
 !Dockerfile
+!scripture.sqlite
 !build_version.txt
 !backend/
 !backend/**

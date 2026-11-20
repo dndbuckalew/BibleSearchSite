@@ -23,6 +23,9 @@ def catalog():
     options = [LOCAL]
     if os.getenv("BTA_SCRIPTURE_SQLITE_PATH"):
         options.append(BES)
+        from backend.services.scripture_retrieval import sqlite_catalog
+
+        options.extend(sqlite_catalog())
     if os.getenv("BTA_ENABLE_BSB_TEST") == "1":
         options.append(EXTERNAL)
     return {"default": LOCAL["option_id"], "options": options}

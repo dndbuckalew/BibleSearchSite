@@ -58,6 +58,34 @@ def sqlite_connection():
     return sqlite3.connect(path.as_uri() + "?mode=ro", uri=True)
 
 
+def sqlite_catalog():
+    """Advertise added editions only from the configured, verified bundle."""
+    try:
+        with closing(sqlite_connection()) as connection:
+            if not connection.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='edition_catalog'"
+            ).fetchone():
+                return []
+            rows = connection.execute(
+                """SELECT snapshot.edition, snapshot.revision, edition_catalog.label
+                   FROM snapshot JOIN edition_catalog USING (edition)
+                   ORDER BY snapshot.edition"""
+            ).fetchall()
+    except (OSError, sqlite3.Error, ScriptureError):
+        return []
+    return [
+        {"option_id": f"local-{edition}", "edition_id": edition, "source_id": "local",
+         "edition_label": title, "source_label": "Local Scripture dataset",
+         "dataset_revision": revision}
+        for edition, revision, title in rows
+    ]
+
+
+def normalize_edition_alias(book):
+    return "".join(char for char in unicodedata.normalize("NFKD", book.casefold())
+                   if char.isalnum())
+
+
 def sqlite_chapters(selection, book, first_chapter, end_chapter):
     identity = (selection["edition_id"], selection["dataset_revision"])
     try:
@@ -66,9 +94,15 @@ def sqlite_chapters(selection, book, first_chapter, end_chapter):
                 "SELECT 1 FROM snapshot WHERE edition=? AND revision=?", identity
             ).fetchone() is None:
                 raise ScriptureError("source_unavailable")
-            codes = connection.execute(
-                "SELECT book_code FROM alias WHERE alias_key=?", (normalize(book),)
-            ).fetchall()
+            if selection["edition_id"] in {"kjv", "bes"}:
+                codes = connection.execute(
+                    "SELECT book_code FROM alias WHERE alias_key=?", (normalize(book),)
+                ).fetchall()
+            else:
+                codes = connection.execute(
+                    "SELECT book_code FROM edition_alias WHERE edition=? AND alias_key=?",
+                    (selection["edition_id"], normalize_edition_alias(book)),
+                ).fetchall()
             if len(codes) != 1:
                 raise ScriptureError("missing_passage")
             code = codes[0][0]
@@ -118,19 +152,24 @@ def local_verses(reference, selection=LOCAL):
 
     if (code, first_chapter) not in chapters or (code, end_chapter) not in chapters:
         raise ScriptureError("missing_passage")
+    def bounds(row):
+        start, _, end = row.verse_label.partition("-")
+        return int(start), int(end or start)
+
     rows = [
         row
         for number in range(first_chapter, end_chapter + 1)
         for row in chapters.get((code, number), [])
-        if (number != first_chapter or int(row.verse_label) >= first)
-        and (number != end_chapter or not last or int(row.verse_label) <= last)
+        if (number != first_chapter or bounds(row)[1] >= first)
+        and (number != end_chapter or not last or bounds(row)[0] <= last)
     ]
-    if not rows or (verse and int(rows[0].verse_label) != first) or (last and int(rows[-1].verse_label) != last):
+    if (not rows or (verse and not bounds(rows[0])[0] <= first <= bounds(rows[0])[1])
+            or (last and not bounds(rows[-1])[0] <= last <= bounds(rows[-1])[1])):
         raise ScriptureError("missing_passage")
     return [
         VerseItem(reference=f"{row.book_name} {row.chapter_number}:{row.verse_label}",
                   text=row.verse_text.strip(), book_order=row.book_order,
-                  chapter=row.chapter_number, verse=int(row.verse_label),
+                  chapter=row.chapter_number, verse=bounds(row)[0],
                   testament="OT" if row.book_order <= 39 else "NT")
         for row in rows
     ]
