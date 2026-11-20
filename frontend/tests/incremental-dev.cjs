@@ -69,12 +69,12 @@ async function attempt(name, path, executable) {
     await field.fill("John 3:16");
     await post("/reset");
     await selection.click();
-    await page.getByRole("radio", { name: /La Biblia en Español Sencillo/ }).check();
+    await page.getByRole("radio", { name: /Berean Standard Bible/ }).check();
     await page.getByRole("button", { name: "Apply", exact: true }).click();
     await submit.click();
-    await page.getByRole("heading", { name: "Scripture · La Biblia en Español Sencillo (BES)" }).waitFor();
+    await page.getByRole("heading", { name: "Scripture · Berean Standard Bible (BSB)" }).waitFor();
     assert.equal((await status()).provider_fixture_calls, 1);
-    await page.getByText(/amó Dios al mundo/).waitFor();
+    await page.getByText(/one and only Son/).waitFor();
     await post("/release?failure=true");
     await page.getByText("Reflection couldn’t be prepared.", { exact: true }).waitFor();
     await page.getByText("Source: Bible-API.com", { exact: true }).waitFor();
@@ -110,6 +110,26 @@ async function attempt(name, path, executable) {
     assert.equal(questions.length, previous + 1);
     assert.equal((await status()).provider_fixture_calls, 0);
     await page.getByRole("button", { name: "Edit question" }).click();
+    if (process.env.BTA_DEV_SCRIPTURE_POSTGRES === "1") {
+      await post("/reset");
+      await selection.click();
+      await page.getByRole("radio", { name: /La Biblia en Español Sencillo/ }).check();
+      await page.getByRole("button", { name: "Apply", exact: true }).click();
+      await field.fill("Juan 3:16");
+      await submit.click();
+      await page.getByRole("heading", { name: "Scripture · La Biblia en Español Sencillo (BES)" }).waitFor();
+      await page.getByText("Source: Local BES dataset", { exact: true }).waitFor();
+      await page.getByText(/amó Dios al mundo/).waitFor();
+      assert.equal((await status()).provider_fixture_calls, 0);
+      await post("/release");
+      const spanishVerse = page.getByRole("button", { name: "Juan 3:16", exact: true });
+      await spanishVerse.click();
+      await page.getByRole("heading", { name: "Passage exploration" }).waitFor();
+      await page.getByText(/amó Dios al mundo/).waitFor();
+      await page.getByRole("button", { name: "Back to original result" }).click();
+      await spanishVerse.waitFor();
+      await page.getByRole("button", { name: "Edit question" }).click();
+    }
     await page.setViewportSize({ width: 390, height: 844 });
     await field.fill("Line one\nLine two in a narrow layout");
     assert.equal(await field.inputValue(), "Line one\nLine two in a narrow layout");

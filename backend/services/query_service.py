@@ -682,7 +682,7 @@ class QueryService:
 
         if explicit_scripture:
             topics = [question] if selection is not None and re.fullmatch(
-                r"[1-3]?\s*[A-Za-z][A-Za-z .]+\s*\d+(?::\d+(?:\s*[-–]\s*(?:\d+:)?\d+)?)?", question
+                r"[1-3]?\s*[^\W\d_][^\W\d_ .]*(?:[ .]+[^\W\d_]+)*\s*\s*\d+(?::\d+(?:\s*[-–]\s*(?:\d+:)?\d+)?)?", question
             ) else self._extract_topics(question)
 
             for topic in topics:

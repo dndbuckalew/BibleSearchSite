@@ -10,14 +10,21 @@ from fastapi import HTTPException
 LOCAL = {"option_id": "local-kjv", "edition_id": "kjv", "source_id": "local",
          "edition_label": "King James Version (KJV)", "source_label": "Local KJV dataset",
          "dataset_revision": "8b330654ade69f7c96268c761da18dc83a1f49b7"}
-EXTERNAL = {"option_id": "test-bes", "edition_id": "bes", "source_id": "bible-api",
-            "edition_label": "La Biblia en Español Sencillo (BES)", "source_label": "Bible-API.com",
+BES = {"option_id": "local-bes", "edition_id": "bes", "source_id": "local",
+       "edition_label": "La Biblia en Español Sencillo (BES)", "source_label": "Local BES dataset",
+       "dataset_revision": "d2843552b3e87df0b211d2c7136f0879fca8046fe7741ab0aacf34538d42f671"}
+EXTERNAL = {"option_id": "test-bsb", "edition_id": "bsb", "source_id": "bible-api",
+            "edition_label": "Berean Standard Bible (BSB)", "source_label": "Bible-API.com",
             "dataset_revision": None}
 PROCESS_KEY = secrets.token_bytes(32)
 
 
 def catalog():
-    options = [LOCAL, EXTERNAL] if os.getenv("BTA_ENABLE_BES_TEST") == "1" else [LOCAL]
+    options = [LOCAL]
+    if os.getenv("BTA_DEV_SCRIPTURE_POSTGRES") == "1":
+        options.append(BES)
+    if os.getenv("BTA_ENABLE_BSB_TEST") == "1":
+        options.append(EXTERNAL)
     return {"default": LOCAL["option_id"], "options": options}
 
 

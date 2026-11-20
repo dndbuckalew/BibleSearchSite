@@ -2,7 +2,6 @@
 from concurrent.futures import ThreadPoolExecutor
 import json
 import os
-from pathlib import Path
 from threading import Event
 import unittest
 from unittest.mock import MagicMock, patch
@@ -21,22 +20,26 @@ KJV = "For God so loved the world, that he gave his only begotten Son, that whos
 BES = "Porque de tal manera amó Dios al mundo, que dio a su Hijo único, para que todo el que cree en él no se pierda, sino que tenga vida eterna."
 
 
+# Hosted comparison fixture from Bible Hub's BSB edition.
+BSB = "For God so loved the world that He gave His one and only Son, that everyone who believes in Him shall not perish but have eternal life."
+
+
 def accept(question="John 3:16", **options):
     return handle_query(QueryRequest(question=question, **options)).execution_payload
 
 
-def bes_response(edition):
+def bsb_response(edition):
     response = MagicMock(status_code=200)
     response.json.return_value = {
         **({"translation_id": edition} if edition is not None else {}),
-        "verses": [{"book_name": "Juan", "chapter": 3, "verse": 16, "text": BES}],
+        "verses": [{"book_name": "John", "chapter": 3, "verse": 16, "text": BSB}],
     }
     return response
 
 
 class ReaderContractTests(unittest.TestCase):
     def setUp(self):
-        self.enterContext(patch.dict(os.environ, {"BTA_ENABLE_BES_TEST": "1"}))
+        self.enterContext(patch.dict(os.environ, {"BTA_ENABLE_BSB_TEST": "1"}))
         for name, result in {
             "classify_reaffirmation_intent": None,
             "build_commentary": None,
@@ -64,33 +67,64 @@ class ReaderContractTests(unittest.TestCase):
             self.assertEqual(json.loads(events[-1])["code"], "missing_passage")
         remote.assert_not_called()
 
+    @unittest.skipUnless(os.getenv("BTA_DEV_SCRIPTURE_POSTGRES") == "1", "Disposable PostgreSQL required")
+    def test_postgres_editions_and_bound_exploration(self):
+        from backend.services.scripture_selection import BES as BES_SELECTION
+
+        with patch.object(scripture_retrieval.requests, "get", side_effect=AssertionError) as remote:
+            for option, source, wording, reference in (
+                ("local-kjv", "Local KJV dataset", KJV, "John 3:16"),
+                ("local-bes", "Local BES dataset", BES, "Juan 3:16"),
+            ):
+                accepted = accept(scripture_option=option)
+                for execution in (accepted, accept(reference, parent_execution=accepted), accepted):
+                    result = get_results(ResultsRequest(execution_payload=execution))
+                    self.assertEqual(len(result.verses), 1)
+                    verse = result.verses[0]
+                    self.assertEqual((verse.reference, " ".join(verse.text.split())), (reference, wording))
+                    self.assertEqual(result.scripture_provenance["source_label"], source)
+                    self.assertEqual(result.scripture_provenance["dataset_revision"],
+                                     accepted["resolved_scripture"]["dataset_revision"])
+            for reference, count in (("Génesis 1:31-2:2", 3), ("1 Juan 4:7-8", 2), ("Salmos 23:1-3", 3)):
+                result = get_results(ResultsRequest(execution_payload=accept(reference, scripture_option="local-bes")))
+                self.assertEqual(len(result.verses), count)
+            missing = list(stream_results(verify(accept("Juan 3:999", scripture_option="local-bes"))))
+            self.assertEqual(json.loads(missing[0])["code"], "missing_passage")
+            with self.assertRaisesRegex(scripture_retrieval.ScriptureError, "source_unavailable"):
+                scripture_retrieval.retrieve("John 3:16", {**BES_SELECTION, "dataset_revision": "missing"})
+            with patch.object(scripture_retrieval, "postgres_connection",
+                              side_effect=scripture_retrieval.psycopg.OperationalError):
+                unavailable = list(stream_results(verify(accept(scripture_option="local-bes"))))
+                self.assertEqual(json.loads(unavailable[0])["code"], "source_unavailable")
+        remote.assert_not_called()
+
     def test_external_verification_and_retained_selection(self):
-        with patch.object(scripture_retrieval.requests, "get", return_value=bes_response("bes")) as remote:
-            accepted = accept(scripture_option="test-bes")
-            for followup in (accepted, accept("Juan 3:16", parent_execution=accepted)):
+        with patch.object(scripture_retrieval.requests, "get", return_value=bsb_response("bsb")) as remote:
+            accepted = accept(scripture_option="test-bsb")
+            for followup in (accepted, accept("John 3:16", parent_execution=accepted)):
                 result = get_results(ResultsRequest(execution_payload=followup))
-                self.assertEqual(result.verses[0].text, BES)
-                self.assertEqual(result.verses[0].reference, "Juan 3:16")
+                self.assertEqual(result.verses[0].text, BSB)
+                self.assertEqual(result.verses[0].reference, "John 3:16")
                 self.assertEqual(result.scripture_provenance["source_label"], "Bible-API.com")
                 self.assertIsNone(result.scripture_provenance["dataset_revision"])
             self.assertEqual(remote.call_count, 2)
-            self.assertTrue(all(call.kwargs["params"] == {"translation": "bes"} for call in remote.call_args_list))
+            self.assertTrue(all(call.kwargs["params"] == {"translation": "bsb"} for call in remote.call_args_list))
         for edition in (None, "kjv"):
-            with patch.object(scripture_retrieval.requests, "get", return_value=bes_response(edition)):
+            with patch.object(scripture_retrieval.requests, "get", return_value=bsb_response(edition)):
                 events = list(stream_results(verify(accepted)))
                 self.assertEqual(len(events), 1)
                 self.assertEqual(json.loads(events[0])["code"], "edition_unverified")
 
     def test_altered_and_unauthorized_selection(self):
         accepted = accept()
-        accepted["resolved_scripture"] = accept(scripture_option="test-bes")["resolved_scripture"]
+        accepted["resolved_scripture"] = accept(scripture_option="test-bsb")["resolved_scripture"]
         with self.assertRaises(HTTPException):
             verify(accepted)
-        with patch.dict(os.environ, {"BTA_ENABLE_BES_TEST": "0"}), self.assertRaises(HTTPException):
-            accept(scripture_option="test-bes")
+        with patch.dict(os.environ, {"BTA_ENABLE_BSB_TEST": "0"}), self.assertRaises(HTTPException):
+            accept(scripture_option="test-bsb")
 
     def test_missing_snapshot(self):
-        with patch.dict(os.environ, {"BTA_DEV_KJV_OSIS": ""}):
+        with patch.dict(os.environ, {"BTA_DEV_KJV_OSIS": "", "BTA_DEV_SCRIPTURE_POSTGRES": "0"}):
             events = list(stream_results(verify(accept())))
         self.assertEqual(json.loads(events[0])["code"], "source_unavailable")
 
@@ -104,11 +138,11 @@ class ReaderContractTests(unittest.TestCase):
             raise RuntimeError("Controlled failure")
 
         with (
-            patch.object(scripture_retrieval.requests, "get", return_value=bes_response("bes")),
+            patch.object(scripture_retrieval.requests, "get", return_value=bsb_response("bsb")),
             patch("backend.services.ai_reflection_service.generate_ai_reflection", side_effect=reflection),
             ThreadPoolExecutor(max_workers=1) as pool,
         ):
-            stream = stream_results(verify(accept(scripture_option="test-bes")))
+            stream = stream_results(verify(accept(scripture_option="test-bsb")))
             try:
                 for section in ("scripture", "summary", "context"):
                     row = json.loads(next(stream))
