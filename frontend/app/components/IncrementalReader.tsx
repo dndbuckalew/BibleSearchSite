@@ -1,12 +1,26 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import ExpandableSection from "./ExpandableSection";
 import ListeningControls, { listeningStatus } from "./ListeningControls";
 import { useResultsReader } from "../lib/useResultsReader";
 import type { StreamData, SectionName } from "../lib/btaApi";
 
 export const sectionNames = ["scripture", "summary", "context", "reflection"] as const;
 const title = (name: SectionName) => name.charAt(0).toUpperCase() + name.slice(1);
+
+const previewLimit = 240;
+
+function sectionPreview(text: string) {
+  if (text.length <= previewLimit) return text;
+  const firstParagraph = text.split(/\r?\n\s*\r?\n/, 1)[0];
+  if (firstParagraph.length <= previewLimit) return firstParagraph.trimEnd() + "…";
+  const prefix = text.slice(0, previewLimit);
+  const wordBoundary = prefix.search(/\s+\S*$/);
+  return (wordBoundary > 0 ? prefix.slice(0, wordBoundary) : prefix).trimEnd() + "…";
+}
+
+type AccordionState = { resultId: number; sections: Partial<Record<SectionName, boolean>> };
 
 export type ActiveResult = {
   id: number;
@@ -32,6 +46,18 @@ export default function IncrementalReader({
   restoreFocus?: number;
 }) {
   const reader = useResultsReader(String(result.id));
+  // Keep the original accordion state while a separate passage result is visible.
+  const view = onReturn ? "passage" : "original";
+  const [accordions, setAccordions] = useState<Partial<Record<typeof view, AccordionState>>>({});
+  const accordion = accordions[view];
+  const openSections = accordion?.resultId === result.id ? accordion.sections : {};
+  const setSectionOpen = (name: SectionName, open: boolean) => {
+    setAccordions(previous => {
+      const saved = previous[view];
+      const sections = saved?.resultId === result.id ? saved.sections : {};
+      return { ...previous, [view]: { resultId: result.id, sections: { ...sections, [name]: open } } };
+    });
+  };
   const heading = useRef<HTMLHeadingElement>(null);
   const referenceButtons = useRef(new Map<number, HTMLButtonElement>());
   useEffect(() => {
@@ -78,6 +104,8 @@ export default function IncrementalReader({
       {!result.escalation && sectionNames.map(name => {
         const sectionTitle = name === "scripture" ? scriptureTitle : title(name);
         const arrived = ready.includes(name) || failed.includes(name);
+        const text = texts[name];
+        const preview = name === "scripture" ? "" : sectionPreview(text);
         return <section key={name} aria-label={title(name)} className="space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="text-xl font-medium">{sectionTitle}</h3>
@@ -89,7 +117,14 @@ export default function IncrementalReader({
               ref={element => { if (element) referenceButtons.current.set(index, element); else referenceButtons.current.delete(index); }}
               onClick={() => stopAnd(() => onExplore(verse.reference, index))}>{verse.reference}</button>
               : <strong>{verse.reference}</strong>}{" — "}{verse.text}
-          </p>) : <p className="whitespace-pre-wrap" dir="auto">{texts[name]}</p>}
+          </p>) : text && (preview === text
+            ? <p className="whitespace-pre-wrap break-words" dir="auto">{text}</p>
+            : <ExpandableSection
+                open={openSections[name] ?? false}
+                onToggle={open => setSectionOpen(name, open)}
+                preview={openSections[name] ? null : <p className="whitespace-pre-wrap break-words" dir="auto">{preview}</p>}
+                expanded={<p className="whitespace-pre-wrap break-words" dir="auto">{text}</p>}
+              />)}
           {name === "scripture" && data.scripture_issues?.map((issue, index) =>
             <p key={index}>{issue.reference}: {issue.code === "missing_passage" ? "Passage not found." : "Scripture could not be verified."}</p>)}
           {failed.includes(name) ? <p>{title(name)} couldn’t be prepared.</p>

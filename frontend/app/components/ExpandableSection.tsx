@@ -5,48 +5,37 @@ import { useId, useState } from "react";
 type ExpandableSectionProps = {
   preview: React.ReactNode;
   expanded: React.ReactNode;
+  open?: boolean;
+  onToggle?: (open: boolean) => void;
 };
 
 export default function ExpandableSection({
   preview,
   expanded,
+  open,
+  onToggle,
 }: ExpandableSectionProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [localOpen, setLocalOpen] = useState(false);
+  const isExpanded = open ?? localOpen;
   const contentId = useId();
 
   return (
     <div className="space-y-3">
       {preview}
 
-      {!isExpanded && (
-        <button
-          type="button"
-          aria-expanded={isExpanded}
-          aria-controls={contentId}
-          onClick={() => setIsExpanded(true)}
-          className="text-base font-semibold text-blue-700 underline hover:text-blue-900"
-        >
-          ...More
-        </button>
-      )}
-
       <div id={contentId} hidden={!isExpanded}>
         {isExpanded && expanded}
       </div>
 
-      {isExpanded && (
-        <>
-          <button
-            type="button"
-            aria-expanded={isExpanded}
-            aria-controls={contentId}
-            onClick={() => setIsExpanded(false)}
-            className="text-base font-semibold text-blue-700 underline hover:text-blue-900"
-          >
-            Show Less
-          </button>
-        </>
-      )}
+      <button
+        type="button"
+        aria-expanded={isExpanded}
+        aria-controls={contentId}
+        onClick={() => (onToggle ?? setLocalOpen)(!isExpanded)}
+        className="text-base font-semibold text-blue-700 underline hover:text-blue-900"
+      >
+        {isExpanded ? "Show Less" : "More"}
+      </button>
     </div>
   );
 }
