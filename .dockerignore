@@ -12,3 +12,7 @@
 **/__pycache__
 **/*.py[cod]
 **/*.log
+!data/
+!data/scripture.sqlite
+!tools/scripture/release-catalog.json
+!tools/scripture/verify_release_bundle.py
