@@ -25,8 +25,11 @@ CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080"]
 FROM runtime AS scripture
 ENV BTA_SCRIPTURE_SQLITE_PATH=/app/data/scripture.sqlite
 ENV BTA_SCRIPTURE_SQLITE_SHA256=edd8495fd4a9db18e28f95665621e964d1fb49992073292aa744b0e148008c0f
+RUN install -d -m 0755 /app/data
 COPY --chmod=0444 data/scripture.sqlite /app/data/scripture.sqlite
 COPY tools/scripture/release-catalog.json tools/scripture/verify_release_bundle.py tools/scripture/
+USER 65532:65532
 RUN --network=none OPENAI_API_KEY=offline-verification python -m tools.scripture.verify_release_bundle
+USER root
 
 FROM scripture AS app
