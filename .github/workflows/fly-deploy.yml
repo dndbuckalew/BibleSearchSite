@@ -1,17 +1,34 @@
-# See https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
-
 name: Fly Deploy
 on:
   push:
     branches:
       - main
+
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   deploy:
     name: Deploy app
     runs-on: ubuntu-latest
-    concurrency: deploy-group    # optional: ensure only one action runs at a time
+    concurrency: deploy-group
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Acquire pinned Scripture bundle
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ vars.BTA_SCRIPTURE_ARTIFACT_ROLE_ARN }}
+          aws-region: us-east-2
+      - name: Download Scripture bundle
+        env:
+          ARTIFACT_URI: ${{ vars.BTA_SCRIPTURE_ARTIFACT_URI }}
+        run: |
+          test -n "$ARTIFACT_URI"
+          mkdir -p data
+          aws s3 cp --only-show-errors "$ARTIFACT_URI" data/scripture.sqlite
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only
         env:

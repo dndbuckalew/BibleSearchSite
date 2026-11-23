@@ -39,3 +39,6 @@ out/
 
 # VS Code
 .vscode/
+
+# Deployment inputs acquired outside Git
+*.sqlite

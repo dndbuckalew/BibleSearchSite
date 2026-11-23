@@ -21,14 +21,12 @@ EXPOSE 8080
 
 CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8080"]
 
-# Supply a named scripture_bundle context containing only the verified SQLite file.
+# The default Fly image requires the pinned release catalog.
 FROM runtime AS scripture
-ARG SCRIPTURE_BUNDLE_SHA256
 ENV BTA_SCRIPTURE_SQLITE_PATH=/app/data/scripture.sqlite
-ENV BTA_SCRIPTURE_SQLITE_SHA256=${SCRIPTURE_BUNDLE_SHA256}
-RUN install -d -m 0755 /app/data
-COPY --from=scripture_bundle --chmod=0444 /scripture.sqlite /app/data/scripture.sqlite
-RUN python -c "from backend.services.scripture_retrieval import sqlite_connection; conn=sqlite_connection(); assert conn.execute('PRAGMA quick_check').fetchone() == ('ok',); assert set(conn.execute('SELECT edition FROM snapshot')) == {('kjv',), ('bes',)}; conn.close()"
+ENV BTA_SCRIPTURE_SQLITE_SHA256=edd8495fd4a9db18e28f95665621e964d1fb49992073292aa744b0e148008c0f
+COPY --chmod=0444 data/scripture.sqlite /app/data/scripture.sqlite
+COPY tools/scripture/release-catalog.json tools/scripture/verify_release_bundle.py tools/scripture/
+RUN --network=none OPENAI_API_KEY=offline-verification python -m tools.scripture.verify_release_bundle
 
-# Existing builds continue to select this target unless scripture is requested.
-FROM runtime AS app
+FROM scripture AS app
