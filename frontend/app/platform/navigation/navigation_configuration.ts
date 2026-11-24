@@ -1,4 +1,3 @@
-import { DONATIONS_ENABLED } from "../capabilities";
 import type { NavigationItem } from "./navigation_types";
 
 export const primaryNavigation: NavigationItem[] = [
@@ -11,11 +10,6 @@ export const primaryNavigation: NavigationItem[] = [
     label: "Stay Connected",
     href: "/stay-connected",
     display: true,
-  },
-  {
-    label: "Donate",
-    href: "/donation",
-    display: DONATIONS_ENABLED,
   },
   {
     label: "About Us",

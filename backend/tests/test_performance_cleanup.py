@@ -189,7 +189,16 @@ class CleanupTests(unittest.TestCase):
                 return self.generic_visit(node)
 
         for path in ["backend/core/vocabulary/nql_scripture_vocabulary.py", "backend/main.py", "backend/api/results.py", "backend/services/query_service.py"]:
-            before = Normalize().visit(ast.parse(baseline_source(path)))
+            expected = baseline_source(path)
+            if path == "backend/main.py":
+                # V6.5.4.2 removes only the donation router import and registration.
+                for line in (
+                    "from backend.routes.donation_routes import router as donation_router",
+                    "app.include_router(donation_router)",
+                ):
+                    self.assertEqual(expected.count(line + "\n"), 1)
+                    expected = expected.replace(line + "\n", "", 1)
+            before = Normalize().visit(ast.parse(expected))
             # Results and orchestration were intentionally changed by V6.5.3.
             # Keep the historical scope assertion anchored to the accepted cleanup.
             if path in {"backend/api/results.py", "backend/services/query_service.py"}:

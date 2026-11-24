@@ -4,7 +4,6 @@
 
 import { useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import ResultsDonationInvitation from "../components/donation/ResultsDonationInvitation";
 import ExpandableSection from "../components/ExpandableSection";
 import ListeningControls, { listeningStatus } from "../components/ListeningControls";
 import { referenceForSpeech } from "../lib/resultsReader";
@@ -92,7 +91,6 @@ export default function ResultsClient() {
     return safeParsePayload(rawPayload);
   }, [rawPayload]);
 
-  const [donationDismissed, setDonationDismissed] = useState(false);
 
   // Optional: allow local UI dismiss of an error banner (no side effects)
   const [dismissed, setDismissed] = useState(false);
@@ -383,10 +381,6 @@ export default function ResultsClient() {
       >
         Start New Reflection
       </button>
-
-    {!donationDismissed && (
-      <ResultsDonationInvitation onDismiss={() => setDonationDismissed(true)} />
-    )}  
     </section>
   </>
   );

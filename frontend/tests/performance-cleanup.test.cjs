@@ -63,7 +63,6 @@ function submission(options = {}) {
     'next/navigation': { useRouter: () => ({ push(url) { if (options.pushError) throw new Error('Offline router failure'); navigations.push(url); } }) },
     './lib/btaApi': { async runReflection() { calls.push('query'); return options.query ? options.query() : decision; }, getQueryCount: () => 0 },
     './lib/useQuestionSpeech': { useQuestionSpeech: () => ({ cancel() { cancels.push(1); }, supported: true, phase: 'idle', issue: options.speechIssue, status: options.speechStatus, needsSetup: Boolean(options.speechIssue) }) },
-    './components/donation/DonationPrompt': () => null,
     './components/audience/AudiencePrompt': () => null,
     './components/MicrophoneSetup': () => null,
   }, {
@@ -201,7 +200,6 @@ test('results render Scripture Summary Context and Reflection with collapsed exp
   const Page = load('results/results-client.tsx', {
     react: hooks.react,
     'next/navigation': { useRouter: () => ({ push() {} }), useSearchParams: () => new URLSearchParams({ payload: JSON.stringify({ ...result, context_exploration: 'Offline hidden exploration.' }) }) },
-    '../components/donation/ResultsDonationInvitation': () => null,
     '../components/ExpandableSection': ({ preview }) => preview,
     '../components/ListeningControls': Object.assign(() => null, { listeningStatus: () => '' }),
     '../lib/resultsReader': { referenceForSpeech: text => text },
