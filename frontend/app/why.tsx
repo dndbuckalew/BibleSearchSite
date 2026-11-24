@@ -6,7 +6,6 @@ import type { Execution, ScriptureOption } from './lib/btaApi';
 import IncrementalReader, { sectionNames } from './components/IncrementalReader';
 import type { ActiveResult } from './components/IncrementalReader';
 import { getQueryCount } from "./lib/btaApi";
-import DonationPrompt from "./components/donation/DonationPrompt";
 import AudiencePrompt from "./components/audience/AudiencePrompt";
 import { prepareScriptureQuestion } from './lib/prepareScriptureQuestion';
 import { useQuestionSpeech } from './lib/useQuestionSpeech';
@@ -429,7 +428,6 @@ platform navigation.
 
 Retained temporarily for rollback during validation.
 
-Remove permanently after Donate migration and navigation validation.
 ===========================================================================
 <div className="pt-6">
   <AudiencePrompt />

@@ -63,12 +63,6 @@ BTA_NAVIGATION_CONFIGURATION = {
                 "target": "stay-connected",
             },
             {
-                "id": "donate",
-                "label": "Donate",
-                "action": "open_workspace",
-                "target": "donation",
-            },
-            {
                 "id": "menu",
                 "label": "Menu",
                 "action": "open_menu",
